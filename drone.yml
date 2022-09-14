@@ -1,0 +1,24 @@
+kind: pipeline
+type: docker
+name: default
+ 
+trigger:
+  event:
+    - push
+
+steps:
+  - name: build
+    image: mcr.microsoft.com/dotnet/sdk:5.0
+    commands:
+      - cd Sources/
+      - dotnet restore DiceApp.sln
+      - dotnet build DiceApp.sln -c Release --no-restore
+      - dotnet publish DiceApp.sln -c Release --no-restore -o CI_PROJECT_DIR/build/release
+
+  - name: tests
+    image: mcr.microsoft.com/dotnet/sdk:5.0
+    commands:
+      - cd Sources/
+      - dotnet restore DiceApp.sln
+      - dotnet test DiceApp.sln --no-restore
+    depends_on: [build]
