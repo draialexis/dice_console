@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model;
+using System.Diagnostics;
 
 namespace App
 {
@@ -6,7 +7,11 @@ namespace App
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello CI!");
+            Debug.WriteLine("Hello Debug!");
+            Player player = new Player("John");
+            Die die = new Die("I'm a die");
+            Debug.WriteLine(player.Name);
+            Debug.WriteLine(die.Name);
         }
     }
 }
