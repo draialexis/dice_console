@@ -23,22 +23,22 @@ steps:
       - dotnet test DiceApp.sln --no-restore
     depends_on: [build]
 
-  # - name: code-analysis
-    # image: pubhub.codefirst.ddns.net/thbellem/codefirst-dronesonarplugin-dotnet5
-    # commands:
-      # - cd Sources/
-      # - dotnet restore DiceApp.sln
-      # - dotnet sonarscanner begin /k:dice_app /d:sonar.host.url=$${PLUGIN_SONAR_HOST} /d:sonar.coverageReportPaths="coveragereport/SonarQube.xml" /d:sonar.coverage.exclusions="Tests/**" /d:sonar.login=$${PLUGIN_SONAR_TOKEN} 
-      # - dotnet build DiceApp.sln -c Release --no-restore
-      # - dotnet test DiceApp.sln --logger trx --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --collect "XPlat Code Coverage"
-      # - reportgenerator -reports:"**/coverage.cobertura.xml" -reporttypes:SonarQube -targetdir:"coveragereport"
-      # - dotnet publish DiceApp.sln -c Release --no-restore -o CI_PROJECT_DIR/build/release
-      # - dotnet sonarscanner end /d:sonar.login=$${PLUGIN_SONAR_TOKEN}
-    # secrets: [ SECRET_SONAR_LOGIN ]
-    # settings:
-      # # accessible en ligne de commande par ${PLUGIN_SONAR_HOST}
-      # sonar_host: https://codefirst.ddns.net/sonar/
-      # # accessible en ligne de commande par ${PLUGIN_SONAR_TOKEN}
-      # sonar_token:
-        # from_secret: SECRET_SONAR_LOGIN
-    # depends_on: [tests]
+  - name: code-analysis
+    image: hub.codefirst.iut.uca.fr/thomas.bellembois/codefirst-dronesonarplugin-dotnet6
+    commands:
+      - cd Sources/
+      - dotnet restore DiceApp.sln
+      - dotnet sonarscanner begin /k:"dice-app" /d:sonar.host.url=$${PLUGIN_SONAR_HOST} /d:sonar.coverageReportPaths="coveragereport/SonarQube.xml" /d:sonar.coverage.exclusions="Tests/**" /d:sonar.login=$${PLUGIN_SONAR_TOKEN} 
+      - dotnet build DiceApp.sln -c Release --no-restore
+      - dotnet test DiceApp.sln --logger trx --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --collect "XPlat Code Coverage"
+      - reportgenerator -reports:"**/coverage.cobertura.xml" -reporttypes:SonarQube -targetdir:"coveragereport"
+      - dotnet publish DiceApp.sln -c Release --no-restore -o $CI_PROJECT_DIR/build/release
+      - dotnet sonarscanner end /d:sonar.login=$${PLUGIN_SONAR_TOKEN}
+    secrets: [ SECRET_SONAR_LOGIN ]
+    settings:
+      # accessible en ligne de commande par $${PLUGIN_SONAR_HOST}
+      sonar_host: https://codefirst.iut.uca.fr/sonar/
+      # accessible en ligne de commande par $${PLUGIN_SONAR_TOKEN}
+      sonar_token:
+        from_secret: SECRET_SONAR_LOGIN
+    depends_on: [tests]
