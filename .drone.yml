@@ -8,7 +8,7 @@ trigger:
 
 steps:
   - name: build
-    image: mcr.microsoft.com/dotnet/sdk:5.0
+    image: mcr.microsoft.com/dotnet/sdk:6.0
     commands:
       - cd Sources/
       - dotnet restore DiceApp.sln
@@ -16,7 +16,7 @@ steps:
       - dotnet publish DiceApp.sln -c Release --no-restore -o CI_PROJECT_DIR/build/release
 
   - name: tests
-    image: mcr.microsoft.com/dotnet/sdk:5.0
+    image: mcr.microsoft.com/dotnet/sdk:6.0
     commands:
       - cd Sources/
       - dotnet restore DiceApp.sln
