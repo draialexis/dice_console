@@ -1,8 +1,7 @@
 using Model;
-using System;
 using Xunit;
 
-namespace Tests
+namespace Tests.Model_UTs
 {
     public class PlayerTest
     {

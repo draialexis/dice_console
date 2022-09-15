@@ -1,5 +1,4 @@
 using Model;
-using System;
 using Xunit;
 
 namespace Tests
