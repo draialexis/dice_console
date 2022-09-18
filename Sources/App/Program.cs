@@ -7,7 +7,7 @@ namespace App
     {
         static void Main(string[] args)
         {
-
+            Debug.WriteLine("HelloWorld");
         }
     }
 }
