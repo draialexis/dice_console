@@ -55,7 +55,7 @@ namespace Model
         /// <returns>player with said name</returns>
         public Player GetOneByName(string name)
         {
-            if (!String.IsNullOrWhiteSpace(name) && !name.Equals(""))
+            if (!String.IsNullOrWhiteSpace(name))
             {
                 Player result = players.FirstOrDefault(p => p.Name.Equals(name));
                 return new Player(result); // THIS IS A COPY (using a copy constructor)

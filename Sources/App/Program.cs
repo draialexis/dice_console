@@ -7,11 +7,7 @@ namespace App
     {
         static void Main(string[] args)
         {
-            Debug.WriteLine("Hello Debug!");
-            Player player = new Player("John");
-            Die die = new Die("I'm a die");
-            Debug.WriteLine(player.Name);
-            Debug.WriteLine(die.Name);
+            Debug.WriteLine("HelloWorld");
         }
     }
 }
