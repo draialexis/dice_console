@@ -19,6 +19,19 @@ namespace Tests.Model_UTs
             Assert.Equal("Alice", player.Name);
         }
 
+        [Fact]
+        public void TestConstructorIfNameUntrimmedThenTrimmedName()
+        {
+            // Arrange
+            Player player;
+
+            // Act
+            player = new("Alice ");
+
+            // Assert
+            Assert.Equal("Alice", player.Name);
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData(" ")]
@@ -89,7 +102,7 @@ namespace Tests.Model_UTs
         }
 
         [Fact]
-        public void TestGoesThruIfObjIsPlayer()
+        public void TestGoesThruToSecondMethodIfObjIsTypePlayer()
         {
             // Arrange
             Object p1;
@@ -121,8 +134,11 @@ namespace Tests.Model_UTs
             Assert.False(p2.Equals(p1));
         }
 
-        [Fact]
-        public void TestEqualsTrueIfSameNameDifferentCase()
+        [Theory]
+        [InlineData("devoN")]
+        [InlineData(" devon")]
+        [InlineData("deVon ")]
+        public void TestEqualsTrueIfSameNameDifferentCaseOrSpace(string name)
         {
             // Arrange
             Player p1;
@@ -130,7 +146,7 @@ namespace Tests.Model_UTs
 
             // Act
             p1 = new("Devon");
-            p2 = new("devoN");
+            p2 = new(name);
 
             // Assert
             Assert.True(p1.Equals(p2));
@@ -169,8 +185,12 @@ namespace Tests.Model_UTs
             Assert.False(p2.GetHashCode().Equals(p1.GetHashCode()));
         }
 
-        [Fact]
-        public void TestSameHashTrueIfSameNameDifferentCase()
+        [Theory]
+        [InlineData("devoN")]
+        [InlineData(" devon")]
+        [InlineData("DevoN ")]
+        [InlineData(" dEvoN ")]
+        public void TestSameHashTrueIfSameNameDifferentCase(string name)
         {
             // Arrange
             Player p1;
@@ -209,7 +229,7 @@ namespace Tests.Model_UTs
             Player p2;
 
             // Act
-            p1 = new("Elyse");
+            p1 = new(" Elyse ");
             p2 = new(p1);
 
             // Assert
