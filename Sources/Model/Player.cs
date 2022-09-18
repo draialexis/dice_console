@@ -1,10 +1,27 @@
 ﻿using System;
+using System.Xml.Linq;
 
 namespace Model
 {
     public class Player : IEquatable<Player>
     {
-        public string Name { get; internal set; }
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+            internal set
+            {
+                if (!String.IsNullOrWhiteSpace(value) && !value.Equals(""))
+                {
+                    name = value;
+                }
+                else throw new ArgumentException("player name may never be empty or null");
+            }
+        }
+        
+        private string name;
 
         public Player(string name)
         {
@@ -32,7 +49,7 @@ namespace Model
 
         public override int GetHashCode()
         {
-            return Name.GetHashCode();
+            return Name.ToUpper().GetHashCode();
         }
     }
 }
