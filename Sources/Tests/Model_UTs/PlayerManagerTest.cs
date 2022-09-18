@@ -199,5 +199,23 @@ namespace Tests.Model_UTs
             Assert.DoesNotContain(oldPlayer, playerManager.GetAll());
             Assert.Contains(newPlayer, playerManager.GetAll());
         }
+
+        [Fact]
+        public void TestUpdateDoesNothingIfSame()
+        {
+            // Arrange
+            string name = "Filibert";
+            PlayerManager playerManager = new();
+            Player oldPlayer = new(name);
+            playerManager.Add(ref oldPlayer);
+            Player newPlayer = new(name);
+
+            // Act
+            playerManager.Update(ref oldPlayer, ref newPlayer);
+
+            // Assert
+            Assert.Contains(oldPlayer, playerManager.GetAll());
+            Assert.Contains(newPlayer, playerManager.GetAll());
+        }
     }
 }
