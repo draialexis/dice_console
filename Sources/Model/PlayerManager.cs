@@ -13,7 +13,17 @@ namespace Model
             throw new NotImplementedException();
         }
 
-        public T Remove<T>(ref T toRemove)
+        public IEnumerable<T> GetAll<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public T GetOneById<T>(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove<T>(ref T toRemove)
         {
             throw new NotImplementedException();
         }
