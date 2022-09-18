@@ -13,7 +13,7 @@ namespace Model
             }
             internal set
             {
-                if (!String.IsNullOrWhiteSpace(value) && !String.IsNullOrEmpty(value))
+                if (!String.IsNullOrWhiteSpace(value))
                 {
                     name = value;
                 }
