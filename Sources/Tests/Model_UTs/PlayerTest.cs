@@ -186,19 +186,19 @@ namespace Tests.Model_UTs
         }
 
         [Theory]
-        [InlineData("devoN")]
-        [InlineData(" devon")]
-        [InlineData("DevoN ")]
-        [InlineData(" dEvoN ")]
-        public void TestSameHashTrueIfSameNameDifferentCase(string name)
+        [InlineData("devoN", "devon")]
+        [InlineData(" devon", "devon")]
+        [InlineData("DevoN ", "devon")]
+        [InlineData(" dEvoN ", "devon")]
+        public void TestSameHashTrueIfSameNameDifferentCase(string name1, string name2)
         {
             // Arrange
             Player p1;
             Player p2;
 
             // Act
-            p1 = new("Devon");
-            p2 = new("devoN");
+            p1 = new(name1);
+            p2 = new(name2);
 
             // Assert
             Assert.True(p1.GetHashCode().Equals(p2.GetHashCode()));
