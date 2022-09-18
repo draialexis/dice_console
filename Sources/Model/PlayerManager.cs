@@ -6,29 +6,25 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    internal class PlayerManager : IManager
+    public class PlayerManager : IManager<Player>
     {
-        public T Add<T>(ref T toAdd)
+        public Player Add(ref Player toAdd)
         {
             throw new NotImplementedException();
         }
-
-        public IEnumerable<T> GetAll<T>()
+        public IEnumerable<Player> GetAll()
         {
             throw new NotImplementedException();
         }
-
-        public T GetOneById<T>(int id)
+        public Player GetOneById(int id)
         {
             throw new NotImplementedException();
         }
-
-        public void Remove<T>(ref T toRemove)
+        public void Remove(ref Player toRemove)
         {
             throw new NotImplementedException();
         }
-
-        public T Update<T>(ref T before, ref T after)
+        public Player Update(ref Player before, ref Player after)
         {
             throw new NotImplementedException();
         }

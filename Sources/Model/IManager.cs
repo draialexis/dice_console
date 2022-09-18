@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 namespace Model
 {
-    internal interface IManager
+    public interface IManager<T>
     {
-        public T Add<T>(ref T toAdd);
-        public void Remove<T>(ref T toRemove);
-        public T Update<T>(ref T before, ref T after);
-        public T GetOneById<T>(int id);
-        public IEnumerable<T> GetAll<T>();
+        public T Add(ref T toAdd);
+        public T GetOneById(int id);
+        public IEnumerable<T> GetAll();
+        public T Update(ref T before, ref T after);
+        public void Remove(ref T toRemove);
     }
 }
