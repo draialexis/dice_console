@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace Model
 {
-    public class Player : IEquatable<Player>
+    public sealed class Player : IEquatable<Player>
     {
         public string Name
         {
