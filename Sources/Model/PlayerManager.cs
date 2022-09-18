@@ -55,10 +55,11 @@ namespace Model
         /// <returns>player with said name</returns>
         public Player GetOneByName(string name)
         {
-            if (!String.IsNullOrEmpty(name))
+            if (!String.IsNullOrWhiteSpace(name) && !name.Equals(""))
             {
-                Player result = players.Where(p => p.Name.Equals(name)).FirstOrDefault();
-                return new Player(result.Name); // will return null if no such player exists
+                Player result = players.FirstOrDefault(p => p.Name.Equals(name));
+                return new Player(result); // THIS IS A COPY (using a copy constructor)
+                // will return null by default if no such player exists
             }
             return null; // we also want ot return null if no name was provided
         }
