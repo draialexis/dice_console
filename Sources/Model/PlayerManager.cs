@@ -19,7 +19,7 @@ namespace Model
 
         public PlayerManager()
         {
-            players = new HashSet<Player>();
+            players = new();
         }
         /// <summary>
         /// add a new player
@@ -57,9 +57,9 @@ namespace Model
         {
             if (!String.IsNullOrWhiteSpace(name))
             {
-                Player result = players.FirstOrDefault(p => p.Name.Equals(name));
-                return new Player(result); // THIS IS A COPY (using a copy constructor)
-                // will return null by default if no such player exists
+                Player result = players.FirstOrDefault(p => p.Name.ToUpper().Equals(name.Trim().ToUpper()));
+                if (result == null) return result; // will return null by default if no such player exists
+                return new(result); // THIS IS A COPY (using a copy constructor)
             }
             return null; // we also want ot return null if no name was provided
         }
