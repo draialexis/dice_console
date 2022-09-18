@@ -19,27 +19,16 @@ namespace Tests.Model_UTs
             Assert.Equal("Alice", player.Name);
         }
 
-        [Fact]
-        public void TestConstructorIfWhitespaceThenException()
+        [Theory]
+        [InlineData("")]
+        [InlineData(" ")]
+        public void TestConstructorIfWhitespaceOrBlankThenException(string name)
         {
             // Arrange
             Player player;
 
             // Act
-            void action() => player = new(" ");
-
-            // Assert
-            Assert.Throws<ArgumentException>(action);
-        }
-
-        [Fact]
-        public void TestConstructorIfBlankThenException()
-        {
-            // Arrange
-            Player player;
-
-            // Act
-            void action() => player = new("");
+            void action() => player = new(name);
 
             // Assert
             Assert.Throws<ArgumentException>(action);
