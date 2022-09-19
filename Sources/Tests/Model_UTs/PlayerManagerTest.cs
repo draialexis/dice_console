@@ -1,29 +1,25 @@
 ﻿using Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Tests.Model_UTs
 {
     public class PlayerManagerTest
     {
         [Fact]
-        public void TestConstructorReturnsEmptyHashSet()
+        public void TestConstructorReturnsEmptyEnumerable()
         {
             // Arrange
-            PlayerManager playerManager;
-            HashSet<Player> expected;
-            HashSet<Player> actual;
+            PlayerManager playerManager = new();
+            IEnumerable<Player> expected;
+            IEnumerable<Player> actual;
 
             // Act
-            playerManager = new();
-            expected = new();
-            actual = (HashSet<Player>)playerManager.GetAll();
+            expected = new Collection<Player>();
+            actual = playerManager.GetAll();
 
             // Assert
             Assert.Equal(expected, actual);
@@ -36,10 +32,10 @@ namespace Tests.Model_UTs
             PlayerManager playerManager = new();
             Player alice = new("Alice");
             Player bob = new("Bob");
-            HashSet<Player> expected = new() { alice, bob };
 
             // Act
-            HashSet<Player> actual = new()
+            Collection<Player> expected = new() { alice, bob };
+            Collection<Player> actual = new()
             {
                 playerManager.Add(alice),
                 playerManager.Add(bob)
@@ -59,7 +55,7 @@ namespace Tests.Model_UTs
 
             // Act
             expected = null;
-            actual = playerManager.Add(expected);
+            actual = playerManager.Add(expected);// Add() returns the added element if succesful
 
             // Assert
             Assert.Equal(expected, actual);
@@ -155,11 +151,11 @@ namespace Tests.Model_UTs
             Player player = new("Dylan");
             playerManager.Add(player);
             Player notPlayer = null;
-            HashSet<Player> expected = new() { player };
+            IEnumerable<Player> expected = new Collection<Player> { player };
 
             // Act
             playerManager.Remove(notPlayer);
-            HashSet<Player> actual = (HashSet<Player>)playerManager.GetAll();
+            IEnumerable<Player> actual = playerManager.GetAll();
 
             // Assert
             Assert.Equal(actual, expected);
@@ -173,11 +169,11 @@ namespace Tests.Model_UTs
             Player player = new("Dylan");
             playerManager.Add(player);
             Player notPlayer = new("Eric");
-            HashSet<Player> expected = new() { player };
+            IEnumerable<Player> expected = new Collection<Player> { player };
 
             // Act
             playerManager.Remove(notPlayer);
-            HashSet<Player> actual = (HashSet<Player>)playerManager.GetAll();
+            IEnumerable<Player> actual = playerManager.GetAll();
 
             // Assert
             Assert.Equal(actual, expected);
@@ -198,6 +194,7 @@ namespace Tests.Model_UTs
             // Assert
             Assert.DoesNotContain(oldPlayer, playerManager.GetAll());
             Assert.Contains(newPlayer, playerManager.GetAll());
+            Assert.True(playerManager.GetAll().Count() == 1);
         }
 
         [Theory]
