@@ -41,8 +41,8 @@ namespace Tests.Model_UTs
             // Act
             HashSet<Player> actual = new()
             {
-                playerManager.Add(ref alice),
-                playerManager.Add(ref bob)
+                playerManager.Add(alice),
+                playerManager.Add(bob)
             };
 
             // Assert
@@ -59,7 +59,7 @@ namespace Tests.Model_UTs
 
             // Act
             expected = null;
-            actual = playerManager.Add(ref expected);
+            actual = playerManager.Add(expected);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -89,7 +89,7 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player player = new("Bob");
-            playerManager.Add(ref player);
+            playerManager.Add(player);
 
             // Act
             Player result = playerManager.GetOneByName(name);
@@ -104,7 +104,7 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player player = new("Bob");
-            playerManager.Add(ref player);
+            playerManager.Add(player);
 
             // Act
             Player result = playerManager.GetOneByName("Clyde");
@@ -123,7 +123,7 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player expected = new("Bob");
-            playerManager.Add(ref expected);
+            playerManager.Add(expected);
 
             // Act
             Player actual = playerManager.GetOneByName(name);
@@ -138,10 +138,10 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player p1 = new("Dylan");
-            playerManager.Add(ref p1);
+            playerManager.Add(p1);
 
             // Act
-            playerManager.Remove(ref p1);
+            playerManager.Remove(p1);
 
             // Assert
             Assert.DoesNotContain(p1, playerManager.GetAll());
@@ -153,12 +153,12 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player player = new("Dylan");
-            playerManager.Add(ref player);
+            playerManager.Add(player);
             Player notPlayer = null;
             HashSet<Player> expected = new() { player };
 
             // Act
-            playerManager.Remove(ref notPlayer);
+            playerManager.Remove(notPlayer);
             HashSet<Player> actual = (HashSet<Player>)playerManager.GetAll();
 
             // Assert
@@ -171,12 +171,12 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player player = new("Dylan");
-            playerManager.Add(ref player);
+            playerManager.Add(player);
             Player notPlayer = new("Eric");
             HashSet<Player> expected = new() { player };
 
             // Act
-            playerManager.Remove(ref notPlayer);
+            playerManager.Remove(notPlayer);
             HashSet<Player> actual = (HashSet<Player>)playerManager.GetAll();
 
             // Assert
@@ -189,11 +189,11 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player oldPlayer = new("Dylan");
-            playerManager.Add(ref oldPlayer);
+            playerManager.Add(oldPlayer);
             Player newPlayer = new("Eric");
 
             // Act
-            playerManager.Update(ref oldPlayer, ref newPlayer);
+            playerManager.Update(oldPlayer, newPlayer);
 
             // Assert
             Assert.DoesNotContain(oldPlayer, playerManager.GetAll());
@@ -207,11 +207,11 @@ namespace Tests.Model_UTs
             string name = "Filibert";
             PlayerManager playerManager = new();
             Player oldPlayer = new(name);
-            playerManager.Add(ref oldPlayer);
+            playerManager.Add(oldPlayer);
             Player newPlayer = new(name);
 
             // Act
-            playerManager.Update(ref oldPlayer, ref newPlayer);
+            playerManager.Update(oldPlayer, newPlayer);
 
             // Assert
             Assert.Contains(oldPlayer, playerManager.GetAll());
