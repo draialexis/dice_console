@@ -1,29 +1,25 @@
 ﻿using Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Tests.Model_UTs
 {
     public class PlayerManagerTest
     {
         [Fact]
-        public void TestConstructorReturnsEmptyHashSet()
+        public void TestConstructorReturnsEmptyEnumerable()
         {
             // Arrange
-            PlayerManager playerManager;
-            HashSet<Player> expected;
-            HashSet<Player> actual;
+            PlayerManager playerManager = new();
+            IEnumerable<Player> expected;
+            IEnumerable<Player> actual;
 
             // Act
-            playerManager = new();
-            expected = new();
-            actual = (HashSet<Player>)playerManager.GetAll();
+            expected = new Collection<Player>();
+            actual = playerManager.GetAll();
 
             // Assert
             Assert.Equal(expected, actual);
@@ -36,13 +32,13 @@ namespace Tests.Model_UTs
             PlayerManager playerManager = new();
             Player alice = new("Alice");
             Player bob = new("Bob");
-            HashSet<Player> expected = new() { alice, bob };
 
             // Act
-            HashSet<Player> actual = new()
+            Collection<Player> expected = new() { alice, bob };
+            Collection<Player> actual = new()
             {
-                playerManager.Add(ref alice),
-                playerManager.Add(ref bob)
+                playerManager.Add(alice),
+                playerManager.Add(bob)
             };
 
             // Assert
@@ -59,7 +55,7 @@ namespace Tests.Model_UTs
 
             // Act
             expected = null;
-            actual = playerManager.Add(ref expected);
+            actual = playerManager.Add(expected);// Add() returns the added element if succesful
 
             // Assert
             Assert.Equal(expected, actual);
@@ -89,7 +85,7 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player player = new("Bob");
-            playerManager.Add(ref player);
+            playerManager.Add(player);
 
             // Act
             Player result = playerManager.GetOneByName(name);
@@ -104,7 +100,7 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player player = new("Bob");
-            playerManager.Add(ref player);
+            playerManager.Add(player);
 
             // Act
             Player result = playerManager.GetOneByName("Clyde");
@@ -123,7 +119,7 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player expected = new("Bob");
-            playerManager.Add(ref expected);
+            playerManager.Add(expected);
 
             // Act
             Player actual = playerManager.GetOneByName(name);
@@ -138,10 +134,10 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player p1 = new("Dylan");
-            playerManager.Add(ref p1);
+            playerManager.Add(p1);
 
             // Act
-            playerManager.Remove(ref p1);
+            playerManager.Remove(p1);
 
             // Assert
             Assert.DoesNotContain(p1, playerManager.GetAll());
@@ -153,13 +149,13 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player player = new("Dylan");
-            playerManager.Add(ref player);
+            playerManager.Add(player);
             Player notPlayer = null;
-            HashSet<Player> expected = new() { player };
+            IEnumerable<Player> expected = new Collection<Player> { player };
 
             // Act
-            playerManager.Remove(ref notPlayer);
-            HashSet<Player> actual = (HashSet<Player>)playerManager.GetAll();
+            playerManager.Remove(notPlayer);
+            IEnumerable<Player> actual = playerManager.GetAll();
 
             // Assert
             Assert.Equal(actual, expected);
@@ -171,13 +167,13 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player player = new("Dylan");
-            playerManager.Add(ref player);
+            playerManager.Add(player);
             Player notPlayer = new("Eric");
-            HashSet<Player> expected = new() { player };
+            IEnumerable<Player> expected = new Collection<Player> { player };
 
             // Act
-            playerManager.Remove(ref notPlayer);
-            HashSet<Player> actual = (HashSet<Player>)playerManager.GetAll();
+            playerManager.Remove(notPlayer);
+            IEnumerable<Player> actual = playerManager.GetAll();
 
             // Assert
             Assert.Equal(actual, expected);
@@ -189,33 +185,39 @@ namespace Tests.Model_UTs
             // Arrange
             PlayerManager playerManager = new();
             Player oldPlayer = new("Dylan");
-            playerManager.Add(ref oldPlayer);
+            playerManager.Add(oldPlayer);
             Player newPlayer = new("Eric");
 
             // Act
-            playerManager.Update(ref oldPlayer, ref newPlayer);
+            playerManager.Update(oldPlayer, newPlayer);
 
             // Assert
             Assert.DoesNotContain(oldPlayer, playerManager.GetAll());
             Assert.Contains(newPlayer, playerManager.GetAll());
+            Assert.True(playerManager.GetAll().Count() == 1);
         }
 
-        [Fact]
-        public void TestUpdateDoesNothingIfSame()
+        [Theory]
+        [InlineData("Filibert", "filibert")]
+        [InlineData("Filibert", " fiLibert")]
+        [InlineData("Filibert", "FIlibert ")]
+        [InlineData(" Filibert", " filiBErt ")]
+        public void TestUpdateDiscreetlyUpdatesCaseAndIgnoresExtraSpaceIfOtherwiseSame(string n1, string n2)
         {
             // Arrange
-            string name = "Filibert";
             PlayerManager playerManager = new();
-            Player oldPlayer = new(name);
-            playerManager.Add(ref oldPlayer);
-            Player newPlayer = new(name);
+            Player oldPlayer = new(n1);
+            playerManager.Add(oldPlayer);
+            Player newPlayer = new(n2);
 
             // Act
-            playerManager.Update(ref oldPlayer, ref newPlayer);
+            playerManager.Update(oldPlayer, newPlayer);
 
             // Assert
             Assert.Contains(oldPlayer, playerManager.GetAll());
             Assert.Contains(newPlayer, playerManager.GetAll());
+            Assert.Equal(n2.Trim(), playerManager.GetAll().First().Name);
+            // uses Equals(), which is made to be case-insensitive
         }
     }
 }

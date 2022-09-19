@@ -26,7 +26,7 @@ namespace Model
         /// </summary>
         /// <param name="toAdd">player to be added</param>
         /// <returns>added player, or null if <paramref name="toAdd"/> was null</returns>
-        public Player Add(ref Player toAdd)
+        public Player Add(Player toAdd)
         {
             if (toAdd != null)
             {
@@ -76,19 +76,24 @@ namespace Model
         /// <param name="before">player to be updated</param>
         /// <param name="after">player in the state that it needs to be in after the update</param>
         /// <returns>updated player</returns>
-        public Player Update(ref Player before, ref Player after)
+        public Player Update(Player before, Player after)
         {
-            Remove(ref before);
-            return Add(ref after);
+            Remove(before);
+            return Add(after);
         }
 
         /// <summary>
         /// remove a player
         /// </summary>
         /// <param name="toRemove">player to be removed</param>
-        public void Remove(ref Player toRemove)
+        public void Remove(Player toRemove)
         {
-            players.Remove(toRemove);
+            // delegating, making sure we find it even if different case etc.
+            if (toRemove != null)
+            {
+                Player realToRemove = GetOneByName(toRemove.Name); 
+                players.Remove(realToRemove);
+            }
         }
     }
 }

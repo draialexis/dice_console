@@ -11,12 +11,14 @@ namespace Tests.Model_UTs
         {
             // Arrange
             Player player;
+            string expected = "Alice";
 
             // Act
-            player = new("Alice");
+            player = new(expected);
+            string actual = player.Name;
 
             // Assert
-            Assert.Equal("Alice", player.Name);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
@@ -24,12 +26,14 @@ namespace Tests.Model_UTs
         {
             // Arrange
             Player player;
+            string expected = "Alice";
 
             // Act
-            player = new("Alice ");
+            player = new(" Alice ");
+            string actual = player.Name;
 
             // Assert
-            Assert.Equal("Alice", player.Name);
+            Assert.Equal(expected, actual);
         }
 
         [Theory]
@@ -159,10 +163,11 @@ namespace Tests.Model_UTs
             // Arrange
             Player p1;
             Player p2;
+            string name = "Elyse";
 
             // Act
-            p1 = new("Elyse");
-            p2 = new("Elyse");
+            p1 = new(name);
+            p2 = new(name);
 
             // Assert
             Assert.True(p1.Equals(p2));
@@ -211,10 +216,11 @@ namespace Tests.Model_UTs
             // Arrange
             Player p1;
             Player p2;
+            string name = "Elyse";
 
             // Act
-            p1 = new("Elyse");
-            p2 = new("Elyse");
+            p1 = new(name);
+            p2 = new(name);
 
             // Assert
             Assert.True(p1.GetHashCode().Equals(p2.GetHashCode()));
