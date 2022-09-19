@@ -208,7 +208,6 @@ namespace Tests.Model_UTs
         public void TestUpdateDiscreetlyUpdatesCaseAndIgnoresExtraSpaceIfOtherwiseSame(string n1, string n2)
         {
             // Arrange
-            string name = "Filibert";
             PlayerManager playerManager = new();
             Player oldPlayer = new(n1);
             playerManager.Add(oldPlayer);
