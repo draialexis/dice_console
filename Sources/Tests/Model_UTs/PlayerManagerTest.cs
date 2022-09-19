@@ -200,15 +200,19 @@ namespace Tests.Model_UTs
             Assert.Contains(newPlayer, playerManager.GetAll());
         }
 
-        [Fact]
-        public void TestUpdateDoesNothingIfSame()
+        [Theory]
+        [InlineData("Filibert", "filibert")]
+        [InlineData("Filibert", " fiLibert")]
+        [InlineData("Filibert", "FIlibert ")]
+        [InlineData(" Filibert", " filiBErt ")]
+        public void TestUpdateDiscreetlyUpdatesCaseAndIgnoresExtraSpaceIfOtherwiseSame(string n1, string n2)
         {
             // Arrange
             string name = "Filibert";
             PlayerManager playerManager = new();
-            Player oldPlayer = new(name);
+            Player oldPlayer = new(n1);
             playerManager.Add(oldPlayer);
-            Player newPlayer = new(name);
+            Player newPlayer = new(n2);
 
             // Act
             playerManager.Update(oldPlayer, newPlayer);
@@ -216,6 +220,8 @@ namespace Tests.Model_UTs
             // Assert
             Assert.Contains(oldPlayer, playerManager.GetAll());
             Assert.Contains(newPlayer, playerManager.GetAll());
+            Assert.Equal(n2.Trim(), playerManager.GetAll().First().Name);
+            // uses Equals(), which is made to be case-insensitive
         }
     }
 }
