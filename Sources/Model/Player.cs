@@ -15,7 +15,7 @@ namespace Model
             {
                 if (!String.IsNullOrWhiteSpace(value))
                 {
-                    name = value;
+                    name = value.Trim();
                 }
                 else throw new ArgumentException("player name may never be empty or null");
             }
