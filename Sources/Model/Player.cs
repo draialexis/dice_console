@@ -13,7 +13,7 @@ namespace Model
         /// <summary>
         /// a player's unique username
         /// </summary>
-        public string Name { get; private set; } //TODO make setter private !!!!!!!!!
+        public string Name { get; private set; }
         public Player(string name)
         {
             if (!String.IsNullOrWhiteSpace(name))

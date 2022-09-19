@@ -62,7 +62,6 @@ namespace Tests.Model_UTs
             Assert.DoesNotContain(expected, playerManager.GetAll());
         }
 
-        // TODO update if we do implement it
         [Fact]
         public void TestGetOneByIdThrowsNotImplemented()
         {
