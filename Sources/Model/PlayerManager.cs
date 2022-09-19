@@ -88,7 +88,12 @@ namespace Model
         /// <param name="toRemove">player to be removed</param>
         public void Remove(Player toRemove)
         {
-            players.Remove(toRemove);
+            // delegating, making sure we find it even if different case etc.
+            if (toRemove != null)
+            {
+                Player realToRemove = GetOneByName(toRemove.Name); 
+                players.Remove(realToRemove);
+            }
         }
     }
 }
