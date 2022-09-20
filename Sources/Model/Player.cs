@@ -1,41 +1,34 @@
 ﻿using System;
-using System.Xml.Linq;
 
 namespace Model
 {
+    /// <summary>
+    /// A player for the purpose of a game of dice, consists of a name
+    /// <br/>
+    /// Two players are equal for Equals() and GetHashCode() if they have the same name, once trimmed and case-insensitive
+    /// </summary>
     public sealed class Player : IEquatable<Player>
     {
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-            internal set
-            {
-                if (!String.IsNullOrWhiteSpace(value))
-                {
-                    name = value.Trim();
-                }
-                else throw new ArgumentException("player name may never be empty or null");
-            }
-        }
-
-        private string name;
-
+        /// <summary>
+        /// a player's unique username
+        /// </summary>
+        public string Name { get; private set; }
         public Player(string name)
         {
-            Name = name;
+            if (!String.IsNullOrWhiteSpace(name))
+            {
+                Name = name.Trim();
+            }
+            else throw new ArgumentException("param should not be null or blank", nameof(name));
         }
 
+        /// <summary>
+        /// this is a copy contructor
+        /// </summary>
+        /// <param name="player">a player object to be copied</param>
         public Player(Player player)
-        {
-            if (player != null)
-            {
-                Name = player.name;
-            }
-            else throw new ArgumentException("you may not make a copy of a null player");
-        }
+            : this(player?.Name) // passes the player's name if player exists, else null
+        { }
 
         public override string ToString()
         {
@@ -44,7 +37,7 @@ namespace Model
 
         public bool Equals(Player other)
         {
-            return Name.ToUpper() == other.Name.ToUpper();
+            return Name.ToUpper() == other.Name.ToUpper(); // equality is case insensitive
         }
 
         public override bool Equals(Object obj)
@@ -53,12 +46,12 @@ namespace Model
             {
                 return false;
             }
-            return Equals(obj as Player);
+            return Equals(obj as Player); // casting, to send it to the above Equals() method
         }
 
         public override int GetHashCode()
         {
-            return Name.ToUpper().GetHashCode();
+            return Name.ToUpper().GetHashCode(); // hash is case insensitive
         }
     }
 }

@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model
 {
@@ -13,7 +9,7 @@ namespace Model
         /// <summary>
         /// a hashset of the players that this manager is in charge of
         /// <br/>
-        /// the hash is based on the player's unique property (name)
+        /// each player is unique (set), and the hash is based on the player's values (name)
         /// </summary>
         private readonly HashSet<Player> players;
 
@@ -31,19 +27,20 @@ namespace Model
             if (toAdd != null)
             {
                 players.Add(toAdd);
+                return toAdd;
             }
-            return toAdd;
+            throw new ArgumentNullException(nameof(toAdd), "param should not be null");
         }
 
         /// <summary>
-        /// may never get implemented in the model, go through GetOneByName() in the meantime
+        /// might never get implemented in the model, go through GetOneByName() in the meantime
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         public Player GetOneById(int id)
         {
-            throw new NotImplementedException("may never get implemented\ngo through GetOneByName() in the meantime");
+            throw new NotImplementedException("might never get implemented\ngo through GetOneByName() in the meantime");
         }
 
         /// <summary>
@@ -52,22 +49,23 @@ namespace Model
         /// that copy does not belong to this manager's players, so it should not be modified 
         /// </summary>
         /// <param name="name">a player's unique name</param>
-        /// <returns>player with said name</returns>
+        /// <returns>player with said name, <em>or null</em> if no such player was found</returns>
         public Player GetOneByName(string name)
         {
             if (!String.IsNullOrWhiteSpace(name))
             {
-                Player result = players.FirstOrDefault(p => p.Name.ToUpper().Equals(name.Trim().ToUpper()));
-                if (result == null) return result; // will return null by default if no such player exists
-                return new(result); // THIS IS A COPY (using a copy constructor)
+                Player wanted = new(name);
+                Player result = players.FirstOrDefault(p => p.Equals(wanted));
+                return result is null ? null : new Player(result); // THIS IS A COPY (using a copy constructor)
             }
-            return null; // we also want ot return null if no name was provided
+            throw new ArgumentException("param should not be null or blank", nameof(name));
         }
 
         /// </summary>
         /// get a READ ONLY enumerable of all players belonging to this manager
+        /// so that the only way to modify the collection of players is to use this class's methods
         /// </summary>
-        /// <returns>a readonly list of all this manager's players</returns>
+        /// <returns>a readonly enumerable of all this manager's players</returns>
         public IEnumerable<Player> GetAll() => players.AsEnumerable();
 
         /// <summary>
@@ -78,6 +76,17 @@ namespace Model
         /// <returns>updated player</returns>
         public Player Update(Player before, Player after)
         {
+            Player[] args = { before, after };
+
+            foreach (Player player in args)
+            {
+                if (player is null)
+                {
+                    throw new ArgumentNullException(nameof(after), "param should not be null");
+                    // could also be because of before, but one param had to be chosen as an example
+                    // and putting "player" there was raising a major code smell
+                }
+            }
             Remove(before);
             return Add(after);
         }
@@ -88,12 +97,12 @@ namespace Model
         /// <param name="toRemove">player to be removed</param>
         public void Remove(Player toRemove)
         {
-            // delegating, making sure we find it even if different case etc.
-            if (toRemove != null)
+            if (toRemove is null)
             {
-                Player realToRemove = GetOneByName(toRemove.Name); 
-                players.Remove(realToRemove);
+                throw new ArgumentNullException(nameof(toRemove), "param should not be null");
             }
+            // the built-in HashSet.Remove() method will use our redefined Equals(), using Name only
+            players.Remove(toRemove);
         }
     }
 }
