@@ -7,11 +7,16 @@ namespace Model.Players
     public class PlayerManager : IManager<Player>
     {
         /// <summary>
-        /// a hashset of the players that this manager is in charge of
-        /// <br/>
-        /// each player is unique (set), and the hash is based on the player's values (name)
+        /// a collection of the players that this manager is in charge of
         /// </summary>
-        private readonly HashSet<Player> players;
+        private readonly List<Player> players;
+
+        /// <summary>
+        /// references the position in list of the current player, for a given game.
+        /// <br/>
+        /// ASSUMING that each Game made its own instance of PlayerManager
+        /// </summary>
+        public int NextIndex { get; private set; } = 0;
 
         public PlayerManager()
         {
@@ -24,12 +29,16 @@ namespace Model.Players
         /// <returns>added player, or null if <paramref name="toAdd"/> was null</returns>
         public Player Add(Player toAdd)
         {
-            if (toAdd != null)
+            if (toAdd is null)
             {
-                players.Add(toAdd);
-                return toAdd;
+                throw new ArgumentNullException(nameof(toAdd), "param should not be null");
             }
-            throw new ArgumentNullException(nameof(toAdd), "param should not be null");
+            if (players.Contains(toAdd))
+            {
+                throw new ArgumentException("this username is already taken", nameof(toAdd));
+            }
+            players.Add(toAdd);
+            return toAdd;
         }
 
         /// <summary>
@@ -69,6 +78,71 @@ namespace Model.Players
         public IEnumerable<Player> GetAll() => players.AsEnumerable();
 
         /// <summary>
+        /// finds and returns the player whose turn it is
+        /// <br/>
+        /// SHOULD HAVE NO SIDE EFFECT
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+
+        // TODO finish or start again
+        public Player WhoPlaysNow(bool isFirstTurn)
+        {
+            if (players.Count == 0)
+            {
+                throw new Exception("you are exploring an empty collection\nthis should not have happened");
+            }
+
+            Player result = null;
+
+            if (isFirstTurn)
+            {
+                result = players[0];
+            }
+            else
+            {
+                result = players[NextIndex];
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// this feels very dirty
+        /// </summary>
+        /// <param name="current"></param>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        public void PrepareNextPlayer(Player current)
+        {
+            if (players.Count == 0)
+            {
+                throw new Exception("you are exploring an empty collection\nthis should not have happened");
+            }
+            if (current == null)
+            {
+                throw new ArgumentNullException(nameof(current), "param should not be null");
+            }
+            if (!players.Contains(current))
+            {
+                throw new ArgumentException("param could not be found in this collection\n did you forget to add it?", nameof(current));
+            }
+
+            //if (currentIndex >= players.Count() - 1) 
+            if (players.Last() == current)
+            {
+                // if we've reached the last index, we need to loop back around
+                NextIndex = 0;
+            }
+            else
+            {
+                // else we can just move up one from current
+                NextIndex++;
+            }
+        }
+
+        /// <summary>
         /// update a player from <paramref name="before"/> to <paramref name="after"/>
         /// </summary>
         /// <param name="before">player to be updated</param>
@@ -101,7 +175,7 @@ namespace Model.Players
             {
                 throw new ArgumentNullException(nameof(toRemove), "param should not be null");
             }
-            // the built-in HashSet.Remove() method will use our redefined Equals(), using Name only
+            // the built-in Remove() method will use our redefined Equals(), using Name only
             players.Remove(toRemove);
         }
     }
