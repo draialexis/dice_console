@@ -82,7 +82,9 @@ namespace Model
             {
                 if (player is null)
                 {
-                    throw new ArgumentNullException(nameof(player), "param should not be null");
+                    throw new ArgumentNullException(nameof(after), "param should not be null");
+                    // could also be because of before, but one param had to be chosen as an example
+                    // and putting "player" there was raising a major code smell
                 }
             }
             Remove(before);
