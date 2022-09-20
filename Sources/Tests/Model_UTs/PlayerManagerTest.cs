@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Xml.Linq;
 using Xunit;
 
 namespace Tests.Model_UTs
@@ -46,20 +47,20 @@ namespace Tests.Model_UTs
         }
 
         [Fact]
-        public void TestAddIfNullThenDontAddAndReturnNull()
+        public void TestAddIfNullThrowsException()
         {
             // Arrange
             PlayerManager playerManager = new();
             Player expected;
-            Player actual;
 
             // Act
             expected = null;
-            actual = playerManager.Add(expected);// Add() returns the added element if succesful
+            void action() => playerManager.Add(expected);// Add() returns the added element if succesful
 
             // Assert
-            Assert.Equal(expected, actual);
+            Assert.Null(expected);
             Assert.DoesNotContain(expected, playerManager.GetAll());
+            Assert.Throws<ArgumentNullException>(action);
         }
 
         [Fact]
@@ -79,7 +80,7 @@ namespace Tests.Model_UTs
         [InlineData("")]
         [InlineData(null)]
         [InlineData(" ")]
-        public void TestGetOneByNameIfInvalidThenReturnNull(string name)
+        public void TestGetOneByNameIfInvalidThrowsException(string name)
         {
             // Arrange
             PlayerManager playerManager = new();
@@ -87,10 +88,10 @@ namespace Tests.Model_UTs
             playerManager.Add(player);
 
             // Act
-            Player result = playerManager.GetOneByName(name);
+            void action() => playerManager.GetOneByName(name);
 
             // Assert
-            Assert.Null(result);
+            Assert.Throws<ArgumentException>(action);
         }
 
         [Fact]
@@ -143,21 +144,17 @@ namespace Tests.Model_UTs
         }
 
         [Fact]
-        public void TestRemoveFailsSilentlyIfGivenNull()
+        public void TestRemoveThrowsExceptionIfGivenNull()
         {
             // Arrange
             PlayerManager playerManager = new();
-            Player player = new("Dylan");
-            playerManager.Add(player);
-            Player notPlayer = null;
-            IEnumerable<Player> expected = new Collection<Player> { player };
+            playerManager.Add(new Player("Dylan"));
 
             // Act
-            playerManager.Remove(notPlayer);
-            IEnumerable<Player> actual = playerManager.GetAll();
+            void action() => playerManager.Remove(null);
 
             // Assert
-            Assert.Equal(actual, expected);
+            Assert.Throws<ArgumentNullException>(action);
         }
 
         [Fact]
@@ -215,8 +212,92 @@ namespace Tests.Model_UTs
             // Assert
             Assert.Contains(oldPlayer, playerManager.GetAll());
             Assert.Contains(newPlayer, playerManager.GetAll());
-            Assert.Equal(n2.Trim(), playerManager.GetAll().First().Name);
-            // uses Equals(), which is made to be case-insensitive
+            Assert.Equal(oldPlayer, newPlayer);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData(null)]
+        public void TestUpdateDoesNotGoWithValidBeforeAndInvalidAfter(string badName)
+        {
+            // Arrange
+            PlayerManager playerManager = new();
+            Player oldPlayer = new("Ni!");
+            playerManager.Add(oldPlayer);
+            int size1 = playerManager.GetAll().Count();
+
+            // Act
+            Assert.Contains(oldPlayer, playerManager.GetAll());
+            void action() => playerManager.Update(oldPlayer, new Player(badName));// this is really testing the Player class...
+            int size2 = playerManager.GetAll().Count();
+
+            // Assert
+            Assert.Throws<ArgumentException>(action); // thrown by Player constructor
+            Assert.Contains(oldPlayer, playerManager.GetAll()); // still there
+            Assert.True(size1 == size2);
+        }
+
+        [Fact]
+        public void TestUpdateDoesNotGoWithValidBeforeAndNullAfter()
+        {
+            // Arrange
+            PlayerManager playerManager = new();
+            Player oldPlayer = new("Ni!");
+            playerManager.Add(oldPlayer);
+            int size1 = playerManager.GetAll().Count();
+
+            // Act
+            Assert.Contains(oldPlayer, playerManager.GetAll());
+            void action() => playerManager.Update(oldPlayer, null);
+            int size2 = playerManager.GetAll().Count();
+
+            // Assert
+            Assert.Throws<ArgumentNullException>(action); // thrown by Update()
+            Assert.Contains(oldPlayer, playerManager.GetAll()); // still there
+            Assert.True(size1 == size2);
+        }
+
+        [Fact]
+        public void TestUpdateDoesNotGoWithValidAfterAndNullBefore()
+        {
+            // Arrange
+            PlayerManager playerManager = new();
+            Player newPlayer = new("Kevin");
+            Player oldPlayer = new("Ursula");
+            playerManager.Add(oldPlayer);
+            int size1 = playerManager.GetAll().Count();
+
+            // Act
+            void action() => playerManager.Update(null, newPlayer);
+            int size2 = playerManager.GetAll().Count();
+
+            // Assert
+            Assert.Throws<ArgumentNullException>(action); // thrown by Update()
+            Assert.Contains(oldPlayer, playerManager.GetAll()); // still there
+            Assert.True(size1 == size2);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData(null)]
+        public void TestUpdateDoesNotGoWithValidAfterAndInvalidBefore(string name)
+        {
+            // Arrange
+            PlayerManager playerManager = new();
+            Player oldPlayer = new("Ursula");
+            playerManager.Add(oldPlayer);
+            int size1 = playerManager.GetAll().Count();
+
+            // Act
+            void action() => playerManager.Update(new Player(name), new Player("Vicky"));
+            int size2 = playerManager.GetAll().Count();
+
+            // Assert
+            Assert.Throws<ArgumentException>(action); // thrown by Player constructor
+            Assert.Contains(oldPlayer, playerManager.GetAll()); // still there
+            Assert.True(size1 == size2);
         }
     }
 }
