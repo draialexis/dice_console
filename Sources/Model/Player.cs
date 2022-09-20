@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Xml.Linq;
 
 namespace Model
 {
@@ -20,7 +19,7 @@ namespace Model
             {
                 Name = name.Trim();
             }
-            else throw new ArgumentException("player name may never be empty or null");
+            else throw new ArgumentException("param should not be null or blank", nameof(name));
         }
 
         /// <summary>
