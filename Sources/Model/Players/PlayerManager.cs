@@ -79,8 +79,6 @@ namespace Model.Players
 
         /// <summary>
         /// finds and returns the player whose turn it is
-        /// <br/>
-        /// SHOULD HAVE NO SIDE EFFECT
         /// </summary>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
@@ -93,8 +91,7 @@ namespace Model.Players
                 throw new Exception("you are exploring an empty collection\nthis should not have happened");
             }
 
-            Player result = null;
-
+            Player result;
             if (isFirstTurn)
             {
                 result = players[0];
@@ -103,7 +100,6 @@ namespace Model.Players
             {
                 result = players[NextIndex];
             }
-
             return result;
         }
 

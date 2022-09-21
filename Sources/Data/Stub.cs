@@ -15,12 +15,7 @@ namespace Data
         public GameRunner LoadApp()
         {
             // this doesn't do much for now, because the classes aren't coded
-            List<Game> games = new()
-            {
-                new Game("a"),
-                new Game("b"),
-                new Game("c")
-            };
+            List<Game> games = new();
 
             PlayerManager gpm = new();
             gpm.Add(new Player("Alice"));
