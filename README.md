@@ -25,6 +25,11 @@ Give your new branch a name referring to an issue (or maybe a group of similar i
 ```
 git checkout -b new-feature
 ```
+
+Regularly, you might want to get all the new code from your main branch, to work with an up-to-date codebase:
+```
+git pull --rebase origin main
+```
 ### 3 - Code
 :fire::technologist::bug::fire:............:white_check_mark:
 ### 4 - Save your changes to your new branch
