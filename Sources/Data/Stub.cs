@@ -11,8 +11,23 @@ namespace Data
 
         public GameRunner LoadApp()
         {
-            // this doesn't do much for now, because the class isn't coded
-            return new GameRunner();
+            // this doesn't do much for now, because the classes aren't coded
+            List<Game> games = new()
+            {
+                new Game("a"),
+                new Game("b"),
+                new Game("c")
+            };
+
+            PlayerManager gpm = new();
+            gpm.Add(new Player("Alice"));
+            gpm.Add(new Player("Bob"));
+            gpm.Add(new Player("Clyde"));
+
+            FavGroupManager fgm = new(new DieManager());
+            // create some fav groups of die in there, thanks to fgm's methods
+
+            return new GameRunner(gpm, fgm, games);
         }
 
         public static List<Player> LoadPlayers()
@@ -26,21 +41,6 @@ namespace Data
                 new Player("name 5"),
                 new Player("name 6")
             };
-            return list;
-        }
-
-        public static List<Die> LoadDices()
-        {
-            List<Die> list = new()
-            {
-                new Die("Dice 1"),
-                new Die("Dice 1"),
-                new Die("Dice 1"),
-                new Die("Dice 1"),
-                new Die("Dice 1"),
-                new Die("Dice 1")
-            };
-
             return list;
         }
 
