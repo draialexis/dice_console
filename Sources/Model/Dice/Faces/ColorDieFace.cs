@@ -38,7 +38,12 @@ namespace Model.Dice.Faces
         {
             // https://stackoverflow.com/questions/1139957/convert-integer-to-hexadecimal-and-back-again
             // maybe prepend it with a "#"...
-            return Value.ToString("X");
+            return Value.ToString("X6").Insert(0, "#");
+        }
+
+        public override string ToString()
+        {
+            return GetPracticalValue().ToString();
         }
     }
 }
