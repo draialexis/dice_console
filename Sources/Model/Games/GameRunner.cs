@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Model.Dice;
+using Model.Players;
 
-namespace Model
+namespace Model.Games
 {
     public class GameRunner
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Model
+namespace Model.Players
 {
     /// <summary>
     /// A player for the purpose of a game of dice, consists of a name
@@ -15,7 +15,7 @@ namespace Model
         public string Name { get; private set; }
         public Player(string name)
         {
-            if (!String.IsNullOrWhiteSpace(name))
+            if (!string.IsNullOrWhiteSpace(name))
             {
                 Name = name.Trim();
             }
@@ -40,7 +40,7 @@ namespace Model
             return Name.ToUpper() == other.Name.ToUpper(); // equality is case insensitive
         }
 
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
             if (obj is not Player)
             {

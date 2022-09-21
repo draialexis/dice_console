@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Model
+namespace Model.Players
 {
     public class PlayerManager : IManager<Player>
     {
@@ -52,7 +52,7 @@ namespace Model
         /// <returns>player with said name, <em>or null</em> if no such player was found</returns>
         public Player GetOneByName(string name)
         {
-            if (!String.IsNullOrWhiteSpace(name))
+            if (!string.IsNullOrWhiteSpace(name))
             {
                 Player wanted = new(name);
                 Player result = players.FirstOrDefault(p => p.Equals(wanted));

@@ -1,6 +1,7 @@
 ﻿using System;
+using Model.Players;
 
-namespace Model
+namespace Model.Games
 {
     /// <summary>
     /// a Turn consists of a Player, a DateTime, and a IEnumerable of AbstractDieFace
@@ -87,15 +88,15 @@ namespace Model
         /// <returns>a turn in string format</returns>
         public override string ToString()
         {
-            return String.Format("{0} -- {1} rolled {2}",
+            return string.Format("{0} -- {1} rolled {2}",
                 ToStringIsoWithZ(),
-                this.player.ToString(),
+                player.ToString(),
                 "<face>, <face>, <face>...");
         }
 
         private string ToStringIsoWithZ()
         {
-            return this.when.ToString("s", System.Globalization.CultureInfo.InvariantCulture) + "Z";
+            return when.ToString("s", System.Globalization.CultureInfo.InvariantCulture) + "Z";
         }
     }
 }

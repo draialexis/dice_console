@@ -1,4 +1,7 @@
-﻿using Model;
+﻿using Model.Dice;
+using Model.Dice.Faces;
+using Model.Games;
+using Model.Players;
 
 namespace Data
 {

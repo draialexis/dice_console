@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using Model.Games;
+using Model.Players;
 using System;
 using Xunit;
 
