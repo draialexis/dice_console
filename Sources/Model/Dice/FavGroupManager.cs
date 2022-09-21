@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Model.Players;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Model.Dice
 {
     public class FavGroupManager
     {
-        private IEnumerable<FavGroup> favGroups;
+        private readonly List<FavGroup> favGroups = new();
 
         private readonly DieManager dieManager;
 
@@ -12,5 +14,8 @@ namespace Model.Dice
         {
             this.dieManager = dieManager;
         }
+
+        public IEnumerable<FavGroup> GetAll() => favGroups.AsEnumerable();
+
     }
 }
