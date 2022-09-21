@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public class NumberDieFace : IDieFace
+    public class NumberDieFace : AbstractDieFace
     {
-        public int Num { get; set; }
-
-        public NumberDieFace(int v)
+        protected override int Value { get; }
+        public NumberDieFace(int value)
         {
-            this.Num = v;
+            Value = value;
         }
 
-        
-
-        
+        public override object GetPracticalValue()
+        {
+            return Value;
+        }
     }
 }
