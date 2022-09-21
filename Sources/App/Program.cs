@@ -1,5 +1,5 @@
-﻿using Model;
-using System.Diagnostics;
+﻿using Data;
+using Model;
 
 namespace App
 {
@@ -7,7 +7,9 @@ namespace App
     {
         static void Main(string[] args)
         {
-            Debug.WriteLine("HelloWorld");
+            ILoader loader = new Stub();
+            GameRunner gameRunner = loader.LoadApp();
+            // use gameRunner to play
         }
     }
 }
