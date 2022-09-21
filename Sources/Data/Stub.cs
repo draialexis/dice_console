@@ -79,7 +79,7 @@ namespace Stub
 
         public static List<ImageDieFace> LoadImgFaces()
         {
-            string urlBase = "http://baseUrl/img/";
+            string urlBase = "baseUrl/img/";
             List<ImageDieFace> list = new()
             {
                 new ImageDieFace( urlBase + 1),
