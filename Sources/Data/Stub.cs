@@ -1,10 +1,22 @@
-﻿using Model;
+﻿using Data;
+using Model;
 
 namespace Stub
 {
-    public class Stub
+    public class Stub : ILoader
     {
-        public List<Player> LoadPlayers()
+
+        // when the other classes are ready
+        // the Stub should just make and return a GameRunner, and the GameRunner should have
+        // a PlayerManager, a collection of Games, a FavGroupManager, etc. (see diagram)
+
+        public GameRunner LoadApp()
+        {
+            // this doesn't do much for now, because the class isn't coded
+            return new GameRunner();
+        }
+
+        public static List<Player> LoadPlayers()
         {
             List<Player> list = new()
             {
@@ -18,7 +30,7 @@ namespace Stub
             return list;
         }
 
-        public List<Die> LoadDices()
+        public static List<Die> LoadDices()
         {
             List<Die> list = new()
             {
@@ -33,7 +45,7 @@ namespace Stub
             return list;
         }
 
-        public List<NumberDieFace> LoadNumFaces()
+        public static List<NumberDieFace> LoadNumFaces()
         {
             List<NumberDieFace> list = new()
             {
@@ -49,7 +61,7 @@ namespace Stub
             return list;
         }
 
-        public List<ColorDieFace> LoadClrFaces()
+        public static List<ColorDieFace> LoadClrFaces()
         {
             List<ColorDieFace> list = new()
             {
@@ -65,7 +77,7 @@ namespace Stub
             return list;
         }
 
-        public List<ImageDieFace> LoadImgFaces()
+        public static List<ImageDieFace> LoadImgFaces()
         {
             List<ImageDieFace> list = new()
             {
