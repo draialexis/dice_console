@@ -82,13 +82,11 @@ namespace Model.Players
         /// </summary>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-
-        // TODO finish or start again
         public Player WhoPlaysNow(bool isFirstTurn)
         {
             if (players.Count == 0)
             {
-                throw new Exception("you are exploring an empty collection\nthis should not have happened");
+                throw new MemberAccessException("you are exploring an empty collection\nthis should not have happened");
             }
 
             Player result;
@@ -114,7 +112,7 @@ namespace Model.Players
         {
             if (players.Count == 0)
             {
-                throw new Exception("you are exploring an empty collection\nthis should not have happened");
+                throw new MemberAccessException("you are exploring an empty collection\nthis should not have happened");
             }
             if (current == null)
             {
@@ -125,7 +123,6 @@ namespace Model.Players
                 throw new ArgumentException("param could not be found in this collection\n did you forget to add it?", nameof(current));
             }
 
-            //if (currentIndex >= players.Count() - 1) 
             if (players.Last() == current)
             {
                 // if we've reached the last index, we need to loop back around
