@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Model.Players;
+using System.Collections.Generic;
 
 namespace Model.Dice
 {
     public class FavGroup
     {
-        private IEnumerable<Die> dice;
+        public IEnumerable<Die> Dice { get; private set; }
+
         public string Name { get; private set; }
+
     }
 }
