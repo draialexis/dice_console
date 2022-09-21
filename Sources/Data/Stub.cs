@@ -1,7 +1,6 @@
-﻿using Data;
-using Model;
+﻿using Model;
 
-namespace Stub
+namespace Data
 {
     public class Stub : ILoader
     {
