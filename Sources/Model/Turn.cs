@@ -22,21 +22,22 @@ namespace Model
         /// </summary>
         public readonly Player player;
 
-        /*
-        public IEnumerable<AbstractDieFace> Faces { get; private set; }
-        */
+        // ... faces
+
 
         /// <summary>
         /// this private constructor is to be used only by factories
         /// </summary>
         /// <param name="when">date and time of the turn</param>
         /// <param name="player">player who played the turn</param>
-        // TODO add faces
+
+        // ... faces
         private Turn(DateTime when, Player player/*, IEnumerable<AbstractDieFace> faces*/)
         {
             this.when = when;
             this.player = player;
-            /*Faces = faces;*/
+            // ... faces
+
         }
 
         /// <summary>
@@ -48,10 +49,12 @@ namespace Model
         /// <param name="when">date and time of the turn</param>
         /// <param name="player">player who played the turn</param>
         /// <returns>a new Turn object</returns>
-        // TODO add faces
+
+        // ... faces
         public static Turn CreateWithSpecifiedTime(DateTime when, Player player/*, IEnumerable<AbstractDieFace> faces*/)
         {
-            // TODO add validation for faces too
+
+            // ... faces
             if (player == null)
             {
                 throw new ArgumentNullException(nameof(player), "param should not be null");
@@ -69,23 +72,21 @@ namespace Model
         /// </summary>
         /// <param name="player">player who played the turn</param>
         /// <returns>a new Turn object</returns>
-        // TODO add faces
+
+        // ... faces
         public static Turn CreateWithDefaultTime(Player player/*, IEnumerable<AbstractDieFace> faces*/)
         {
             return CreateWithSpecifiedTime(DateTime.UtcNow, player/*, faces*/);
         }
 
-        //TODO add faces
+        // ... faces
+
         /// <summary>
         /// represents a turn in string format
         /// </summary>
         /// <returns>a turn in string format</returns>
         public override string ToString()
         {
-            //string[] datetime = this.when.ToString("s", System.Globalization.CultureInfo.InvariantCulture).Split("T");
-            //string date = datetime[0];
-            //string time = datetime[1];
-
             return String.Format("{0} -- {1} rolled {2}",
                 ToStringIsoWithZ(),
                 this.player.ToString(),
