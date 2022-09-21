@@ -1,4 +1,5 @@
-﻿using Model.Players;
+﻿using Model.Dice;
+using Model.Players;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,34 +20,34 @@ namespace Model.Games
         /// <returns>a readonly enumerable of all this game's turns</returns>
         public IEnumerable<Turn> GetHistory() => turns.AsEnumerable();
 
-        public PlayerManager PlayerManager { get; }
+        private readonly PlayerManager playerManager;
 
-        public Game(string name, IEnumerable<Turn> turns, PlayerManager playerManager)
+        private readonly FavGroup favGroup;
+
+        public Game(string name, IEnumerable<Turn> turns, PlayerManager playerManager, FavGroup favGroup)
         {
             Name = name;
             this.turns = turns.ToList() ?? new List<Turn>();
-            PlayerManager = playerManager ?? new PlayerManager();
+            this.playerManager = playerManager ?? new PlayerManager();
+            this.favGroup = favGroup ?? new FavGroup();
         }
 
         public Game(string name)
-            : this(name, null, null)
+            : this(name, null, null, null)
         { }
 
         public void PerformTurn()
         {
-            Player player = PlayerManager.WhoPlaysNow(IsFirstTurn);
+            Player player = playerManager.WhoPlaysNow(IsFirstTurn);
             if (IsFirstTurn) { IsFirstTurn = false; } // only true one time (on the first turn...)
 
 
-            // in a "faces" var, throw all the dice and stuff...
+            // throw favGroup's dice and record it in a "faces" var
 
             Turn turn = Turn.CreateWithDefaultTime(new Player(player)/*, faces*/); //using a copy so that next line doesn't "change history"
-            PlayerManager.PrepareNextPlayer(player);
+            playerManager.PrepareNextPlayer(player);
             turns.Add(turn);
         }
-
-
-
 
         // TODO test and debug
         public override string ToString()
@@ -56,8 +57,8 @@ namespace Model.Games
                 "{1} are playing. {2} is next.\n" +
                 "Log:\n",
                 Name,
-                PlayerManager.GetAll().ToString(),
-                PlayerManager.WhoPlaysNow(IsFirstTurn));
+                playerManager.GetAll().ToString(),
+                playerManager.WhoPlaysNow(IsFirstTurn));
 
             foreach (Turn turn in this.turns)
             {
