@@ -10,9 +10,9 @@ namespace Model.Games
 {
     public class GameRunner
     {
-        private PlayerManager globalPlayerManager;
-        private FavGroupManager favGroupManager;
-        private IEnumerable<Game> games;
+        private readonly PlayerManager globalPlayerManager;
+        private readonly FavGroupManager favGroupManager;
+        private readonly IEnumerable<Game> games;
 
         public GameRunner(PlayerManager globalPlayerManager, FavGroupManager favGroupManager, IEnumerable<Game> games)
         {

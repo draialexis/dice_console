@@ -10,7 +10,7 @@ namespace Model.Games
     {
         public string Name { get; private set; }
 
-        private IEnumerable<Turn> turns = new List<Turn>();
+        private readonly IEnumerable<Turn> turns = new List<Turn>();
 
         public Game(string name)
         {

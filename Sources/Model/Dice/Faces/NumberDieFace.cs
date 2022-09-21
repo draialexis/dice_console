@@ -18,5 +18,10 @@ namespace Model.Dice.Faces
         {
             return Value;
         }
+
+        public override string ToString()
+        {
+            return GetPracticalValue().ToString();
+        }
     }
 }
