@@ -29,13 +29,17 @@ namespace Model.Games
         /// </summary>
         public readonly Player player;
 
-        private IEnumerable<AbstractDieFace> faces;
+        /// <summary>
+        /// the collection of Face that were rolled
+        /// </summary>
+        private readonly IEnumerable<AbstractDieFace> faces;
 
         /// <summary>
         /// this private constructor is to be used only by factories
         /// </summary>
         /// <param name="when">date and time of the turn</param>
         /// <param name="player">player who played the turn</param>
+        /// <param name="faces">faces that were rolled</param>
         private Turn(DateTime when, Player player, IEnumerable<AbstractDieFace> faces)
         {
             this.when = when;
@@ -51,6 +55,7 @@ namespace Model.Games
         /// </summary>
         /// <param name="when">date and time of the turn</param>
         /// <param name="player">player who played the turn</param>
+        /// <param name="faces">faces that were rolled</param>
         /// <returns>a new Turn object</returns>
         public static Turn CreateWithSpecifiedTime(DateTime when, Player player, IEnumerable<AbstractDieFace> faces)
         {
@@ -75,6 +80,7 @@ namespace Model.Games
         /// creates a Turn with a default time, which is "now" in UTC. 
         /// </summary>
         /// <param name="player">player who played the turn</param>
+        /// <param name="faces">faces that were rolled</param>
         /// <returns>a new Turn object</returns>
         public static Turn CreateWithDefaultTime(Player player, IEnumerable<AbstractDieFace> faces)
         {

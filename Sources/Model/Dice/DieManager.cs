@@ -4,6 +4,6 @@ namespace Model.Dice
 {
     public class DieManager
     {
-        private IEnumerable<Die> dice = new List<Die>();
+        private readonly IEnumerable<Die> dice = new List<Die>();
     }
 }

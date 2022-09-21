@@ -6,7 +6,7 @@ namespace Model.Dice
     {
         private IEnumerable<FavGroup> favGroups;
 
-        private DieManager dieManager;
+        private readonly DieManager dieManager;
 
         public FavGroupManager(DieManager dieManager)
         {
