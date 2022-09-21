@@ -8,14 +8,28 @@ namespace Model
 {
     public class ImageDieFace : AbstractDieFace
     {
-        private string ImageUrlCode;
+        /// <summary>
+        /// an image URL code, to find the image URL (to find the image)
+        /// </summary>
+        protected override int Value { get; }
 
-        public ImageDieFace(string v)
+        public ImageDieFace(string uri)
         {
-            this.ImageUrlCode = v;
+            /*parse an int after the last occurrence of "/" ? */
+            string resultString = uri[(uri.LastIndexOf('/') + 1)..];
+            /* TODO here we should make sure to remove any ".jpg" etc, if there was one in the uri*/
+            int result = int.Parse(resultString);
+            Value = result;
         }
 
-        public string getImageUrlCode() { return ImageUrlCode; }
-        public void setImageUrlCode(string ImageUrlCode) { this.ImageUrlCode = ImageUrlCode; }
+        public ImageDieFace(int code)
+        {
+            Value = code;
+        }
+
+        public override object GetPracticalValue()
+        {
+            return String.Format("Assets/images/{0}", Value);
+        }
     }
 }
