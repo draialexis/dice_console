@@ -17,7 +17,7 @@ namespace Model
         {
             /*parse an int after the last occurrence of "/" ? */
             string resultString = uri[(uri.LastIndexOf('/') + 1)..];
-            /* TODO here we should make sure to remove any ".jpg" etc, if there was one in the uri*/
+            /* !! here we should make sure to remove any ".jpg" etc, if there was one in the uri*/
             int result = int.Parse(resultString);
             Value = result;
         }
