@@ -79,15 +79,16 @@ namespace Stub
 
         public static List<ImageDieFace> LoadImgFaces()
         {
+            string urlBase = "http://baseUrl/img/";
             List<ImageDieFace> list = new()
             {
-                new ImageDieFace("http://baseUrl/img/1"),
-                new ImageDieFace("http://baseUrl/img/2"),
-                new ImageDieFace("http://baseUrl/img/3"),
-                new ImageDieFace("http://baseUrl/img/4"),
-                new ImageDieFace("http://baseUrl/img/5"),
-                new ImageDieFace("http://baseUrl/img/6"),
-                new ImageDieFace("http://baseUrl/img/7")
+                new ImageDieFace( urlBase + 1),
+                new ImageDieFace( urlBase + 2),
+                new ImageDieFace( urlBase + 3),
+                new ImageDieFace( urlBase + 4),
+                new ImageDieFace( urlBase + 5),
+                new ImageDieFace( urlBase + 6),
+                new ImageDieFace( urlBase + 7),
             };
 
             return list;
