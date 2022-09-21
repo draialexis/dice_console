@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public class NumberDieFace : IDieFace
+    public class NumberDieFace : AbstractDieFace
     {
         public int Num { get; set; }
 

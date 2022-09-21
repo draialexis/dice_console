@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public abstract class IDieFace
+    public abstract class AbstractDieFace
     {
         public string ID { get; set; }
     }

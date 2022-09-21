@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public class ColorDieFace : IDieFace
+    public class ColorDieFace : AbstractDieFace
     {
         private string ColorHex;
 

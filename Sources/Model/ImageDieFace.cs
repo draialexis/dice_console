@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public class ImageDieFace : IDieFace
+    public class ImageDieFace : AbstractDieFace
     {
         private string ImageUrlCode;
 
