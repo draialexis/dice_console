@@ -14,18 +14,49 @@ namespace Data
 
         public GameRunner LoadApp()
         {
-            // this doesn't do much for now, because the classes aren't coded
-            List<Game> games = new();
+            string g1 = "game1", g2 = "game2", g3 = "game3";
 
-            PlayerManager gpm = new();
-            gpm.Add(new Player("Alice"));
-            gpm.Add(new Player("Bob"));
-            gpm.Add(new Player("Clyde"));
+            Player player1 = new("Alice"), player2 = new("Bob"), player3 = new("Clyde");
 
-            FavGroupManager fgm = new(new DieManager());
-            // create some fav groups of die in there, thanks to fgm's methods
+            FavGroupManager favGroupManager = new(new DieManager());
 
-            return new GameRunner(gpm, fgm, games);
+            // create at least one fav group in there
+            // ... 
+
+            Game game1 = new(name: g1, playerManager: new PlayerManager(), favGroup: favGroupManager.GetAll().First());
+            Game game2 = new(name: g2, playerManager: new PlayerManager(), favGroup: favGroupManager.GetAll().Last());
+            Game game3 = new(name: g3, playerManager: new PlayerManager(), favGroup: favGroupManager.GetAll().First());
+
+            List<Game> games = new() { game1, game2, game3 };
+
+            PlayerManager globalPlayerManager = new();
+            globalPlayerManager.Add(player1);
+            globalPlayerManager.Add(player2);
+            globalPlayerManager.Add(player3);
+
+            GameRunner gameRunner = new(globalPlayerManager, favGroupManager, games);
+
+            game1.AddPlayerToGame(player1);
+            game1.AddPlayerToGame(player2);
+
+            game2.AddPlayerToGame(player1);
+            game2.AddPlayerToGame(player2);
+            game2.AddPlayerToGame(player3);
+
+            game3.AddPlayerToGame(player1);
+            game3.AddPlayerToGame(player3);
+
+            foreach (Game game in games)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    Player currentPlayer = game.GetWhoPlaysNow();
+                    game.PerformTurn(currentPlayer);
+                    game.PrepareNextPlayer(currentPlayer);
+                }
+            }
+
+            return gameRunner;
         }
 
         public static List<Player> LoadPlayers()
