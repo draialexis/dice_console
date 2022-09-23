@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model
+namespace Model.Dice.Faces
 {
     public class ColorDieFace : AbstractDieFace
     {
@@ -38,7 +38,12 @@ namespace Model
         {
             // https://stackoverflow.com/questions/1139957/convert-integer-to-hexadecimal-and-back-again
             // maybe prepend it with a "#"...
-            return Value.ToString("X");
+            return Value.ToString("X6").Insert(0, "#");
+        }
+
+        public override string ToString()
+        {
+            return GetPracticalValue().ToString();
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model
+namespace Model.Dice.Faces
 {
     public class ImageDieFace : AbstractDieFace
     {
@@ -29,7 +29,12 @@ namespace Model
 
         public override object GetPracticalValue()
         {
-            return String.Format("Assets/images/{0}", Value);
+            return string.Format("Assets/images/{0}", Value);
+        }
+
+        public override string ToString()
+        {
+            return GetPracticalValue().ToString();
         }
     }
 }

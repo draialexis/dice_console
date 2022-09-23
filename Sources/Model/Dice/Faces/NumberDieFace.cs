@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model
+namespace Model.Dice.Faces
 {
     public class NumberDieFace : AbstractDieFace
     {
@@ -17,6 +17,11 @@ namespace Model
         public override object GetPracticalValue()
         {
             return Value;
+        }
+
+        public override string ToString()
+        {
+            return GetPracticalValue().ToString();
         }
     }
 }
