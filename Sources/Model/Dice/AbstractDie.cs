@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 
-namespace Model
+namespace Model.Dice
 {
     public abstract class AbstractDie<T> where T : AbstractDieFace
     {
         protected string Name;
-        public  IEnumerable<T> ListFaces  => listFaces; 
+        public IEnumerable<T> ListFaces => listFaces;
 
-        private readonly List<T> listFaces =new();
+        private readonly List<T> listFaces = new();
 
         public AbstractDie(string name, params T[] faces)
         {
-            this.Name = name;
-            listFaces.AddRange(faces) ;
+            Name = name;
+            listFaces.AddRange(faces);
         }
 
 

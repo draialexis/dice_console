@@ -73,24 +73,6 @@ namespace Data
             return list;
         }
 
-<<<<<<< HEAD
-        public static List<AbstractDie> LoadDices()
-        {
-            List<AbstractDie> list = new()
-            {
-                new AbstractDie("Dice 1"),
-                new AbstractDie("Dice 1"),
-                new AbstractDie("Dice 1"),
-                new AbstractDie("Dice 1"),
-                new AbstractDie("Dice 1"),
-                new AbstractDie("Dice 1")
-            };
-
-            return list;
-        }
-
-=======
->>>>>>> main
         public static List<NumberDieFace> LoadNumFaces()
         {
             List<NumberDieFace> list = new()
