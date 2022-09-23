@@ -29,16 +29,16 @@ namespace Data
             return list;
         }
 
-        public static List<Die> LoadDices()
+        public static List<AbstractDie> LoadDices()
         {
-            List<Die> list = new()
+            List<AbstractDie> list = new()
             {
-                new Die("Dice 1"),
-                new Die("Dice 1"),
-                new Die("Dice 1"),
-                new Die("Dice 1"),
-                new Die("Dice 1"),
-                new Die("Dice 1")
+                new AbstractDie("Dice 1"),
+                new AbstractDie("Dice 1"),
+                new AbstractDie("Dice 1"),
+                new AbstractDie("Dice 1"),
+                new AbstractDie("Dice 1"),
+                new AbstractDie("Dice 1")
             };
 
             return list;

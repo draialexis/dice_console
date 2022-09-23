@@ -8,7 +8,7 @@ namespace Tests.Model_UTs
         [Fact]
         public void TestConstructor()
         {
-            Die die = new Die("Ben");
+            AbstractDie die = new AbstractDie("Ben");
             Assert.Equal("Ben", die.Name);
         }
     }
