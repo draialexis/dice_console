@@ -17,7 +17,7 @@ namespace Model.Dice
             throw new System.NotImplementedException();
         }
 
-        public (string, IEnumerable<AbstractDie<AbstractDieFace>>) GetOneById(int id)
+        public (string, IEnumerable<AbstractDie<AbstractDieFace>>) GetOneByName(string name)
         {
             throw new System.NotImplementedException();
         }

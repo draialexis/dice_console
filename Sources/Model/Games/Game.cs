@@ -33,9 +33,9 @@ namespace Model.Games
         private string name;
 
         /// <summary>
-        /// whether this game is new or not
+        /// references the position in list of the current player, for a given game.
         /// </summary>
-        public bool IsFirstTurn { get; private set; } = false;
+        private int nextIndex = 0;
 
         /// <summary>
         /// the turns that have been done so far
@@ -51,7 +51,7 @@ namespace Model.Games
         /// <summary>
         /// the game's player manager, doing CRUD on players and switching whose turn it is
         /// </summary>
-        private readonly PlayerManager playerManager;
+        private readonly IManager<Player> playerManager;
 
         /// <summary>
         /// the group of dice used for this game
@@ -66,7 +66,7 @@ namespace Model.Games
         /// <param name="turns">the turns that have been done so far</param>
         /// <param name="playerManager">the game's player manager, doing CRUD on players and switching whose turn it is</param>
         /// <param name="favGroup">the group of dice used for this game</param>
-        public Game(string name, PlayerManager playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice, IEnumerable<Turn> turns)
+        public Game(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice, IEnumerable<Turn> turns)
         {
             Name = name;
             this.turns = turns.ToList() ?? new List<Turn>();
@@ -80,7 +80,7 @@ namespace Model.Games
         /// <param name="name">the name of the game 😎</param>
         /// <param name="playerManager">the game's player manager, doing CRUD on players and switching whose turn it is</param>
         /// <param name="favGroup">the group of dice used for this game</param>
-        public Game(string name, PlayerManager playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
+        public Game(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
             : this(name, playerManager, dice, null)
         { }
 
@@ -90,21 +90,61 @@ namespace Model.Games
         /// <param name="player">the player whose turn it is</param>
         public void PerformTurn(Player player)
         {
-            if (IsFirstTurn) { IsFirstTurn = false; } // only true one time (on the first turn...)
             Turn turn = Turn.CreateWithDefaultTime(
                 new Player(player),
-                ThrowAll() //using a copy so that next line doesn't "change history"
+                ThrowAll() //using a copy so that next lines can't "change history"
                 );
             turns.Add(turn);
+            nextIndex++;
         }
 
         /// <summary>
-        /// finds whose turn it is
+        /// finds and returns the player whose turn it is
         /// </summary>
-        /// <returns>the Player whose turn it is</returns>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public Player GetWhoPlaysNow()
         {
-            return playerManager.WhoPlaysNow(IsFirstTurn);
+            if (!playerManager.GetAll().Any())
+            {
+                throw new MemberAccessException("you are exploring an empty collection\nthis should not have happened");
+            }
+
+            return playerManager.GetAll().ElementAt(nextIndex);
+        }
+
+        /// <summary>
+        /// this feels very dirty
+        /// </summary>
+        /// <param name="current">the current player</param>
+        /// <exception cref="MemberAccessException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        public void PrepareNextPlayer(Player current)
+        {
+            if (!playerManager.GetAll().Any())
+            {
+                throw new MemberAccessException("you are exploring an empty collection\nthis should not have happened");
+            }
+            if (current == null)
+            {
+                throw new ArgumentNullException(nameof(current), "param should not be null");
+            }
+            if (!playerManager.GetAll().Contains(current))
+            {
+                throw new ArgumentException("param could not be found in this collection\n did you forget to add it?", nameof(current));
+            }
+
+            if (playerManager.GetAll().Last() == current)
+            {
+                // if we've reached the last player, we need the index to loop back around
+                nextIndex = 0;
+            }
+            else
+            {
+                // else we can just move up by one from the current index
+                nextIndex++;
+            }
         }
 
         /// <summary>
@@ -119,15 +159,6 @@ namespace Model.Games
                 faces.Add(die.GetRandomFace());
             }
             return faces;
-        }
-
-        /// <summary>
-        /// asks the PlayerManager to prepare the next Player
-        /// </summary>
-        /// <param name="currentPlayer">the Player whose turn it was</param>
-        public void PrepareNextPlayer(Player currentPlayer)
-        {
-            playerManager.PrepareNextPlayer(currentPlayer);
         }
 
         public Player AddPlayerToGame(Player player)
@@ -162,7 +193,7 @@ namespace Model.Games
                 "Log:\n",
                 Name,
                 playerManager.GetAll().ToString(),
-                playerManager.WhoPlaysNow(IsFirstTurn));
+                GetWhoPlaysNow());
 
             foreach (Turn turn in this.turns)
             {

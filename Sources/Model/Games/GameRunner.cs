@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Model.Dice;
+using Model.Dice.Faces;
 using Model.Players;
 
 namespace Model.Games
 {
     public class GameRunner
     {
-        private readonly PlayerManager globalPlayerManager;
-        private readonly DieManager globalDieManager;
+        private readonly IManager<Player> globalPlayerManager;
+        private readonly IManager<(string, IEnumerable<AbstractDie<AbstractDieFace>>)> globalDieManager;
         private readonly List<Game> games;
 
-        public GameRunner(PlayerManager globalPlayerManager, DieManager globalDieManager, List<Game> games)
+        public GameRunner(IManager<Player> globalPlayerManager, IManager<(string, IEnumerable<AbstractDie<AbstractDieFace>>)> globalDieManager, List<Game> games)
         {
             this.globalPlayerManager = globalPlayerManager;
             this.globalDieManager = globalDieManager;

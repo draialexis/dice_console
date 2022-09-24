@@ -1,4 +1,5 @@
-﻿using Model.Dice;
+﻿using Model;
+using Model.Dice;
 using Model.Dice.Faces;
 using Model.Games;
 using Model.Players;
@@ -19,7 +20,7 @@ namespace Data
 
             Player player1 = new("Alice"), player2 = new("Bob"), player3 = new("Clyde");
 
-            DieManager globalDieManager = new DieManager();
+            IManager<(string, IEnumerable<AbstractDie<AbstractDieFace>>)> globalDieManager = new DieManager();
 
             // create at least one fav group in there
             // ... 
