@@ -1,35 +1,41 @@
 ﻿using Model.Dice.Faces;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Model.Dice
 {
-    public class DieManager : IManager<(string, IEnumerable<AbstractDie<AbstractDieFace>>)>
+    public class DieManager : IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>>
     {
-        private readonly List<(string name, IEnumerable<AbstractDie<AbstractDieFace>> dice)> diceGroups = new();
+        private readonly Dictionary<string, IEnumerable<AbstractDie<AbstractDieFace>>> diceGroups = new();
 
-        public (string, IEnumerable<AbstractDie<AbstractDieFace>>) Add((string, IEnumerable<AbstractDie<AbstractDieFace>>) toAdd)
+        public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> Add(KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> toAdd)
         {
-            throw new System.NotImplementedException();
+            diceGroups.Add(toAdd.Key, toAdd.Value);
+            return toAdd;
         }
 
-        public IEnumerable<(string, IEnumerable<AbstractDie<AbstractDieFace>>)> GetAll()
+        public IEnumerable<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> GetAll()
         {
-            throw new System.NotImplementedException();
+            return diceGroups.AsEnumerable();
         }
 
-        public (string, IEnumerable<AbstractDie<AbstractDieFace>>) GetOneByName(string name)
+        public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> GetOneByName(string name)
         {
-            throw new System.NotImplementedException();
+            return new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(name, diceGroups[name]);
         }
 
-        public void Remove((string, IEnumerable<AbstractDie<AbstractDieFace>>) toRemove)
+        public void Remove(KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> toRemove)
         {
-            throw new System.NotImplementedException();
+            diceGroups.Remove(toRemove.Key);
         }
 
-        public (string, IEnumerable<AbstractDie<AbstractDieFace>>) Update((string, IEnumerable<AbstractDie<AbstractDieFace>>) before, (string, IEnumerable<AbstractDie<AbstractDieFace>>) after)
+        public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> Update(KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> before, KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> after)
         {
-            throw new System.NotImplementedException();
+            // check if key 1 exists
+            // check if both keys same
+            diceGroups.Remove(before.Key);
+            diceGroups.Add(after.Key, after.Value);
+            return after;
         }
     }
 }

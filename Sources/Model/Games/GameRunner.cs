@@ -12,10 +12,10 @@ namespace Model.Games
     public class GameRunner
     {
         private readonly IManager<Player> globalPlayerManager;
-        private readonly IManager<(string, IEnumerable<AbstractDie<AbstractDieFace>>)> globalDieManager;
+        private readonly IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> globalDieManager;
         private readonly List<Game> games;
 
-        public GameRunner(IManager<Player> globalPlayerManager, IManager<(string, IEnumerable<AbstractDie<AbstractDieFace>>)> globalDieManager, List<Game> games)
+        public GameRunner(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> globalDieManager, List<Game> games)
         {
             this.globalPlayerManager = globalPlayerManager;
             this.globalDieManager = globalDieManager;

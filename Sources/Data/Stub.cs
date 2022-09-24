@@ -20,14 +20,12 @@ namespace Data
 
             Player player1 = new("Alice"), player2 = new("Bob"), player3 = new("Clyde");
 
-            IManager<(string, IEnumerable<AbstractDie<AbstractDieFace>>)> globalDieManager = new DieManager();
+            IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> globalDieManager = new DieManager();
             // create at least one group in there
             // ... 
 
-            IEnumerable<AbstractDie<AbstractDieFace>> dice1;
-            (_, dice1) = globalDieManager.GetAll().First();
-            IEnumerable<AbstractDie<AbstractDieFace>> dice2;
-            (_, dice2) = globalDieManager.GetAll().Last();
+            IEnumerable<AbstractDie<AbstractDieFace>> dice1 = globalDieManager.GetAll().First().Value;
+            IEnumerable<AbstractDie<AbstractDieFace>> dice2 = globalDieManager.GetAll().Last().Value;
 
             Game game1 = new(name: g1, playerManager: new PlayerManager(), dice: dice1);
             Game game2 = new(name: g2, playerManager: new PlayerManager(), dice: dice2);
