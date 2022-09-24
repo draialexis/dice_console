@@ -91,8 +91,8 @@ namespace Model.Games
         public void PerformTurn(Player player)
         {
             Turn turn = Turn.CreateWithDefaultTime(
-                new Player(player),
-                ThrowAll() //using a copy so that next lines can't "change history"
+                new Player(player), //using a copy so that next lines can't "change history"
+                ThrowAll()
                 );
             turns.Add(turn);
             nextIndex++;
@@ -151,12 +151,12 @@ namespace Model.Games
         /// throws all the Dice in FavGroup and returns a list of their Faces
         /// </summary>
         /// <returns>list of AbstractDieFaces after a throw</returns>
-        private List<AbstractDieFace> ThrowAll()
+        private Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> ThrowAll()
         {
-            List<AbstractDieFace> faces = new();
+            Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> faces = new();
             foreach (AbstractDie<AbstractDieFace> die in dice)
             {
-                faces.Add(die.GetRandomFace());
+                faces.Add(die, die.GetRandomFace());
             }
             return faces;
         }
@@ -165,12 +165,12 @@ namespace Model.Games
         {
             return playerManager.Add(player);
         }
-        
+
         public IEnumerable<Player> GetPlayersFromGame()
         {
             return playerManager.GetAll();
         }
-        
+
         public Player UpdatePlayerInGame(Player oldPlayer, Player newPlayer)
         {
             return playerManager.Update(oldPlayer, newPlayer);
@@ -180,7 +180,7 @@ namespace Model.Games
         {
             playerManager.Remove(player);
         }
-        
+
         /// <summary>
         /// represents a Game in string format
         /// </summary>
