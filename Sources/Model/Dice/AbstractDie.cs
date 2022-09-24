@@ -12,7 +12,7 @@ namespace Model.Dice
 
         private readonly List<T> listFaces = new();
 
-        private readonly Random rnd = new();
+        private static readonly Random rnd = new();
 
         protected AbstractDie(string name, params T[] faces)
         {
