@@ -68,6 +68,10 @@ namespace Model.Games
             {
                 throw new ArgumentNullException(nameof(diceNFaces), "param should not be null");
             }
+            if (diceNFaces.Count == 0)
+            {
+                throw new ArgumentException("param should not be null", nameof(diceNFaces));
+            }
             if (when.Kind != DateTimeKind.Utc)
             {
                 when = when.ToUniversalTime();
@@ -103,7 +107,7 @@ namespace Model.Games
                 date,
                 time,
                 Player.ToString());
-            foreach ((_, AbstractDieFace face) in DiceNFaces)
+            foreach (AbstractDieFace face in DiceNFaces.Values)
             {
                 sb.Append(" " + face.ToString());
             }
