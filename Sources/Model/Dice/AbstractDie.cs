@@ -5,14 +5,12 @@ using Model.Dice.Faces;
 
 namespace Model.Dice
 {
-    public abstract class AbstractDie<T> where T : AbstractDieFace
+    public abstract class AbstractDie<T> : RandomnessHaver where T : AbstractDieFace
     {
         protected string Name;
         public IEnumerable<T> ListFaces => listFaces;
 
         private readonly List<T> listFaces = new();
-
-        private static readonly Random rnd = new();
 
         protected AbstractDie(string name, params T[] faces)
         {
