@@ -9,10 +9,8 @@ namespace Model.Dice
 {
     public class NumberDie : AbstractDie<NumberDieFace>
     {
-
-        public NumberDie(string name, params NumberDieFace[] faces) : base(name, faces)
+        public NumberDie(params NumberDieFace[] faces) : base(faces)
         {
         }
-
     }
 }
