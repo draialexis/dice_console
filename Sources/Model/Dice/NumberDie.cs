@@ -13,12 +13,6 @@ namespace Model.Dice
         public NumberDie(string name, params NumberDieFace[] faces) : base(name, faces)
         {
         }
-        public override NumberDieFace GetRandomFace()
-        {
-            Random rnd = new();
-            int faceIndex = rnd.Next(1, ListFaces.Count() + 1);
-            return ListFaces.ElementAt(faceIndex);
 
-        }
     }
 }
