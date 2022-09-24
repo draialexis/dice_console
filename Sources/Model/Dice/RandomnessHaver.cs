@@ -8,6 +8,9 @@ namespace Model.Dice
 {
     public class RandomnessHaver
     {
+        protected RandomnessHaver()
+        {
+        }
         protected static readonly Random rnd = new();
     }
 }
