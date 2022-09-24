@@ -31,10 +31,5 @@ namespace Model.Dice.Faces
         {
             return string.Format("Assets/images/{0}", Value);
         }
-
-        public override string ToString()
-        {
-            return GetPracticalValue().ToString();
-        }
     }
 }
