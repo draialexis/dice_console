@@ -40,10 +40,5 @@ namespace Model.Dice.Faces
             // maybe prepend it with a "#"...
             return Value.ToString("X6").Insert(0, "#");
         }
-
-        public override string ToString()
-        {
-            return GetPracticalValue().ToString();
-        }
     }
 }

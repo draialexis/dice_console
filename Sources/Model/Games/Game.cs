@@ -56,7 +56,7 @@ namespace Model.Games
         /// <summary>
         /// the group of dice used for this game
         /// </summary>
-        private readonly FavGroup favGroup;
+        private readonly IEnumerable<AbstractDie<AbstractDieFace>> dice;
 
         /// <summary>
         /// constructs a Game with its own history of Turns. 
@@ -66,12 +66,12 @@ namespace Model.Games
         /// <param name="turns">the turns that have been done so far</param>
         /// <param name="playerManager">the game's player manager, doing CRUD on players and switching whose turn it is</param>
         /// <param name="favGroup">the group of dice used for this game</param>
-        public Game(string name, PlayerManager playerManager, FavGroup favGroup, IEnumerable<Turn> turns)
+        public Game(string name, PlayerManager playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice, IEnumerable<Turn> turns)
         {
             Name = name;
             this.turns = turns.ToList() ?? new List<Turn>();
             this.playerManager = playerManager;
-            this.favGroup = favGroup;
+            this.dice = dice;
         }
 
         /// <summary>
@@ -80,8 +80,8 @@ namespace Model.Games
         /// <param name="name">the name of the game 😎</param>
         /// <param name="playerManager">the game's player manager, doing CRUD on players and switching whose turn it is</param>
         /// <param name="favGroup">the group of dice used for this game</param>
-        public Game(string name, PlayerManager playerManager, FavGroup favGroup)
-            : this(name, playerManager, favGroup, null)
+        public Game(string name, PlayerManager playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
+            : this(name, playerManager, dice, null)
         { }
 
         /// <summary>
@@ -114,9 +114,9 @@ namespace Model.Games
         private List<AbstractDieFace> ThrowAll()
         {
             List<AbstractDieFace> faces = new();
-            foreach (Die die in favGroup.Dice)
+            foreach (AbstractDie<AbstractDieFace> die in dice)
             {
-                faces.Add(die.Throw());
+                faces.Add(die.GetRandomFace());
             }
             return faces;
         }

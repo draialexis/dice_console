@@ -11,13 +11,13 @@ namespace Model.Games
     public class GameRunner
     {
         private readonly PlayerManager globalPlayerManager;
-        private readonly FavGroupManager favGroupManager;
+        private readonly DieManager globalDieManager;
         private readonly List<Game> games;
 
-        public GameRunner(PlayerManager globalPlayerManager, FavGroupManager favGroupManager, List<Game> games)
+        public GameRunner(PlayerManager globalPlayerManager, DieManager globalDieManager, List<Game> games)
         {
             this.globalPlayerManager = globalPlayerManager;
-            this.favGroupManager = favGroupManager;
+            this.globalDieManager = globalDieManager;
             this.games = games ?? new();
         }
 

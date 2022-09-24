@@ -2,6 +2,7 @@
 using Model.Dice.Faces;
 using Model.Games;
 using Model.Players;
+using System.Collections.Generic;
 
 namespace Data
 {
@@ -18,14 +19,18 @@ namespace Data
 
             Player player1 = new("Alice"), player2 = new("Bob"), player3 = new("Clyde");
 
-            FavGroupManager favGroupManager = new(new DieManager());
+            DieManager globalDieManager = new DieManager();
 
             // create at least one fav group in there
             // ... 
+            IEnumerable<AbstractDie<AbstractDieFace>> dice1;
+            (_, dice1) = globalDieManager.GetAll().First();
+            IEnumerable<AbstractDie<AbstractDieFace>> dice2;
+            (_, dice2) = globalDieManager.GetAll().Last();
 
-            Game game1 = new(name: g1, playerManager: new PlayerManager(), favGroup: favGroupManager.GetAll().First());
-            Game game2 = new(name: g2, playerManager: new PlayerManager(), favGroup: favGroupManager.GetAll().Last());
-            Game game3 = new(name: g3, playerManager: new PlayerManager(), favGroup: favGroupManager.GetAll().First());
+            Game game1 = new(name: g1, playerManager: new PlayerManager(), dice: dice1);
+            Game game2 = new(name: g2, playerManager: new PlayerManager(), dice: dice2);
+            Game game3 = new(name: g3, playerManager: new PlayerManager(), dice: dice1);
 
             List<Game> games = new() { game1, game2, game3 };
 
@@ -34,7 +39,7 @@ namespace Data
             globalPlayerManager.Add(player2);
             globalPlayerManager.Add(player3);
 
-            GameRunner gameRunner = new(globalPlayerManager, favGroupManager, games);
+            GameRunner gameRunner = new(globalPlayerManager, globalDieManager, games);
 
             game1.AddPlayerToGame(player1);
             game1.AddPlayerToGame(player2);
