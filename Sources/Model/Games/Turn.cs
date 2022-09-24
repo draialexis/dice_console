@@ -33,7 +33,8 @@ namespace Model.Games
         /// <summary>
         /// the collection of Face that were rolled
         /// </summary>
-        public Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> DiceNFaces { get; }
+        public IEnumerable<KeyValuePair<AbstractDie<AbstractDieFace>, AbstractDieFace>> DiceNFaces => diceNFaces.AsEnumerable();
+        private readonly Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> diceNFaces;
 
         /// <summary>
         /// this private constructor is to be used only by factories
@@ -45,7 +46,7 @@ namespace Model.Games
         {
             When = when;
             Player = player;
-            DiceNFaces = diceNFaces;
+            this.diceNFaces = diceNFaces;
         }
 
         /// <summary>
@@ -107,7 +108,7 @@ namespace Model.Games
                 date,
                 time,
                 Player.ToString());
-            foreach (AbstractDieFace face in DiceNFaces.Values)
+            foreach (AbstractDieFace face in this.diceNFaces.Values)
             {
                 sb.Append(" " + face.ToString());
             }

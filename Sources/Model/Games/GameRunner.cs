@@ -22,7 +22,7 @@ namespace Model.Games
             this.games = games ?? new();
         }
 
-        public IEnumerable<Game> GetAll() => games.AsEnumerable();
+        public IEnumerable<Game> GetAllGames() => games.AsEnumerable();
 
         /// <summary>
         /// finds the game with that name and returns it
@@ -39,6 +39,26 @@ namespace Model.Games
                 return result; // may return null
             }
             throw new ArgumentException("param should not be null or blank", nameof(name));
+        }
+
+        public void SaveGame(Game game)
+        {
+            throw new NotSupportedException();
+        }
+
+        public Game LoadGame(string name)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void StartNewGame()
+        {
+            throw new NotSupportedException();
+        }
+
+        public void DeleteGame(Game game)
+        {
+            throw new NotSupportedException();
         }
     }
 }
