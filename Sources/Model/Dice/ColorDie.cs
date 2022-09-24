@@ -11,7 +11,7 @@ namespace Model.Dice
 {
     public class ColorDie : AbstractDie<ColorDieFace>
     {
-        public ColorDie(string name, params ColorDieFace[] faces) : base(name, faces)
+        public ColorDie(params ColorDieFace[] faces) : base(faces)
         {
         }
     }
