@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using Model.Dice;
 using Model.Dice.Faces;
 using Model.Players;
 
@@ -22,17 +23,17 @@ namespace Model.Games
         /// <summary>
         /// the date and time, adjusted to UTC
         /// </summary>
-        public readonly DateTime when;
+        public DateTime When { get; private set; }
 
         /// <summary>
         /// the Player who rolled the dice
         /// </summary>
-        public readonly Player player;
+        public Player Player { get; private set; }
 
         /// <summary>
         /// the collection of Face that were rolled
         /// </summary>
-        private readonly IEnumerable<AbstractDieFace> faces;
+        public Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> DiceNFaces { get; }
 
         /// <summary>
         /// this private constructor is to be used only by factories
@@ -40,11 +41,11 @@ namespace Model.Games
         /// <param name="when">date and time of the turn</param>
         /// <param name="player">player who played the turn</param>
         /// <param name="faces">faces that were rolled</param>
-        private Turn(DateTime when, Player player, IEnumerable<AbstractDieFace> faces)
+        private Turn(DateTime when, Player player, Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> diceNFaces)
         {
-            this.when = when;
-            this.player = player;
-            this.faces = faces;
+            When = when;
+            Player = player;
+            DiceNFaces = diceNFaces;
         }
 
         /// <summary>
@@ -57,23 +58,26 @@ namespace Model.Games
         /// <param name="player">player who played the turn</param>
         /// <param name="faces">faces that were rolled</param>
         /// <returns>a new Turn object</returns>
-        public static Turn CreateWithSpecifiedTime(DateTime when, Player player, IEnumerable<AbstractDieFace> faces)
+        public static Turn CreateWithSpecifiedTime(DateTime when, Player player, Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> diceNFaces)
         {
-
-            if (faces is null || !faces.Any())
-            {
-                throw new ArgumentException("param should not be null or empty", nameof(faces));
-            }
             if (player is null)
             {
                 throw new ArgumentNullException(nameof(player), "param should not be null");
+            }
+            if (diceNFaces is null)
+            {
+                throw new ArgumentNullException(nameof(diceNFaces), "param should not be null");
+            }
+            if (diceNFaces.Count == 0)
+            {
+                throw new ArgumentException("param should not be null", nameof(diceNFaces));
             }
             if (when.Kind != DateTimeKind.Utc)
             {
                 when = when.ToUniversalTime();
             }
 
-            return new Turn(when, player, faces);
+            return new Turn(when, player, diceNFaces);
         }
 
         /// <summary>
@@ -82,9 +86,9 @@ namespace Model.Games
         /// <param name="player">player who played the turn</param>
         /// <param name="faces">faces that were rolled</param>
         /// <returns>a new Turn object</returns>
-        public static Turn CreateWithDefaultTime(Player player, IEnumerable<AbstractDieFace> faces)
+        public static Turn CreateWithDefaultTime(Player player, Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> diceNFaces)
         {
-            return CreateWithSpecifiedTime(DateTime.UtcNow, player, faces);
+            return CreateWithSpecifiedTime(DateTime.UtcNow, player, diceNFaces);
         }
 
         /// <summary>
@@ -93,7 +97,7 @@ namespace Model.Games
         /// <returns>a turn in string format</returns>
         public override string ToString()
         {
-            string[] datetime = when.ToString("s", System.Globalization.CultureInfo.InvariantCulture).Split("T");
+            string[] datetime = When.ToString("s", System.Globalization.CultureInfo.InvariantCulture).Split("T");
             string date = datetime[0];
             string time = datetime[1];
 
@@ -102,9 +106,8 @@ namespace Model.Games
             sb.AppendFormat("{0} {1} -- {2} rolled:",
                 date,
                 time,
-                player.ToString());
-
-            foreach (AbstractDieFace face in faces)
+                Player.ToString());
+            foreach (AbstractDieFace face in DiceNFaces.Values)
             {
                 sb.Append(" " + face.ToString());
             }

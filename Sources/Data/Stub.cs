@@ -21,9 +21,9 @@ namespace Data
             Player player1 = new("Alice"), player2 = new("Bob"), player3 = new("Clyde");
 
             IManager<(string, IEnumerable<AbstractDie<AbstractDieFace>>)> globalDieManager = new DieManager();
-
-            // create at least one fav group in there
+            // create at least one group in there
             // ... 
+
             IEnumerable<AbstractDie<AbstractDieFace>> dice1;
             (_, dice1) = globalDieManager.GetAll().First();
             IEnumerable<AbstractDie<AbstractDieFace>> dice2;

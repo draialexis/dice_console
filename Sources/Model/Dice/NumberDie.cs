@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Model.Dice
 {
-    public class NumberDie : AbstractDie<NumberDieFace>
+    public class NumberDie : AbstractDie<AbstractDieFace>
     {
         public NumberDie(params NumberDieFace[] faces) : base(faces)
         {
