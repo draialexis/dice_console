@@ -63,19 +63,6 @@ namespace Tests.Model_UTs
             Assert.Throws<ArgumentNullException>(action);
         }
 
-        [Fact]
-        public void TestGetOneByIdThrowsNotImplemented()
-        {
-            // Arrange
-            PlayerManager playerManager = new();
-
-            // Act
-            void action() => playerManager.GetOneById(1);
-
-            // Assert
-            Assert.Throws<NotImplementedException>(action);
-        }
-
         [Theory]
         [InlineData("")]
         [InlineData(null)]

@@ -11,13 +11,6 @@ namespace Model.Players
         /// </summary>
         private readonly List<Player> players;
 
-        /// <summary>
-        /// references the position in list of the current player, for a given game.
-        /// <br/>
-        /// ASSUMING that each Game made its own instance of PlayerManager
-        /// </summary>
-        public int NextIndex { get; private set; } = 0;
-
         public PlayerManager()
         {
             players = new();
@@ -39,17 +32,6 @@ namespace Model.Players
             }
             players.Add(toAdd);
             return toAdd;
-        }
-
-        /// <summary>
-        /// might never get implemented in the model, go through GetOneByName() in the meantime
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public Player GetOneById(int id)
-        {
-            throw new NotImplementedException("might never get implemented\ngo through GetOneByName() in the meantime");
         }
 
         /// <summary>
@@ -76,64 +58,6 @@ namespace Model.Players
         /// </summary>
         /// <returns>a readonly enumerable of all this manager's players</returns>
         public IEnumerable<Player> GetAll() => players.AsEnumerable();
-
-        /// <summary>
-        /// finds and returns the player whose turn it is
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        public Player WhoPlaysNow(bool isFirstTurn)
-        {
-            if (players.Count == 0)
-            {
-                throw new MemberAccessException("you are exploring an empty collection\nthis should not have happened");
-            }
-
-            Player result;
-            if (isFirstTurn)
-            {
-                result = players[0];
-            }
-            else
-            {
-                result = players[NextIndex];
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// this feels very dirty
-        /// </summary>
-        /// <param name="current"></param>
-        /// <exception cref="Exception"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="ArgumentException"></exception>
-        public void PrepareNextPlayer(Player current)
-        {
-            if (players.Count == 0)
-            {
-                throw new MemberAccessException("you are exploring an empty collection\nthis should not have happened");
-            }
-            if (current == null)
-            {
-                throw new ArgumentNullException(nameof(current), "param should not be null");
-            }
-            if (!players.Contains(current))
-            {
-                throw new ArgumentException("param could not be found in this collection\n did you forget to add it?", nameof(current));
-            }
-
-            if (players.Last() == current)
-            {
-                // if we've reached the last index, we need to loop back around
-                NextIndex = 0;
-            }
-            else
-            {
-                // else we can just move up one from current
-                NextIndex++;
-            }
-        }
 
         /// <summary>
         /// update a player from <paramref name="before"/> to <paramref name="after"/>
