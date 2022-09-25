@@ -8,22 +8,34 @@ namespace Model.Dice.Faces
 {
     public class ColorDieFace : AbstractDieFace
     {
+        private static readonly int MAX_HEX = 16777215;
         /// <summary>
-        /// a decimal representation of the hex (...representation of the color)
-        /// </summary>
-        protected override int Value { get; }
-
-        /// <summary>
-        /// accepts hex strings like "ffbb84" ([RRGGBB])
+        /// accepts hex strings like "ffbb84" and "#af567d" ([RRGGBB])
         /// </summary>
         /// <param name="hexValueString">hex string</param>
         public ColorDieFace(string hexValueString)
         {
             // https://stackoverflow.com/questions/1139957/convert-integer-to-hexadecimal-and-back-again
+            // we remove any initial '#' before parsing
+            if (hexValueString.StartsWith('#'))
+            {
+                hexValueString = hexValueString[1..];
+            }
 
-            // if style is ("f0b"), this constructor can develop it to "ff00bb" before doing the job
+            // if style is "f0b", this constructor can develop it to "ff00bb" before doing the job
+            if (hexValueString.Length == 3)
+            {
+                foreach (char ch in hexValueString)
+                {
+                    // replace one instance of the char by two instances of it
+                    hexValueString = hexValueString.Replace(new string(ch, 1), new string(ch, 2));
+                }
+            }
+            int result = int.Parse(hexValueString, System.Globalization.NumberStyles.HexNumber);
 
-            Value = int.Parse(hexValueString, System.Globalization.NumberStyles.HexNumber);
+            if (result < 0) Value = 0;
+            else if (result > MAX_HEX) Value = MAX_HEX;
+            else Value = result;
         }
 
         /// <summary>
@@ -31,13 +43,11 @@ namespace Model.Dice.Faces
         /// </summary>
         /// <param name="decimalValue"></param>
         public ColorDieFace(int decimalValue)
-        {
-            Value = decimalValue;
-        }
+            : this(decimalValue.ToString())
+        { }
         public override object GetPracticalValue()
         {
             // https://stackoverflow.com/questions/1139957/convert-integer-to-hexadecimal-and-back-again
-            // maybe prepend it with a "#"...
             return Value.ToString("X6").Insert(0, "#");
         }
     }

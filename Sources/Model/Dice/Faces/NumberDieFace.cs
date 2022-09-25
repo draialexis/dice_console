@@ -8,7 +8,6 @@ namespace Model.Dice.Faces
 {
     public class NumberDieFace : AbstractDieFace
     {
-        protected override int Value { get; }
         public NumberDieFace(int value)
         {
             Value = value;
