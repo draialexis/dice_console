@@ -287,6 +287,66 @@ namespace Tests.Model_UTs
         }
 
         [Fact]
+        public void TestAddPlayerToGame()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
+
+            // Act
+            Player expected = PLAYER_1;
+            Player actual = game.AddPlayerToGame(PLAYER_1);
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void TestGetPlayersFromGame()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
+
+            // Act
+            Assert.Empty(game.GetPlayersFromGame());
+            game.AddPlayerToGame(PLAYER_1);
+
+            // Assert
+            Assert.Single(game.GetPlayersFromGame());
+        }
+
+        [Fact]
+        public void TestUpdatePlayerInGame()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
+            game.AddPlayerToGame(PLAYER_1);
+
+            // Act
+            Player expected = PLAYER_2;
+            Player actual = game.UpdatePlayerInGame(PLAYER_1, PLAYER_2);
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void TestRemovePlayerFromGame()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
+            game.AddPlayerToGame(PLAYER_1);
+            game.AddPlayerToGame(PLAYER_2);
+            game.RemovePlayerFromGame(PLAYER_1);
+
+            // Act
+            IEnumerable<Player> expected = new List<Player>() { PLAYER_2 }.AsEnumerable();
+            IEnumerable<Player> actual = game.GetPlayersFromGame();
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
         public void TestToString()
         {
             // Arrange
