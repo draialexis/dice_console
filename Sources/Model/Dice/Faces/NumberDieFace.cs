@@ -14,7 +14,7 @@ namespace Model.Dice.Faces
             Value = value;
         }
 
-        public override int GetPracticalValue()
+        public override object GetPracticalValue()
         {
             return Value;
         }

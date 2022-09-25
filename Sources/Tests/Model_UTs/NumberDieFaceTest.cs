@@ -19,11 +19,9 @@ namespace Tests.Model_UTs
             NumberDieFace face;
             int expected = 11;
 
-
             //Act
             face = new NumberDieFace(expected);
-            Object actuel = face.GetPracticalValue();
-
+            int actuel = (int)face.GetPracticalValue();
 
             //Assert
             Assert.Equal(expected, actuel); 

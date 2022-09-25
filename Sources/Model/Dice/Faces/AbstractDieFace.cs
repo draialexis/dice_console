@@ -16,7 +16,7 @@ namespace Model.Dice.Faces
         /// </summary>
         protected abstract int Value { get; }
 
-        public abstract int GetPracticalValue();
+        public abstract object GetPracticalValue();
 
         public override string ToString()
         {
