@@ -35,7 +35,7 @@ namespace Model.Games
         /// <summary>
         /// references the position in list of the current player, for a given game.
         /// </summary>
-        private int nextIndex = 0;
+        private int nextIndex;
 
         /// <summary>
         /// the turns that have been done so far
@@ -56,6 +56,7 @@ namespace Model.Games
         /// <summary>
         /// the group of dice used for this game
         /// </summary>
+        public IEnumerable<AbstractDie<AbstractDieFace>> Dice => dice;
         private readonly IEnumerable<AbstractDie<AbstractDieFace>> dice;
 
         /// <summary>
@@ -69,9 +70,10 @@ namespace Model.Games
         public Game(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice, IEnumerable<Turn> turns)
         {
             Name = name;
-            this.turns = turns.ToList() ?? new List<Turn>();
+            this.turns = turns is null ? new List<Turn>() : turns.ToList();
             this.playerManager = playerManager;
             this.dice = dice;
+            this.nextIndex = 0;
         }
 
         /// <summary>
@@ -91,11 +93,10 @@ namespace Model.Games
         public void PerformTurn(Player player)
         {
             Turn turn = Turn.CreateWithDefaultTime(
-                new Player(player), //using a copy so that next lines can't "change history"
+                player,
                 ThrowAll()
                 );
             turns.Add(turn);
-            nextIndex++;
         }
 
         /// <summary>
@@ -109,7 +110,6 @@ namespace Model.Games
             {
                 throw new MemberAccessException("you are exploring an empty collection\nthis should not have happened");
             }
-
             return playerManager.GetAll().ElementAt(nextIndex);
         }
 
@@ -134,7 +134,6 @@ namespace Model.Games
             {
                 throw new ArgumentException("param could not be found in this collection\n did you forget to add it?", nameof(current));
             }
-
             if (playerManager.GetAll().Last() == current)
             {
                 // if we've reached the last player, we need the index to loop back around
@@ -188,16 +187,20 @@ namespace Model.Games
         public override string ToString()
         {
             StringBuilder sb = new();
-            sb.AppendFormat("Game: {0}===========\n" +
-                "{1} are playing. {2} is next.\n" +
-                "Log:\n",
-                Name,
-                playerManager.GetAll().ToString(),
-                GetWhoPlaysNow());
+            sb.Append($"Game: {Name}");
 
+            sb.Append("\nPlayers:");
+            foreach (Player player in GetPlayersFromGame())
+            {
+                sb.Append($" {player.ToString()}");
+            }
+
+            sb.Append($"\nNext: {GetWhoPlaysNow()}");
+
+            sb.Append("\nLog:\n");
             foreach (Turn turn in this.turns)
             {
-                sb.Append("\t" + turn.ToString());
+                sb.Append($"\t{turn.ToString()}\n");
             }
 
             return sb.ToString();
