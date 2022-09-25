@@ -14,7 +14,7 @@ namespace Model.Dice.Faces
         /// <br/>
         /// USE GetPracticalValue for a Value specific to face type
         /// </summary>
-        protected abstract int Value { get; }
+        public int Value { get; protected set; }
 
         public abstract object GetPracticalValue();
 

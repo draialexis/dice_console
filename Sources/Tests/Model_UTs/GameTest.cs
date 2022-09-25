@@ -383,8 +383,8 @@ namespace Tests.Model_UTs
                 "\nPlayers: Alice Bob" +
                 "\nNext: Alice" +
                 "\nLog:" +
-                "\n\t" + date + " " + time + " -- Alice rolled: 4 Assets/images/40 #A00FA0" +
-                "\n\t" + date + " " + time + " -- Bob rolled: 3 Assets/images/20 #A00BB8" +
+                "\n\t" + date + " " + time + " -- Alice rolled: 4 Assets/images/40.png #A00FA0" +
+                "\n\t" + date + " " + time + " -- Bob rolled: 3 Assets/images/20.png #A00BB8" +
                 "\n";
             string actual = game.ToString();
 
