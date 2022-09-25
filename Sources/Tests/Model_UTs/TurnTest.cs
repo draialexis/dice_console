@@ -5,6 +5,7 @@ using Model.Players;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Xunit;
 
 namespace Tests.Model_UTs
@@ -188,6 +189,20 @@ namespace Tests.Model_UTs
 
             // Assert
             Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void TestDiceNFacesProperty()
+        {
+            // Arrange
+            Player player = new("Erika");
+
+            // Act
+            Turn turn = Turn.CreateWithDefaultTime(player, DICE_N_FACES);
+            IEnumerable<KeyValuePair<AbstractDie<AbstractDieFace>, AbstractDieFace>> expected = DICE_N_FACES.AsEnumerable();
+
+            // Assert
+            Assert.Equal(expected, turn.DiceNFaces);
         }
     }
 }
