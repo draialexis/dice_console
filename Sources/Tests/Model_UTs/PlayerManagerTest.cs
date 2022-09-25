@@ -63,6 +63,20 @@ namespace Tests.Model_UTs
             Assert.Throws<ArgumentNullException>(action);
         }
 
+        [Fact]
+        public void TestAddIfAlreadyExistsThrowsException()
+        {
+            // Arrange
+            PlayerManager playerManager = new();
+
+            // Act
+            playerManager.Add(new("Kevin"));
+            void action() => playerManager.Add(new("Kevin"));
+
+            // Assert
+            Assert.Throws<ArgumentException>(action);
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData(null)]
