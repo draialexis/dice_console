@@ -35,7 +35,7 @@ namespace Model.Games
         /// <summary>
         /// references the position in list of the current player, for a given game.
         /// </summary>
-        private int nextIndex = 0;
+        private int nextIndex;
 
         /// <summary>
         /// the turns that have been done so far
@@ -70,9 +70,10 @@ namespace Model.Games
         public Game(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice, IEnumerable<Turn> turns)
         {
             Name = name;
-            this.turns = turns.ToList() ?? new List<Turn>();
+            this.turns = turns is null ? new List<Turn>() : turns.ToList();
             this.playerManager = playerManager;
             this.dice = dice;
+            this.nextIndex = 0;
         }
 
         /// <summary>
@@ -92,7 +93,7 @@ namespace Model.Games
         public void PerformTurn(Player player)
         {
             Turn turn = Turn.CreateWithDefaultTime(
-                new Player(player), //using a copy so that next lines can't "change history"
+                player,
                 ThrowAll()
                 );
             turns.Add(turn);

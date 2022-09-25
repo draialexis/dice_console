@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
+using static System.Collections.Specialized.BitVector32;
+using System.Diagnostics;
 
 namespace Tests.Model_UTs
 {
@@ -18,9 +21,13 @@ namespace Tests.Model_UTs
 
         private static readonly Player PLAYER_1 = new("Alice"), PLAYER_2 = new("Bob"), PLAYER_3 = new("Clyde");
 
+        private readonly static NumberDieFace FACE_NUM = new(1);
+        private readonly static ImageDieFace FACE_IMG = new(10);
+        private readonly static ColorDieFace FACE_CLR = new(1000);
+
         private readonly static NumberDieFace[] FACES_1 = new NumberDieFace[]
         {
-            new(1),
+            FACE_NUM,
             new(2),
             new(3),
             new(4)
@@ -28,7 +35,7 @@ namespace Tests.Model_UTs
 
         private readonly static ImageDieFace[] FACES_2 = new ImageDieFace[]
         {
-            new(10),
+            FACE_IMG,
             new(20),
             new(30),
             new(40)
@@ -36,7 +43,7 @@ namespace Tests.Model_UTs
 
         private readonly static ColorDieFace[] FACES_3 = new ColorDieFace[]
         {
-            new(1000),
+            FACE_CLR,
             new(2000),
             new(3000),
             new(4000)
@@ -44,18 +51,143 @@ namespace Tests.Model_UTs
 
         private static readonly AbstractDie<AbstractDieFace> NUM = new NumberDie(FACES_1), IMG = new ImageDie(FACES_2), CLR = new ColorDie(FACES_3);
 
-        private static readonly IEnumerable<AbstractDie<AbstractDieFace>> dice =
+        private static readonly IEnumerable<AbstractDie<AbstractDieFace>> DICE =
             new List<AbstractDie<AbstractDieFace>>() { NUM, IMG, CLR }
             .AsEnumerable();
 
-        public GameTest()
+        [Fact]
+        public void TestNamePropertyGet()
         {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
 
-            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: dice);
+            // Act
+            string actual = game.Name;
 
+            // Assert
+            Assert.Equal(GAME_NAME, actual);
+        }
+
+        [Fact]
+        public void TestNamePropertySetWhenValidThenCorrect()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
+            string expected = "shitty marmot";
+
+
+            // Act
+            game.Name = expected;
+            string actual = game.Name;
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData(" ")]
+        public void TestNamePropertySetWhenInvalidThenException(string name)
+        {
+            // Arrange
+            Game game;
+
+            // Act
+            void action() => game = new(name: name, playerManager: new PlayerManager(), dice: DICE);
+
+            // Assert
+            Assert.Throws<ArgumentException>(action);
+        }
+
+        [Fact]
+        public void TestGetHistory()
+        {
+            // Arrange
+            Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> diceNFaces = new()
+            {
+                { CLR, FACE_CLR },
+                { IMG, FACE_IMG },
+                { NUM, FACE_NUM }
+            };
+
+            Turn turn1 = Turn.CreateWithDefaultTime(PLAYER_1, diceNFaces);
+            Turn turn2 = Turn.CreateWithDefaultTime(PLAYER_2, diceNFaces); // yeah they rolled the same
+
+            IEnumerable<Turn> expected = new List<Turn>() { turn1, turn2 };
+
+            // Act
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE, expected);
+            IEnumerable<Turn> actual = game.GetHistory();
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void TestDicePropertyGet()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
+
+
+            // Act
+            IEnumerable<AbstractDie<AbstractDieFace>> actual = game.Dice;
+            IEnumerable<AbstractDie<AbstractDieFace>> expected = DICE;
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void TestGetWhoPlaysNow()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
             game.AddPlayerToGame(PLAYER_1);
             game.AddPlayerToGame(PLAYER_2);
-            game.AddPlayerToGame(PLAYER_3);
+
+            // Act
+            Player actual = game.GetWhoPlaysNow();
+            Player expected = PLAYER_1;
+
+            game.PrepareNextPlayer(actual);
+
+            Player actual2 = game.GetWhoPlaysNow();
+            Player expected2 = PLAYER_2;
+
+            // Assert
+            Assert.Equal(expected, actual);
+
+            Assert.Equal(expected2, actual2);
+        }
+
+        [Fact]
+        public void TestPerformTurnDoesAddOneTurn()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
+            game.AddPlayerToGame(PLAYER_1);
+            game.AddPlayerToGame(PLAYER_2);
+
+            int n = 5;
+
+            IEnumerable<Player> players = game.GetPlayersFromGame();
+            Debug.WriteLine(players);
+
+            for (int i = 0; i < n; i++)
+            {
+                Player currentPlayer = game.GetWhoPlaysNow();
+                game.PerformTurn(currentPlayer);
+                game.PrepareNextPlayer(currentPlayer);
+            }
+
+            // Act
+            int actual = game.GetHistory().Count();
+            int expected = n;
+
+            // Assert
+            Assert.Equal(expected, actual);
         }
     }
 }
