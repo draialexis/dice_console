@@ -140,7 +140,38 @@ namespace Tests.Model_UTs
         }
 
         [Fact]
-        public void TestGetWhoPlaysNow()
+        public void TestPerformTurnDoesAddOneTurn()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
+            game.AddPlayerToGame(PLAYER_1);
+            game.AddPlayerToGame(PLAYER_2);
+
+            int n = 5;
+
+            IEnumerable<Player> players = game.GetPlayersFromGame();
+            Debug.WriteLine(players);
+
+            Player currentPlayer;
+            for (int i = 0; i < n; i++)
+            {
+                currentPlayer = game.GetWhoPlaysNow();
+                game.PerformTurn(currentPlayer);
+                game.PrepareNextPlayer(currentPlayer);
+            }
+
+            Debug.WriteLine(game);
+
+            // Act
+            int actual = game.GetHistory().Count();
+            int expected = n;
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void TestGetWhoPlaysNowWhenValidThenCorrect()
         {
             // Arrange
             Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
@@ -163,28 +194,142 @@ namespace Tests.Model_UTs
         }
 
         [Fact]
-        public void TestPerformTurnDoesAddOneTurn()
+        public void TestGetWhoPlaysNowWhenInvalidThenException()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
+
+            // Act
+            void action() => game.GetWhoPlaysNow(); // on an empty collection of players
+
+            // Assert
+            Assert.Throws<MemberAccessException>(action);
+        }
+
+        [Fact]
+        public void TestPrepareNextPlayerWhenEmptyThenException()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
+
+            // Act
+            void action() => game.PrepareNextPlayer(PLAYER_1); // on an empty collection of players
+
+            // Assert
+            Assert.Throws<MemberAccessException>(action);
+        }
+
+        [Fact]
+        public void TestPrepareNextPlayerWhenNullThenException()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
+            game.AddPlayerToGame(PLAYER_1);
+
+            // Act
+            void action() => game.PrepareNextPlayer(null);
+
+            // Assert
+            Assert.Throws<ArgumentNullException>(action);
+        }
+
+        [Fact]
+        public void TestPrepareNextPlayerWhenNonExistentThenException()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
+            game.AddPlayerToGame(PLAYER_2);
+
+            // Act
+            void action() => game.PrepareNextPlayer(PLAYER_3);
+
+            // Assert
+            Assert.Throws<ArgumentException>(action);
+        }
+
+        [Fact]
+        public void TestPrepareNextPlayerWhenValidThenCorrectWithSeveralPlayers()
         {
             // Arrange
             Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
             game.AddPlayerToGame(PLAYER_1);
             game.AddPlayerToGame(PLAYER_2);
 
-            int n = 5;
+            // Act
+            Player expected = PLAYER_2;
 
-            IEnumerable<Player> players = game.GetPlayersFromGame();
-            Debug.WriteLine(players);
+            Assert.Equal(PLAYER_1, game.GetWhoPlaysNow());
+            game.PrepareNextPlayer(PLAYER_1);
 
-            for (int i = 0; i < n; i++)
-            {
-                Player currentPlayer = game.GetWhoPlaysNow();
-                game.PerformTurn(currentPlayer);
-                game.PrepareNextPlayer(currentPlayer);
-            }
+            Player actual = game.GetWhoPlaysNow();
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void TestPrepareNextPlayerWhenValidThenCorrectWithOnePlayer()
+        {
+            // Arrange
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
+            game.AddPlayerToGame(PLAYER_1);
 
             // Act
-            int actual = game.GetHistory().Count();
-            int expected = n;
+            Player expected = PLAYER_1;
+
+            Assert.Equal(PLAYER_1, game.GetWhoPlaysNow());
+            game.PrepareNextPlayer(PLAYER_1);
+
+            Player actual = game.GetWhoPlaysNow();
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void TestToString()
+        {
+            // Arrange
+            DateTime dateTime = DateTime.UtcNow;
+
+            List<Turn> turns = new()
+            {
+                Turn.CreateWithSpecifiedTime(dateTime, PLAYER_1, new()
+                {
+                    {NUM, new NumberDieFace(4)},
+                    {IMG, new ImageDieFace(40)},
+                    {CLR, new ColorDieFace("A00FA0")},
+                }),
+                Turn.CreateWithSpecifiedTime(dateTime, PLAYER_2, new()
+                {
+                    {NUM, new NumberDieFace(3)},
+                    {IMG, new ImageDieFace(20)},
+                    {CLR, new ColorDieFace("A00BB8")},
+                }),
+            };
+
+            Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE, turns: turns);
+            game.AddPlayerToGame(PLAYER_1);
+            game.AddPlayerToGame(PLAYER_2);
+
+            // Act
+            string[] dateTimeString = dateTime.ToString("s", System.Globalization.CultureInfo.InvariantCulture).Split("T");
+
+            string date = dateTimeString[0];
+            string time = dateTimeString[1];
+
+            string expected =
+                "Game: my game" +
+                "\nPlayers: Alice Bob" +
+                "\nNext: Alice" +
+                "\nLog:" +
+                "\n\t" + date + " " + time + " -- Alice rolled: 4 Assets/images/40 #A00FA0" +
+                "\n\t" + date + " " + time + " -- Bob rolled: 3 Assets/images/20 #A00BB8" +
+                "\n";
+            string actual = game.ToString();
+
+            Debug.WriteLine("expected:\n" + expected);
+            Debug.WriteLine("actual:\n" + actual);
 
             // Assert
             Assert.Equal(expected, actual);
