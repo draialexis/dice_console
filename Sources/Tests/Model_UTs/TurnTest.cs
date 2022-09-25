@@ -50,13 +50,10 @@ namespace Tests.Model_UTs
                   new(412)
             };
 
-
         private readonly AbstractDie<AbstractDieFace> NUM1 = new NumberDie(FACES1);
         private readonly AbstractDie<AbstractDieFace> NUM2 = new NumberDie(FACES2);
         private readonly AbstractDie<AbstractDieFace> IMG1 = new ImageDie(FACES3);
         private readonly AbstractDie<AbstractDieFace> CLR1 = new ColorDie(FACES4);
-
-
 
         public TurnTest()
         {

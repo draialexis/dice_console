@@ -56,6 +56,7 @@ namespace Model.Games
         /// <summary>
         /// the group of dice used for this game
         /// </summary>
+        public IEnumerable<AbstractDie<AbstractDieFace>> Dice => dice;
         private readonly IEnumerable<AbstractDie<AbstractDieFace>> dice;
 
         /// <summary>
