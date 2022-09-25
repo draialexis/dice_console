@@ -18,7 +18,7 @@ namespace Model.Dice
 
         public T GetRandomFace()
         {
-            int faceIndex = rnd.Next(1, ListFaces.Count() + 1);
+            int faceIndex = rnd.Next(0, ListFaces.Count());
             return ListFaces.ElementAt(faceIndex);
         }
     }
