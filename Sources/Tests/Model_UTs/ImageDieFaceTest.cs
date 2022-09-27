@@ -53,7 +53,7 @@ namespace Tests.Model_UTs
             string actuel = string.Format("Assets/images/{0}", face.GetPracticalValue());
 
             //Assert
-            Assert.Equal(expected.ToString(), actuel);
+            Assert.Equal(string.Format("Assets/images/{0}", expected), actuel);
 
         }
     }
