@@ -1,4 +1,5 @@
 ﻿using Model.Dice.Faces;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace Tests.Model_UTs
 
             //Act
             face = new ImageDieFace(expected);
-            string actuel = face.ToString();
+            string actuel = string.Format("Assets/images/{0}", face.GetPracticalValue());
 
             //Assert
             Assert.Equal(expected.ToString(), actuel);
