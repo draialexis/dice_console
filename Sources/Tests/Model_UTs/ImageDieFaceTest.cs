@@ -8,33 +8,17 @@ using Xunit;
 
 namespace Tests.Model_UTs
 {
-    public class NumberDieFaceTest
+    public class ImageDieFaceTest
     {
-
         [Fact]
-        public void TestCreatNumFace()
+        public void TestCreatImageFace()
         {
             //Arrange
-            NumberDieFace face;
+            ImageDieFace face;
             int expected = 11;
 
             //Act
-            face = new NumberDieFace(expected);
-            int actuel = (int)face.GetPracticalValue();
-
-            //Assert
-            Assert.Equal(expected, actuel); 
-        }
-
-        [Fact]
-        public void TestGetPracticalValueNumFace()
-        {
-            //Arrange
-            NumberDieFace face;
-            int expected = 11;
-
-            //Act
-            face = new NumberDieFace(expected);
+            face = new ImageDieFace(expected);
             int actuel = (int)face.GetPracticalValue();
 
             //Assert
@@ -42,20 +26,34 @@ namespace Tests.Model_UTs
         }
 
         [Fact]
-        public void TestNumberFaceToString()
+        public void TestGetPracticalValueImageFace()
         {
             //Arrange
-            NumberDieFace face;
+            ImageDieFace face;
             int expected = 11;
 
             //Act
-            face = new NumberDieFace(expected);
+            face = new ImageDieFace(expected);
+            int actuel = (int)face.GetPracticalValue();
+
+            //Assert
+            Assert.Equal(expected, actuel);
+        }
+
+        [Fact]
+        public void TestImageFaceToString()
+        {
+            //Arrange
+            ImageDieFace face;
+            int expected = 11;
+
+            //Act
+            face = new ImageDieFace(expected);
             string actuel = face.ToString();
 
             //Assert
             Assert.Equal(expected.ToString(), actuel);
 
         }
-
     }
 }
