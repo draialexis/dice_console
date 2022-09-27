@@ -46,7 +46,7 @@ namespace Tests.Model_UTs
         {
             //Arrange
             ImageDieFace face;
-            int expected = 11;
+            string expected = "hello/world/11.jpg";
 
             //Act
             face = new ImageDieFace(expected);
