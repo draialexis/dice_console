@@ -20,7 +20,7 @@ namespace Tests.Model_UTs
 
             //Act
             face = new ImageDieFace(expected);
-            int actuel = (int)face.GetPracticalValue();
+            string actuel = face.GetPracticalValue().ToString();
 
             //Assert
             Assert.Equal(expected, actuel);
@@ -35,7 +35,7 @@ namespace Tests.Model_UTs
 
             //Act
             face = new ImageDieFace(expected);
-            int actuel = (int)face.GetPracticalValue();
+            string actuel = face.GetPracticalValue().ToString();
 
             //Assert
             Assert.Equal(expected, actuel);
