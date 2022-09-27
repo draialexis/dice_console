@@ -1,4 +1,5 @@
 ﻿using Model.Dice.Faces;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,11 +46,12 @@ namespace Tests.Model_UTs
         {
             //Arrange
             ColorDieFace face;
-            int expected = 11;
+            string expected = "ff00bb";
 
             //Act
             face = new ColorDieFace(expected);
-            string actuel = face.ToString();
+            int val = (int)face.GetPracticalValue();
+            string actuel = val.ToString("X6").Insert(0, "#");
 
             //Assert
             Assert.Equal(expected.ToString(), actuel);
