@@ -149,9 +149,6 @@ namespace Tests.Model_UTs
 
             int n = 5;
 
-            IEnumerable<Player> players = game.GetPlayersFromGame();
-            Debug.WriteLine(players);
-
             Player currentPlayer;
             for (int i = 0; i < n; i++)
             {

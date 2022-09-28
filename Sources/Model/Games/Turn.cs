@@ -17,7 +17,7 @@ namespace Model.Games
     /// Two turns are equal if they are litterally the same instance in RAM
     /// (default behaviors Equals() and GetHashCode())
     /// </summary>
-    public class Turn
+    public sealed class Turn : IEquatable<Turn>
     {
 
         /// <summary>
@@ -114,6 +114,28 @@ namespace Model.Games
             }
 
             return sb.ToString();
+        }
+
+        public bool Equals(Turn other)
+        {
+            return Player.Equals(other.Player) 
+                && When.Equals(other.When) 
+                && DiceNFaces.SequenceEqual(other.DiceNFaces);
+
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is not Turn)
+            {
+                return false;
+            }
+            return Equals(obj as Turn);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Player, When, DiceNFaces);
         }
     }
 }

@@ -3,6 +3,7 @@ using Model.Dice.Faces;
 using Model.Players;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -96,7 +97,16 @@ namespace Model.Games
                 player,
                 ThrowAll()
                 );
-            turns.Add(turn);
+            AddTurn(turn);
+        }
+
+
+        private void AddTurn(Turn turn)
+        {
+            if (!(turns.Contains(turn)))
+            {
+                turns.Add(turn);
+            }
         }
 
         /// <summary>
