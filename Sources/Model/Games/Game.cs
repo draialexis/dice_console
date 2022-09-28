@@ -96,7 +96,10 @@ namespace Model.Games
                 player,
                 ThrowAll()
                 );
-            turns.Add(turn);
+            if(turn != null && !(turns.Contains(turn)))
+            {
+                turns.Add(turn);
+            }
         }
 
         /// <summary>
