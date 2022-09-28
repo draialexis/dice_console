@@ -157,7 +157,7 @@ namespace App
         private static string ChooseGame(GameRunner gameRunner)
         {
             string name;
-            Console.WriteLine("which of these games?\n>");
+            Console.WriteLine("which of these games?\n(choose by name)\n>");
             foreach (Game game in gameRunner.GetAllGames())
             {
                 Console.WriteLine(game);
