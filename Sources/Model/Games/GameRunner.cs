@@ -58,17 +58,6 @@ namespace Model.Games
         }
 
         /// <summary>
-        /// loads a game by name to start playing again
-        /// </summary>
-        /// <param name="name">name of game to be loaded</param>
-        /// <returns>loaded game</returns>
-        /// <exception cref="NotSupportedException"></exception>
-        public void LoadGame(string name)
-        {
-            Game game = GetOneGameByName(name);
-        }
-
-        /// <summary>
         /// creates a new game
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
@@ -87,7 +76,7 @@ namespace Model.Games
         /// plays one turn of the game
         /// </summary>
         /// <param name="game">the game from which a turn will be played</param>
-        public void PlayGame(Game game)
+        public static void PlayGame(Game game)
         {
             Player current = game.GetWhoPlaysNow();
             game.PerformTurn(current);
