@@ -16,22 +16,44 @@ namespace Data
 
         public GameRunner LoadApp()
         {
-            string g1 = "game1", g2 = "game2", g3 = "game3";
-
-            Player player1 = new("Alice"), player2 = new("Bob"), player3 = new("Clyde");
-
             IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> globalDieManager = new DieManager();
-            // create at least one group in there
-            // ... 
 
-            IEnumerable<AbstractDie<AbstractDieFace>> dice1 = globalDieManager.GetAll().First().Value;
-            IEnumerable<AbstractDie<AbstractDieFace>> dice2 = globalDieManager.GetAll().Last().Value;
+            List<AbstractDie<AbstractDieFace>> monopolyDice = new();
+            List<AbstractDie<AbstractDieFace>> dndDice = new();
+
+            string monopolyName = "Monopoly";
+            string dndName = "DnD";
+
+            NumberDieFace[] d6Faces = new NumberDieFace[] { new(1), new(2), new(3), new(4), new(5), new(6) };
+
+            monopolyDice.Add(new NumberDie(d6Faces));
+            monopolyDice.Add(new NumberDie(d6Faces));
+            monopolyDice.Add(new ColorDie(new("#ff0000"), new("#00ff00"), new("#0000ff"), new("#ffff00"), new("#000000"), new("#ffffff")));
+
+            NumberDieFace[] d20Faces = new NumberDieFace[] {
+                new(1), new(2), new(3), new(4), new(5),
+                new(6), new(7), new(8), new(9), new(10),
+                new(11), new(12), new(13), new(14), new(15),
+                new(16), new(17), new(18), new(19), new(20)
+            };
+
+            dndDice.Add(new NumberDie(d20Faces));
+
+            globalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(monopolyName, monopolyDice.AsEnumerable()));
+            globalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(dndName, dndDice.AsEnumerable()));
+
+            IEnumerable<AbstractDie<AbstractDieFace>> dice1 = globalDieManager.GetOneByName(monopolyName).Value;
+            IEnumerable<AbstractDie<AbstractDieFace>> dice2 = globalDieManager.GetOneByName(dndName).Value;
+
+            string g1 = "game1", g2 = "game2", g3 = "game3";
 
             Game game1 = new(name: g1, playerManager: new PlayerManager(), dice: dice1);
             Game game2 = new(name: g2, playerManager: new PlayerManager(), dice: dice2);
             Game game3 = new(name: g3, playerManager: new PlayerManager(), dice: dice1);
 
             List<Game> games = new() { game1, game2, game3 };
+
+            Player player1 = new("Alice"), player2 = new("Bob"), player3 = new("Clyde");
 
             PlayerManager globalPlayerManager = new();
             globalPlayerManager.Add(player1);
@@ -61,69 +83,6 @@ namespace Data
             }
 
             return gameRunner;
-        }
-
-        public static List<Player> LoadPlayers()
-        {
-            List<Player> list = new()
-            {
-                new Player("name 1"),
-                new Player("name 2"),
-                new Player("name 3"),
-                new Player("name 4"),
-                new Player("name 5"),
-                new Player("name 6")
-            };
-            return list;
-        }
-
-        public static List<NumberDieFace> LoadNumFaces()
-        {
-            List<NumberDieFace> list = new()
-            {
-                new NumberDieFace(1),
-                new NumberDieFace(2),
-                new NumberDieFace(3),
-                new NumberDieFace(4),
-                new NumberDieFace(5),
-                new NumberDieFace(6),
-                new NumberDieFace(7)
-            };
-
-            return list;
-        }
-
-        public static List<ColorDieFace> LoadClrFaces()
-        {
-            List<ColorDieFace> list = new()
-            {
-                new ColorDieFace("ffffff"),
-                new ColorDieFace("ffff66"),
-                new ColorDieFace("ffff11"),
-                new ColorDieFace("ffff22"),
-                new ColorDieFace("ffff33"),
-                new ColorDieFace("ffff44"),
-                new ColorDieFace("ffff55")
-            };
-
-            return list;
-        }
-
-        public static List<ImageDieFace> LoadImgFaces()
-        {
-            string urlBase = "baseUrl/img/";
-            List<ImageDieFace> list = new()
-            {
-                new ImageDieFace( urlBase + 1),
-                new ImageDieFace( urlBase + 2),
-                new ImageDieFace( urlBase + 3),
-                new ImageDieFace( urlBase + 4),
-                new ImageDieFace( urlBase + 5),
-                new ImageDieFace( urlBase + 6),
-                new ImageDieFace( urlBase + 7),
-            };
-
-            return list;
         }
     }
 }
