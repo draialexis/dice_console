@@ -41,22 +41,41 @@ namespace Model.Games
             throw new ArgumentException("param should not be null or blank", nameof(name));
         }
 
+        /// <summary>
+        /// saves a given game
+        /// </summary>
+        /// <param name="game">a game to save</param>
+        /// <exception cref="NotSupportedException"></exception>
         public void SaveGame(Game game)
         {
             throw new NotSupportedException();
         }
 
+        /// <summary>
+        /// loads a game by name
+        /// </summary>
+        /// <param name="name">name of game to be loaded</param>
+        /// <returns>loaded game</returns>
+        /// <exception cref="NotSupportedException"></exception>
         public Game LoadGame(string name)
         {
             throw new NotSupportedException();
         }
 
+        /// <summary>
+        /// creates a new game
+        /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
         public void StartNewGame()
         {
             throw new NotSupportedException();
         }
 
         public void DeleteGame(Game game)
+        {
+            throw new NotSupportedException();
+        }
+        private void PlayGame(Game game)
         {
             throw new NotSupportedException();
         }
