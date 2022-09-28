@@ -16,7 +16,7 @@
 
 Open the *DiceAppConsole.sln* solution and navigate to the *App* project. The *Program.cs* file has a `Main()` method that can be launched. 
 
-*If you simply load DiceApp.sln, Visual Studio will nt load the App project...*
+*If you simply load DiceApp.sln, Visual Studio will not load the App project...*
 
 The console prototype loads a stub with a few small games that you can test, and you can create new everything (with a little patience).
 
