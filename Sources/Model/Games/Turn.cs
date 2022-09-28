@@ -17,7 +17,7 @@ namespace Model.Games
     /// Two turns are equal if they are litterally the same instance in RAM
     /// (default behaviors Equals() and GetHashCode())
     /// </summary>
-    public class Turn
+    public sealed class Turn : IEquatable<Turn>
     {
 
         /// <summary>
