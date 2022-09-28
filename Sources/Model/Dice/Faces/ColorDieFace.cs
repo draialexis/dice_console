@@ -22,15 +22,6 @@ namespace Model.Dice.Faces
                 hexValueString = hexValueString[1..];
             }
 
-            // if style is "f0b", this constructor can develop it to "ff00bb" before doing the job
-            if (hexValueString.Length == 3)
-            {
-                foreach (char ch in hexValueString)
-                {
-                    // replace one instance of the char by two instances of it
-                    hexValueString = hexValueString.Replace(new string(ch, 1), new string(ch, 2));
-                }
-            }
             int result = int.Parse(hexValueString, System.Globalization.NumberStyles.HexNumber);
 
             if (result < 0) Value = 0;
