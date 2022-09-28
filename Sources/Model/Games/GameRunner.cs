@@ -48,36 +48,53 @@ namespace Model.Games
         /// <exception cref="NotSupportedException"></exception>
         public void SaveGame(Game game)
         {
-            throw new NotSupportedException();
+            if(game != null)
+            {
+                games.Remove(games.FirstOrDefault(g => g.Name == game.Name));
+                // will often be an update: if game with that name exists, it is removed, else, nothing happens above
+                games.Add(game);
+            }
+            
         }
 
         /// <summary>
-        /// loads a game by name
+        /// loads a game by name to start playing again
         /// </summary>
         /// <param name="name">name of game to be loaded</param>
         /// <returns>loaded game</returns>
         /// <exception cref="NotSupportedException"></exception>
-        public Game LoadGame(string name)
+        public void LoadGame(string name)
         {
-            throw new NotSupportedException();
+            Game game = GetOneGameByName(name);
+            PlayGame(game);
         }
 
         /// <summary>
-        /// creates a new game
+        /// creates a new game -- copies are OK
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
-        public void StartNewGame()
+        public void StartNewGame(string name, PlayerManager playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
         {
-            throw new NotSupportedException();
+            Game game = new(name, playerManager, dice);
+            SaveGame(game);
+            PlayGame(game);
         }
 
         public void DeleteGame(Game game)
         {
-            throw new NotSupportedException();
+            games.Remove(game);
         }
+
         private void PlayGame(Game game)
         {
-            throw new NotSupportedException();
+            while(true)
+            {
+                Player current = game.GetWhoPlaysNow();
+                game.PerformTurn(current);
+                game.PrepareNextPlayer(current);
+                // TODO
+                break;
+            }
         }
     }
 }
