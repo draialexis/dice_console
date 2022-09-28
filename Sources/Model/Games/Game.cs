@@ -97,22 +97,16 @@ namespace Model.Games
                 player,
                 ThrowAll()
                 );
-            if(AddTurn(turn) == null)
-            {
-                // log an error onc we have a logger ?
-                Debug.WriteLine("tried to add two identical turns: " + turn);
-            }
+            AddTurn(turn);
         }
 
 
-        private Turn AddTurn(Turn turn)
+        private void AddTurn(Turn turn)
         {
             if (!(turns.Contains(turn)))
             {
                 turns.Add(turn);
-                return turn;
             }
-            return null;
         }
 
         /// <summary>
