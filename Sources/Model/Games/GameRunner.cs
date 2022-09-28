@@ -42,19 +42,19 @@ namespace Model.Games
         }
 
         /// <summary>
-        /// saves a given game
+        /// saves a given game -- does not allow copies yet: if a game with the same name exists, it is overwritten
         /// </summary>
         /// <param name="game">a game to save</param>
         /// <exception cref="NotSupportedException"></exception>
         public void SaveGame(Game game)
         {
-            if(game != null)
+            if (game != null)
             {
                 games.Remove(games.FirstOrDefault(g => g.Name == game.Name));
                 // will often be an update: if game with that name exists, it is removed, else, nothing happens above
                 games.Add(game);
             }
-            
+
         }
 
         /// <summary>
@@ -66,18 +66,16 @@ namespace Model.Games
         public void LoadGame(string name)
         {
             Game game = GetOneGameByName(name);
-            PlayGame(game);
         }
 
         /// <summary>
-        /// creates a new game -- copies are OK
+        /// creates a new game
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
         public void StartNewGame(string name, PlayerManager playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
         {
             Game game = new(name, playerManager, dice);
             SaveGame(game);
-            PlayGame(game);
         }
 
         public void DeleteGame(Game game)
@@ -85,16 +83,76 @@ namespace Model.Games
             games.Remove(game);
         }
 
-        private void PlayGame(Game game)
+        /// <summary>
+        /// plays one turn of the game
+        /// </summary>
+        /// <param name="game">the game from which a turn will be played</param>
+        public void PlayGame(Game game)
         {
-            while(true)
-            {
-                Player current = game.GetWhoPlaysNow();
-                game.PerformTurn(current);
-                game.PrepareNextPlayer(current);
-                // TODO
-                break;
-            }
+            Player current = game.GetWhoPlaysNow();
+            game.PerformTurn(current);
+            game.PrepareNextPlayer(current);
+        }
+
+        public void AddGlobalPlayer(Player player)
+        {
+            globalPlayerManager.Add(player);
+        }
+
+        public IEnumerable<Player> GetGlobalPlayers()
+        {
+            return globalPlayerManager.GetAll();
+        }
+
+        public Player GetOneGlobalPlayerByName(string name)
+        {
+            return globalPlayerManager.GetOneByName(name);
+        }
+
+        public void UpdateGlobalPlayer(Player oldPlayer, Player newPlayer)
+        {
+            globalPlayerManager.Update(oldPlayer, newPlayer);
+        }
+
+        public void DeleteGlobalPlayer(Player oldPlayer)
+        {
+            globalPlayerManager.Remove(oldPlayer);
+        }
+
+        public void AddGlobalDiceGroup(string name, IEnumerable<AbstractDie<AbstractDieFace>> dice)
+        {
+            globalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(name, dice));
+        }
+
+        public IEnumerable<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> GetGlobalDiceGroups()
+        {
+            return globalDieManager.GetAll();
+        }
+
+        public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> GetOneGlobalDiceGroupByName(string name)
+        {
+            return globalDieManager.GetOneByName(name);
+        }
+
+        /// <summary>
+        /// only updates names
+        /// </summary>
+        /// <param name="oldName">old name</param>
+        /// <param name="newName">new name</param>
+        public void UpdateGlobalDiceGroup(string oldName, string newName)
+        {
+            KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> oldDiceGroup = GetOneGlobalDiceGroupByName(oldName);
+            KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> newDiceGroup = new(newName, oldDiceGroup.Value);
+            globalDieManager.Update(oldDiceGroup, newDiceGroup);
+        }
+
+        /// <summary>
+        /// will remove those dice groups from other games, potentially breaking them
+        /// </summary>
+        /// <param name="oldDiceGroup"></param>
+        public void DeleteGlobalDiceGroup(string oldName)
+        {
+            globalDieManager.Remove(GetOneGlobalDiceGroupByName(oldName));
         }
     }
 }
