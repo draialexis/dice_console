@@ -11,14 +11,14 @@ namespace Model.Games
 {
     public class GameRunner : IManager<Game>
     {
-        private readonly IManager<Player> globalPlayerManager;
-        private readonly IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> globalDieManager;
+        public IManager<Player> GlobalPlayerManager { get; private set; }
+        public IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> GlobalDieManager { get; private set; }
         private readonly List<Game> games;
 
         public GameRunner(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> globalDieManager, List<Game> games)
         {
-            this.globalPlayerManager = globalPlayerManager;
-            this.globalDieManager = globalDieManager;
+            GlobalPlayerManager = globalPlayerManager;
+            GlobalDieManager = globalDieManager;
             this.games = games ?? new();
         }
 
@@ -87,67 +87,6 @@ namespace Model.Games
             Player current = game.GetWhoPlaysNow();
             game.PerformTurn(current);
             game.PrepareNextPlayer(current);
-        }
-
-        public void AddGlobalPlayer(Player player)
-        {
-            globalPlayerManager.Add(player);
-        }
-
-        public IEnumerable<Player> GetGlobalPlayers()
-        {
-            return globalPlayerManager.GetAll();
-        }
-
-        public Player GetOneGlobalPlayerByName(string name)
-        {
-            return globalPlayerManager.GetOneByName(name);
-        }
-
-        public void UpdateGlobalPlayer(Player oldPlayer, Player newPlayer)
-        {
-            globalPlayerManager.Update(oldPlayer, newPlayer);
-        }
-
-        public void DeleteGlobalPlayer(Player oldPlayer)
-        {
-            globalPlayerManager.Remove(oldPlayer);
-        }
-
-        public void AddGlobalDiceGroup(string name, IEnumerable<AbstractDie<AbstractDieFace>> dice)
-        {
-            globalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(name, dice));
-        }
-
-        public IEnumerable<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> GetGlobalDiceGroups()
-        {
-            return globalDieManager.GetAll();
-        }
-
-        public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> GetOneGlobalDiceGroupByName(string name)
-        {
-            return globalDieManager.GetOneByName(name);
-        }
-
-        /// <summary>
-        /// only updates names
-        /// </summary>
-        /// <param name="oldName">old name</param>
-        /// <param name="newName">new name</param>
-        public void UpdateGlobalDiceGroup(string oldName, string newName)
-        {
-            KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> oldDiceGroup = GetOneGlobalDiceGroupByName(oldName);
-            KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> newDiceGroup = new(newName, oldDiceGroup.Value);
-            globalDieManager.Update(oldDiceGroup, newDiceGroup);
-        }
-
-        /// <summary>
-        /// will remove those dice groups from other games, potentially breaking them
-        /// </summary>
-        /// <param name="oldDiceGroup"></param>
-        public void DeleteGlobalDiceGroup(string oldName)
-        {
-            globalDieManager.Remove(GetOneGlobalDiceGroupByName(oldName));
         }
     }
 }

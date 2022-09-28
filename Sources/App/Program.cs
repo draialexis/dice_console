@@ -56,7 +56,7 @@ namespace App
 
                     case "n":
 
-                        if (!gameRunner.GetGlobalDiceGroups().Any())
+                        if (!gameRunner.GlobalDieManager.GetAll().Any())
                         {
                             Console.WriteLine("make at least one dice group first, then try again");
                             break;
@@ -114,7 +114,7 @@ namespace App
                                 newGroupDice.Add(die);
                             }
                         }
-                        gameRunner.AddGlobalDiceGroup(newGroupName, newGroupDice);
+                        gameRunner.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(newGroupName, newGroupDice));
                         break;
 
                     default:
@@ -227,7 +227,7 @@ namespace App
             List<AbstractDie<AbstractDieFace>> result = new();
             Console.WriteLine("add dice to the game");
             Console.WriteLine("all known dice or groups of dice:");
-            foreach ((string name, IEnumerable<AbstractDie<AbstractDieFace>> dice) in gameRunner.GetGlobalDiceGroups())
+            foreach ((string name, IEnumerable<AbstractDie<AbstractDieFace>> dice) in gameRunner.GlobalDieManager.GetAll())
             {
                 Console.WriteLine($"{name} -- {dice}");
             }
@@ -239,7 +239,7 @@ namespace App
                 //  no checks, this is temporary
                 if (!menuChoiceDice.Equals("ok"))
                 {
-                    IEnumerable<AbstractDie<AbstractDieFace>> chosenDice = gameRunner.GetOneGlobalDiceGroupByName(menuChoiceDice).Value;
+                    IEnumerable<AbstractDie<AbstractDieFace>> chosenDice = gameRunner.GlobalDieManager.GetOneByName(menuChoiceDice).Value;
                     foreach (AbstractDie<AbstractDieFace> die in chosenDice)
                     {
                         result.Add(die);
@@ -253,7 +253,7 @@ namespace App
             PlayerManager result = new();
             Console.WriteLine("add players to the game");
             Console.WriteLine("all known players:");
-            foreach (Player player in gameRunner.GetGlobalPlayers())
+            foreach (Player player in gameRunner.GlobalPlayerManager.GetAll())
             {
                 Console.WriteLine(player);
             }
@@ -265,10 +265,10 @@ namespace App
                 if (!menuChoicePlayers.Equals("ok"))
                 {
                     Player player = new(menuChoicePlayers);
-                    if (!gameRunner.GetGlobalPlayers().Contains(player))
+                    if (!gameRunner.GlobalPlayerManager.GetAll().Contains(player))
                     {
                         // if the player didn't exist, now it does... this is temporary
-                        gameRunner.AddGlobalPlayer(player);
+                        gameRunner.GlobalPlayerManager.Add(player);
                     }
                     // almost no checks, this is temporary
                     result.Add(player);
