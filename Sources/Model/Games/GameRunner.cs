@@ -9,20 +9,20 @@ using Model.Players;
 
 namespace Model.Games
 {
-    public class GameRunner
+    public class GameRunner : IManager<Game>
     {
-        private readonly IManager<Player> globalPlayerManager;
-        private readonly IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> globalDieManager;
+        public IManager<Player> GlobalPlayerManager { get; private set; }
+        public IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> GlobalDieManager { get; private set; }
         private readonly List<Game> games;
 
         public GameRunner(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> globalDieManager, List<Game> games)
         {
-            this.globalPlayerManager = globalPlayerManager;
-            this.globalDieManager = globalDieManager;
+            GlobalPlayerManager = globalPlayerManager;
+            GlobalDieManager = globalDieManager;
             this.games = games ?? new();
         }
 
-        public IEnumerable<Game> GetAllGames() => games.AsEnumerable();
+        public IEnumerable<Game> GetAll() => games.AsEnumerable();
 
         /// <summary>
         /// finds the game with that name and returns it
@@ -31,7 +31,7 @@ namespace Model.Games
         /// </summary>
         /// <param name="name">a games's name</param>
         /// <returns>game with said name, <em>or null</em> if no such game was found</returns>
-        public Game GetOneGameByName(string name)
+        public Game GetOneByName(string name)
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
@@ -46,15 +46,16 @@ namespace Model.Games
         /// </summary>
         /// <param name="game">a game to save</param>
         /// <exception cref="NotSupportedException"></exception>
-        public void SaveGame(Game game)
+        public Game Add(Game game)
         {
             if (game != null)
             {
                 games.Remove(games.FirstOrDefault(g => g.Name == game.Name));
                 // will often be an update: if game with that name exists, it is removed, else, nothing happens above
                 games.Add(game);
+                return game;
             }
-
+            return null;
         }
 
         /// <summary>
@@ -64,12 +65,17 @@ namespace Model.Games
         public void StartNewGame(string name, PlayerManager playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
         {
             Game game = new(name, playerManager, dice);
-            SaveGame(game);
+            Add(game);
         }
 
-        public void DeleteGame(Game game)
+        public void Remove(Game game)
         {
             games.Remove(game);
+        }
+
+        public Game Update(Game oldGame, Game newGame)
+        {
+            return Add(newGame);
         }
 
         /// <summary>
@@ -81,67 +87,6 @@ namespace Model.Games
             Player current = game.GetWhoPlaysNow();
             game.PerformTurn(current);
             game.PrepareNextPlayer(current);
-        }
-
-        public void AddGlobalPlayer(Player player)
-        {
-            globalPlayerManager.Add(player);
-        }
-
-        public IEnumerable<Player> GetGlobalPlayers()
-        {
-            return globalPlayerManager.GetAll();
-        }
-
-        public Player GetOneGlobalPlayerByName(string name)
-        {
-            return globalPlayerManager.GetOneByName(name);
-        }
-
-        public void UpdateGlobalPlayer(Player oldPlayer, Player newPlayer)
-        {
-            globalPlayerManager.Update(oldPlayer, newPlayer);
-        }
-
-        public void DeleteGlobalPlayer(Player oldPlayer)
-        {
-            globalPlayerManager.Remove(oldPlayer);
-        }
-
-        public void AddGlobalDiceGroup(string name, IEnumerable<AbstractDie<AbstractDieFace>> dice)
-        {
-            globalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(name, dice));
-        }
-
-        public IEnumerable<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> GetGlobalDiceGroups()
-        {
-            return globalDieManager.GetAll();
-        }
-
-        public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> GetOneGlobalDiceGroupByName(string name)
-        {
-            return globalDieManager.GetOneByName(name);
-        }
-
-        /// <summary>
-        /// only updates names
-        /// </summary>
-        /// <param name="oldName">old name</param>
-        /// <param name="newName">new name</param>
-        public void UpdateGlobalDiceGroup(string oldName, string newName)
-        {
-            KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> oldDiceGroup = GetOneGlobalDiceGroupByName(oldName);
-            KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> newDiceGroup = new(newName, oldDiceGroup.Value);
-            globalDieManager.Update(oldDiceGroup, newDiceGroup);
-        }
-
-        /// <summary>
-        /// will remove those dice groups from other games, potentially breaking them
-        /// </summary>
-        /// <param name="oldDiceGroup"></param>
-        public void DeleteGlobalDiceGroup(string oldName)
-        {
-            globalDieManager.Remove(GetOneGlobalDiceGroupByName(oldName));
         }
     }
 }
