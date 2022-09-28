@@ -48,7 +48,7 @@ namespace App
 
                     case "l":
                         string loadName = ChooseGame(gameRunner);
-                        if (gameRunner.GetOneGameByName(loadName) != null)
+                        if (gameRunner.GetOneByName(loadName) != null)
                         {
                             Play(gameRunner, loadName);
                         }
@@ -75,7 +75,7 @@ namespace App
 
                     case "d":
                         string deleteName = ChooseGame(gameRunner);
-                        gameRunner.DeleteGame(gameRunner.GetOneGameByName(deleteName));
+                        gameRunner.Remove(gameRunner.GetOneByName(deleteName));
                         break;
 
                     case "c":
@@ -130,7 +130,7 @@ namespace App
             string menuChoicePlay = "";
             while (menuChoicePlay != "q")
             {
-                Game game = gameRunner.GetOneGameByName(name);
+                Game game = gameRunner.GetOneByName(name);
                 Console.WriteLine($"{game.GetWhoPlaysNow()}'s turn\n" +
                     "q... quit\n" +
                     "h... show history\n" +
@@ -158,7 +158,7 @@ namespace App
         {
             string name;
             Console.WriteLine("which of these games?\n(choose by name)\n>");
-            foreach (Game game in gameRunner.GetAllGames())
+            foreach (Game game in gameRunner.GetAll())
             {
                 Console.WriteLine(game);
             }

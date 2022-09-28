@@ -9,7 +9,7 @@ using Model.Players;
 
 namespace Model.Games
 {
-    public class GameRunner
+    public class GameRunner : IManager<Game>
     {
         private readonly IManager<Player> globalPlayerManager;
         private readonly IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> globalDieManager;
@@ -22,7 +22,7 @@ namespace Model.Games
             this.games = games ?? new();
         }
 
-        public IEnumerable<Game> GetAllGames() => games.AsEnumerable();
+        public IEnumerable<Game> GetAll() => games.AsEnumerable();
 
         /// <summary>
         /// finds the game with that name and returns it
@@ -31,7 +31,7 @@ namespace Model.Games
         /// </summary>
         /// <param name="name">a games's name</param>
         /// <returns>game with said name, <em>or null</em> if no such game was found</returns>
-        public Game GetOneGameByName(string name)
+        public Game GetOneByName(string name)
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
@@ -46,15 +46,16 @@ namespace Model.Games
         /// </summary>
         /// <param name="game">a game to save</param>
         /// <exception cref="NotSupportedException"></exception>
-        public void SaveGame(Game game)
+        public Game Add(Game game)
         {
             if (game != null)
             {
                 games.Remove(games.FirstOrDefault(g => g.Name == game.Name));
                 // will often be an update: if game with that name exists, it is removed, else, nothing happens above
                 games.Add(game);
+                return game;
             }
-
+            return null;
         }
 
         /// <summary>
@@ -64,12 +65,17 @@ namespace Model.Games
         public void StartNewGame(string name, PlayerManager playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
         {
             Game game = new(name, playerManager, dice);
-            SaveGame(game);
+            Add(game);
         }
 
-        public void DeleteGame(Game game)
+        public void Remove(Game game)
         {
             games.Remove(game);
+        }
+
+        public Game Update(Game oldGame, Game newGame)
+        {
+            return Add(newGame);
         }
 
         /// <summary>
