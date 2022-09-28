@@ -3,6 +3,7 @@ using Model.Dice.Faces;
 using Model.Players;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -96,10 +97,22 @@ namespace Model.Games
                 player,
                 ThrowAll()
                 );
-            if(turn != null && !(turns.Contains(turn)))
+            if(AddTurn(turn) == null)
+            {
+                // log an error onc we have a logger ?
+                Debug.WriteLine("tried to add two identical turns: " + turn);
+            }
+        }
+
+
+        private Turn AddTurn(Turn turn)
+        {
+            if (!(turns.Contains(turn)))
             {
                 turns.Add(turn);
+                return turn;
             }
+            return null;
         }
 
         /// <summary>
