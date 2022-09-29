@@ -67,7 +67,7 @@ namespace Model.Games
         /// creates a new game
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
-        public Game StartNewGame(string name, PlayerManager playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
+        public Game StartNewGame(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
         {
             Game game = new(name, playerManager, dice);
             return Add(game);
