@@ -73,7 +73,7 @@ namespace Tests.Model_UTs
         }
 
         [Fact]
-        public void TestAddwhenNullThenThrowsException()
+        public void TestAddWhenNullThenThrowsException()
         {
             // Arrange
 
@@ -90,7 +90,7 @@ namespace Tests.Model_UTs
         [InlineData("")]
         [InlineData(null)]
         [InlineData(" ")]
-        public void TestGetOneByNameIfInvalidThrowsException(string name)
+        public void TestGetOneByNameWhenInvalidThenThrowsException(string name)
         {
             // Arrange
 
@@ -103,7 +103,7 @@ namespace Tests.Model_UTs
         }
 
         [Fact]
-        public void TestGetOneByNameIfValidButNotExistThenReturnNull()
+        public void TestGetOneByNameWhenValidButNotExistThenReturnNull()
         {
             // Arrange
 
@@ -116,7 +116,7 @@ namespace Tests.Model_UTs
         }
 
         [Fact]
-        public void TestGetOneByNameIfValidThenReturnGame()
+        public void TestGetOneByNameWhenValidThenReturnGame()
         {
             // Arrange
             GameRunner gameRunner = new(new PlayerManager(), new DieManager());
@@ -131,63 +131,49 @@ namespace Tests.Model_UTs
         }
 
         [Fact]
-        public void TestRemoveWorksIfExists()
+        public void TestWhenRemoveExistsThenSucceeds()
         {
             // Arrange
-
+            Game game = new("blargh", new PlayerManager(), stubGameRunner.GetAll().First().Dice);
+            stubGameRunner.Add(game);
 
             // Act
-
+            stubGameRunner.Remove(game);
 
             // Assert
-
+            Assert.DoesNotContain(game, stubGameRunner.GetAll());
         }
 
         [Fact]
-        public void TestRemoveThrowsExceptionIfGivenNull()
+        public void TestRemoveWhenGivenNullThenThrowsException()
         {
             // Arrange
 
 
             // Act
-
+            void action() => stubGameRunner.Remove(null);
 
             // Assert
-
+            Assert.Throws<ArgumentNullException>(action);
         }
 
         [Fact]
-        public void TestRemoveFailsSilentlyIfGivenNonExistent()
+        public void TestRemoveWhenGiveenNonExistentThenFailsSilently()
         {
             // Arrange
-
+            Game notGame = new("blargh", new PlayerManager(), stubGameRunner.GetAll().First().Dice);
+            IEnumerable<Game> expected = stubGameRunner.GetAll();
 
             // Act
-
+            stubGameRunner.Remove(notGame);
+            IEnumerable<Game> actual = stubGameRunner.GetAll();
 
             // Assert
-
+            Assert.Equal(actual, expected);
         }
 
         [Fact]
         public void TestUpdateWorksIfValid()
-        {
-            // Arrange
-
-
-            // Act
-
-
-            // Assert
-
-        }
-
-        [Theory]
-        [InlineData("Filibert", "filibert")]
-        [InlineData("Filibert", " fiLibert")]
-        [InlineData("Filibert", "FIlibert ")]
-        [InlineData(" Filibert", " filiBErt ")]
-        public void TestUpdateDiscreetlyUpdatesCaseAndIgnoresExtraSpaceIfOtherwiseSame(string n1, string n2)
         {
             // Arrange
 
