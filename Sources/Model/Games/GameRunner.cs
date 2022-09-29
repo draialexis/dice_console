@@ -22,6 +22,10 @@ namespace Model.Games
             this.games = games ?? new();
         }
 
+        public GameRunner(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> globalDieManager)
+            : this(globalPlayerManager, globalDieManager, null){ }
+
+
         public IEnumerable<Game> GetAll() => games.AsEnumerable();
 
         /// <summary>
@@ -44,18 +48,19 @@ namespace Model.Games
         /// <summary>
         /// saves a given game -- does not allow copies yet: if a game with the same name exists, it is overwritten
         /// </summary>
-        /// <param name="game">a game to save</param>
+        /// <param name="toAdd">a game to save</param>
         /// <exception cref="NotSupportedException"></exception>
-        public Game Add(Game game)
+        public Game Add(Game toAdd)
         {
-            if (game != null)
+            if (toAdd is null)
             {
-                games.Remove(games.FirstOrDefault(g => g.Name == game.Name));
-                // will often be an update: if game with that name exists, it is removed, else, nothing happens above
-                games.Add(game);
-                return game;
+                throw new ArgumentNullException(nameof(toAdd), "param should not be null");
             }
-            return null;
+            
+            games.Remove(games.FirstOrDefault(g => g.Name == toAdd.Name));
+            // will often be an update: if game with that name exists, it is removed, else, nothing happens above
+            games.Add(toAdd);
+            return toAdd;
         }
 
         /// <summary>
@@ -68,14 +73,31 @@ namespace Model.Games
             Add(game);
         }
 
-        public void Remove(Game game)
+        public void Remove(Game toRemove)
         {
-            games.Remove(game);
+            if (toRemove is null)
+            {
+                throw new ArgumentNullException(nameof(toRemove), "param should not be null");
+            }
+            games.Remove(toRemove);
         }
 
-        public Game Update(Game oldGame, Game newGame)
+        public Game Update(Game before, Game after)
         {
-            return Add(newGame);
+
+            Game[] args = { before, after };
+
+            foreach (Game game in args)
+            {
+                if (game is null)
+                {
+                    throw new ArgumentNullException(nameof(after), "param should not be null");
+                    // could also be because of before, but one param had to be chosen as an example
+                    // and putting "player" there was raising a major code smell
+                }
+            }
+            Remove(before);
+            return Add(after);
         }
 
         /// <summary>

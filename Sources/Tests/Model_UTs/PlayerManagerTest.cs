@@ -59,8 +59,8 @@ namespace Tests.Model_UTs
 
             // Assert
             Assert.Null(expected);
-            Assert.DoesNotContain(expected, playerManager.GetAll());
             Assert.Throws<ArgumentNullException>(action);
+            Assert.DoesNotContain(expected, playerManager.GetAll());
         }
 
         [Fact]
