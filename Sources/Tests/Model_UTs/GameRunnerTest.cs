@@ -1,13 +1,10 @@
-﻿using Model.Games;
+﻿using Data;
 using Model.Dice;
-using Model.Dice.Faces;
+using Model.Games;
 using Model.Players;
-using Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Tests.Model_UTs
@@ -76,10 +73,10 @@ namespace Tests.Model_UTs
         public void TestAddWhenNullThenThrowsException()
         {
             // Arrange
-
+            GameRunner gameRunner = stubGameRunner;
 
             // Act
-            void action() => stubGameRunner.Add(null);// Add() returns the added element if succesful
+            void action() => gameRunner.Add(null);// Add() returns the added element if succesful
 
             // Assert
             Assert.Throws<ArgumentNullException>(action);
@@ -93,10 +90,10 @@ namespace Tests.Model_UTs
         public void TestGetOneByNameWhenInvalidThenThrowsException(string name)
         {
             // Arrange
-
+            GameRunner gameRunner = stubGameRunner;
 
             // Act
-            void action() => stubGameRunner.GetOneByName(name);
+            void action() => gameRunner.GetOneByName(name);
 
             // Assert
             Assert.Throws<ArgumentException>(action);
@@ -106,10 +103,10 @@ namespace Tests.Model_UTs
         public void TestGetOneByNameWhenValidButNotExistThenReturnNull()
         {
             // Arrange
-
+            GameRunner gameRunner = stubGameRunner;
 
             // Act
-            Game result = stubGameRunner.GetOneByName("thereisbasicallynowaythatthisgamenamealreadyexists");
+            Game result = gameRunner.GetOneByName("thereisbasicallynowaythatthisgamenamealreadyexists");
 
             // Assert
             Assert.Null(result);
@@ -134,24 +131,25 @@ namespace Tests.Model_UTs
         public void TestWhenRemoveExistsThenSucceeds()
         {
             // Arrange
-            Game game = new("blargh", new PlayerManager(), stubGameRunner.GetAll().First().Dice);
-            stubGameRunner.Add(game);
+            GameRunner gameRunner = stubGameRunner;
+            Game game = new("blargh", new PlayerManager(), gameRunner.GetAll().First().Dice);
+            gameRunner.Add(game);
 
             // Act
-            stubGameRunner.Remove(game);
+            gameRunner.Remove(game);
 
             // Assert
-            Assert.DoesNotContain(game, stubGameRunner.GetAll());
+            Assert.DoesNotContain(game, gameRunner.GetAll());
         }
 
         [Fact]
         public void TestRemoveWhenGivenNullThenThrowsException()
         {
             // Arrange
-
+            GameRunner gameRunner = stubGameRunner;
 
             // Act
-            void action() => stubGameRunner.Remove(null);
+            void action() => gameRunner.Remove(null);
 
             // Assert
             Assert.Throws<ArgumentNullException>(action);
@@ -161,12 +159,13 @@ namespace Tests.Model_UTs
         public void TestRemoveWhenGiveenNonExistentThenFailsSilently()
         {
             // Arrange
-            Game notGame = new("blargh", new PlayerManager(), stubGameRunner.GetAll().First().Dice);
-            IEnumerable<Game> expected = stubGameRunner.GetAll();
+            GameRunner gameRunner = stubGameRunner;
+            Game notGame = new("blargh", new PlayerManager(), gameRunner.GetAll().First().Dice);
+            IEnumerable<Game> expected = gameRunner.GetAll();
 
             // Act
-            stubGameRunner.Remove(notGame);
-            IEnumerable<Game> actual = stubGameRunner.GetAll();
+            gameRunner.Remove(notGame);
+            IEnumerable<Game> actual = gameRunner.GetAll();
 
             // Assert
             Assert.Equal(actual, expected);
@@ -205,16 +204,17 @@ namespace Tests.Model_UTs
         public void TestUpdateWhenValidBeforeAndInvalidAfterThenDoesNotGo(string badName)
         {
             // Arrange
-            int expectedSize = stubGameRunner.GetAll().Count();
-            Game oldGame = stubGameRunner.GetAll().First();
+            GameRunner gameRunner = stubGameRunner;
+            int expectedSize = gameRunner.GetAll().Count();
+            Game oldGame = gameRunner.GetAll().First();
 
             // Act
-            void action() => stubGameRunner.Update(oldGame, new(badName, oldGame.PlayerManager, oldGame.Dice));
-            int actualSize = stubGameRunner.GetAll().Count();
+            void action() => gameRunner.Update(oldGame, new(badName, oldGame.PlayerManager, oldGame.Dice));
+            int actualSize = gameRunner.GetAll().Count();
 
             // Assert
             Assert.Throws<ArgumentException>(action); // thrown by constructor
-            Assert.Contains(oldGame, stubGameRunner.GetAll()); // still there
+            Assert.Contains(oldGame, gameRunner.GetAll()); // still there
             Assert.True(expectedSize == actualSize);
         }
 
@@ -222,16 +222,17 @@ namespace Tests.Model_UTs
         public void TestUpdateWhenValidBeforeAndNullAfterThenDoesNotGo()
         {
             // Arrange
-            int expectedSize = stubGameRunner.GetAll().Count();
-            Game oldGame = stubGameRunner.GetAll().First();
+            GameRunner gameRunner = stubGameRunner;
+            int expectedSize = gameRunner.GetAll().Count();
+            Game oldGame = gameRunner.GetAll().First();
 
             // Act
-            void action() => stubGameRunner.Update(oldGame, null);
-            int actualSize = stubGameRunner.GetAll().Count();
+            void action() => gameRunner.Update(oldGame, null);
+            int actualSize = gameRunner.GetAll().Count();
 
             // Assert
             Assert.Throws<ArgumentNullException>(action); // thrown by constructor
-            Assert.Contains(oldGame, stubGameRunner.GetAll()); // still there
+            Assert.Contains(oldGame, gameRunner.GetAll()); // still there
             Assert.True(expectedSize == actualSize);
         }
 
@@ -239,16 +240,17 @@ namespace Tests.Model_UTs
         public void TestUpdateDoesNotGoWithValidAfterAndNullBefore()
         {
             // Arrange
-            int expectedSize = stubGameRunner.GetAll().Count();
-            Game oldGame = stubGameRunner.GetAll().First();
+            GameRunner gameRunner = stubGameRunner;
+            int expectedSize = gameRunner.GetAll().Count();
+            Game oldGame = gameRunner.GetAll().First();
 
             // Act
-            void action() => stubGameRunner.Update(null, new("newgamename", oldGame.PlayerManager, oldGame.Dice));
-            int actualSize = stubGameRunner.GetAll().Count();
+            void action() => gameRunner.Update(null, new("newgamename", oldGame.PlayerManager, oldGame.Dice));
+            int actualSize = gameRunner.GetAll().Count();
 
             // Assert
             Assert.Throws<ArgumentNullException>(action); // thrown by constructor
-            Assert.Contains(oldGame, stubGameRunner.GetAll()); // still there
+            Assert.Contains(oldGame, gameRunner.GetAll()); // still there
             Assert.True(expectedSize == actualSize);
         }
 
@@ -259,17 +261,49 @@ namespace Tests.Model_UTs
         public void TestUpdateWhenInvalidBeforeAndValidAfterThenDoesNotGo(string badName)
         {
             // Arrange
-            int expectedSize = stubGameRunner.GetAll().Count();
-            Game oldGame = stubGameRunner.GetAll().First();
+            GameRunner gameRunner = stubGameRunner;
+            int expectedSize = gameRunner.GetAll().Count();
+            Game oldGame = gameRunner.GetAll().First();
 
             // Act
-            void action() => stubGameRunner.Update(new(badName, oldGame.PlayerManager, oldGame.Dice), new("valid", oldGame.PlayerManager, oldGame.Dice));
-            int actualSize = stubGameRunner.GetAll().Count();
+            void action() => gameRunner.Update(new(badName, oldGame.PlayerManager, oldGame.Dice), new("valid", oldGame.PlayerManager, oldGame.Dice));
+            int actualSize = gameRunner.GetAll().Count();
 
             // Assert
             Assert.Throws<ArgumentException>(action); // thrown by constructor
-            Assert.Contains(oldGame, stubGameRunner.GetAll()); // still there
+            Assert.Contains(oldGame, gameRunner.GetAll()); // still there
             Assert.True(expectedSize == actualSize);
+        }
+
+        [Fact]
+        public void TestPlayGameWhenPlayThenAddNewTurnToHistory()
+        {
+            // Arrange
+            GameRunner gameRunner = stubGameRunner;
+            Game game = gameRunner.GetAll().First();
+
+            // Act
+            int turnsBefore = game.GetHistory().Count();
+            GameRunner.PlayGame(game);
+            int turnsAfter = game.GetHistory().Count();
+
+            // Assert
+            Assert.Equal(turnsBefore + 1, turnsAfter);
+        }
+
+        [Fact]
+        public void TestStartNewGame()
+        {
+            // Arrange
+            GameRunner gameRunner = stubGameRunner;
+            string name = "blargh";
+
+            // Act
+            Assert.DoesNotContain(gameRunner.GetOneByName(name), gameRunner.GetAll());
+            gameRunner.StartNewGame(name, new PlayerManager(), stubGameRunner.GetAll().First().Dice);
+
+            // Assert
+            Assert.Contains(gameRunner.GetOneByName(name), gameRunner.GetAll());
         }
     }
 }
