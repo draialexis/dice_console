@@ -49,7 +49,6 @@ namespace Model.Games
         /// saves a given game -- does not allow copies yet: if a game with the same name exists, it is overwritten
         /// </summary>
         /// <param name="toAdd">a game to save</param>
-        /// <exception cref="NotSupportedException"></exception>
         public Game Add(Game toAdd)
         {
             if (toAdd is null)
@@ -66,7 +65,6 @@ namespace Model.Games
         /// <summary>
         /// creates a new game
         /// </summary>
-        /// <exception cref="NotSupportedException"></exception>
         public Game StartNewGame(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
         {
             Game game = new(name, playerManager, dice);
