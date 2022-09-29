@@ -1,5 +1,7 @@
 ﻿using Data;
+using Model;
 using Model.Dice;
+using Model.Dice.Faces;
 using Model.Games;
 using Model.Players;
 using System;
@@ -11,12 +13,8 @@ namespace Tests.Model_UTs
 {
     public class GameRunnerTest
     {
-        private readonly GameRunner stubGameRunner;
-        public GameRunnerTest()
-        {
-            stubGameRunner = new Stub().LoadApp();
-        }
-
+        private readonly GameRunner stubGameRunner = new Stub().LoadApp();
+        
         [Fact]
         public void TestConstructorWhenNoGamesThenNewIEnumerable()
         {
