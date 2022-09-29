@@ -144,8 +144,8 @@ namespace Tests.Model_UTs
         {
             // Arrange
             Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
-            game.AddPlayerToGame(PLAYER_1);
-            game.AddPlayerToGame(PLAYER_2);
+            game.PlayerManager.Add(PLAYER_1);
+            game.PlayerManager.Add(PLAYER_2);
 
             int n = 5;
 
@@ -172,8 +172,8 @@ namespace Tests.Model_UTs
         {
             // Arrange
             Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
-            game.AddPlayerToGame(PLAYER_1);
-            game.AddPlayerToGame(PLAYER_2);
+            game.PlayerManager.Add(PLAYER_1);
+            game.PlayerManager.Add(PLAYER_2);
 
             // Act
             Player actual = game.GetWhoPlaysNow();
@@ -221,7 +221,7 @@ namespace Tests.Model_UTs
         {
             // Arrange
             Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
-            game.AddPlayerToGame(PLAYER_1);
+            game.PlayerManager.Add(PLAYER_1);
 
             // Act
             void action() => game.PrepareNextPlayer(null);
@@ -235,7 +235,7 @@ namespace Tests.Model_UTs
         {
             // Arrange
             Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
-            game.AddPlayerToGame(PLAYER_2);
+            game.PlayerManager.Add(PLAYER_2);
 
             // Act
             void action() => game.PrepareNextPlayer(PLAYER_3);
@@ -249,8 +249,8 @@ namespace Tests.Model_UTs
         {
             // Arrange
             Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
-            game.AddPlayerToGame(PLAYER_1);
-            game.AddPlayerToGame(PLAYER_2);
+            game.PlayerManager.Add(PLAYER_1);
+            game.PlayerManager.Add(PLAYER_2);
 
             // Act
             Player expected = PLAYER_2;
@@ -269,7 +269,7 @@ namespace Tests.Model_UTs
         {
             // Arrange
             Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
-            game.AddPlayerToGame(PLAYER_1);
+            game.PlayerManager.Add(PLAYER_1);
 
             // Act
             Player expected = PLAYER_1;
@@ -291,7 +291,7 @@ namespace Tests.Model_UTs
 
             // Act
             Player expected = PLAYER_1;
-            Player actual = game.AddPlayerToGame(PLAYER_1);
+            Player actual = game.PlayerManager.Add(PLAYER_1);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -304,11 +304,11 @@ namespace Tests.Model_UTs
             Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
 
             // Act
-            Assert.Empty(game.GetPlayersFromGame());
-            game.AddPlayerToGame(PLAYER_1);
+            Assert.Empty(game.PlayerManager.GetAll());
+            game.PlayerManager.Add(PLAYER_1);
 
             // Assert
-            Assert.Single(game.GetPlayersFromGame());
+            Assert.Single(game.PlayerManager.GetAll());
         }
 
         [Fact]
@@ -316,11 +316,11 @@ namespace Tests.Model_UTs
         {
             // Arrange
             Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
-            game.AddPlayerToGame(PLAYER_1);
+            game.PlayerManager.Add(PLAYER_1);
 
             // Act
             Player expected = PLAYER_2;
-            Player actual = game.UpdatePlayerInGame(PLAYER_1, PLAYER_2);
+            Player actual = game.PlayerManager.Update(PLAYER_1, PLAYER_2);
 
             // Assert
             Assert.Equal(expected, actual);
@@ -331,13 +331,13 @@ namespace Tests.Model_UTs
         {
             // Arrange
             Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE);
-            game.AddPlayerToGame(PLAYER_1);
-            game.AddPlayerToGame(PLAYER_2);
-            game.RemovePlayerFromGame(PLAYER_1);
+            game.PlayerManager.Add(PLAYER_1);
+            game.PlayerManager.Add(PLAYER_2);
+            game.PlayerManager.Remove(PLAYER_1);
 
             // Act
             IEnumerable<Player> expected = new List<Player>() { PLAYER_2 }.AsEnumerable();
-            IEnumerable<Player> actual = game.GetPlayersFromGame();
+            IEnumerable<Player> actual = game.PlayerManager.GetAll();
 
             // Assert
             Assert.Equal(expected, actual);
@@ -366,8 +366,8 @@ namespace Tests.Model_UTs
             };
 
             Game game = new(name: GAME_NAME, playerManager: new PlayerManager(), dice: DICE, turns: turns);
-            game.AddPlayerToGame(PLAYER_1);
-            game.AddPlayerToGame(PLAYER_2);
+            game.PlayerManager.Add(PLAYER_1);
+            game.PlayerManager.Add(PLAYER_2);
 
             // Act
             string[] dateTimeString = dateTime.ToString("s", System.Globalization.CultureInfo.InvariantCulture).Split("T");

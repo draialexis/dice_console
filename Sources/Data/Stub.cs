@@ -62,15 +62,15 @@ namespace Data
 
             GameRunner gameRunner = new(globalPlayerManager, globalDieManager, games);
 
-            game1.AddPlayerToGame(player1);
-            game1.AddPlayerToGame(player2);
+            game1.PlayerManager.Add(player1);
+            game1.PlayerManager.Add(player2);
 
-            game2.AddPlayerToGame(player1);
-            game2.AddPlayerToGame(player2);
-            game2.AddPlayerToGame(player3);
+            game2.PlayerManager.Add(player1);
+            game2.PlayerManager.Add(player2);
+            game2.PlayerManager.Add(player3);
 
-            game3.AddPlayerToGame(player1);
-            game3.AddPlayerToGame(player3);
+            game3.PlayerManager.Add(player1);
+            game3.PlayerManager.Add(player3);
 
             foreach (Game game in games)
             {

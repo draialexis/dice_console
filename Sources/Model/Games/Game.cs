@@ -52,7 +52,7 @@ namespace Model.Games
         /// <summary>
         /// the game's player manager, doing CRUD on players and switching whose turn it is
         /// </summary>
-        private readonly IManager<Player> playerManager;
+        public IManager<Player> PlayerManager { get; private set; }
 
         /// <summary>
         /// the group of dice used for this game
@@ -71,8 +71,8 @@ namespace Model.Games
         public Game(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice, IEnumerable<Turn> turns)
         {
             Name = name;
+            PlayerManager = playerManager;
             this.turns = turns is null ? new List<Turn>() : turns.ToList();
-            this.playerManager = playerManager;
             this.dice = dice;
             this.nextIndex = 0;
         }
@@ -116,11 +116,11 @@ namespace Model.Games
         /// <exception cref="Exception"></exception>
         public Player GetWhoPlaysNow()
         {
-            if (!playerManager.GetAll().Any())
+            if (!PlayerManager.GetAll().Any())
             {
                 throw new MemberAccessException("you are exploring an empty collection\nthis should not have happened");
             }
-            return playerManager.GetAll().ElementAt(nextIndex);
+            return PlayerManager.GetAll().ElementAt(nextIndex);
         }
 
         /// <summary>
@@ -132,7 +132,8 @@ namespace Model.Games
         /// <exception cref="ArgumentException"></exception>
         public void PrepareNextPlayer(Player current)
         {
-            if (!playerManager.GetAll().Any())
+            IEnumerable<Player> players = PlayerManager.GetAll();
+            if (!players.Any())
             {
                 throw new MemberAccessException("you are exploring an empty collection\nthis should not have happened");
             }
@@ -140,11 +141,11 @@ namespace Model.Games
             {
                 throw new ArgumentNullException(nameof(current), "param should not be null");
             }
-            if (!playerManager.GetAll().Contains(current))
+            if (!players.Contains(current))
             {
                 throw new ArgumentException("param could not be found in this collection\n did you forget to add it?", nameof(current));
             }
-            if (playerManager.GetAll().Last() == current)
+            if (players.Last() == current)
             {
                 // if we've reached the last player, we need the index to loop back around
                 nextIndex = 0;
@@ -170,26 +171,6 @@ namespace Model.Games
             return faces;
         }
 
-        public Player AddPlayerToGame(Player player)
-        {
-            return playerManager.Add(player);
-        }
-
-        public IEnumerable<Player> GetPlayersFromGame()
-        {
-            return playerManager.GetAll();
-        }
-
-        public Player UpdatePlayerInGame(Player oldPlayer, Player newPlayer)
-        {
-            return playerManager.Update(oldPlayer, newPlayer);
-        }
-
-        public void RemovePlayerFromGame(Player player)
-        {
-            playerManager.Remove(player);
-        }
-
         /// <summary>
         /// represents a Game in string format
         /// </summary>
@@ -200,7 +181,7 @@ namespace Model.Games
             sb.Append($"Game: {Name}");
 
             sb.Append("\nPlayers:");
-            foreach (Player player in GetPlayersFromGame())
+            foreach (Player player in PlayerManager.GetAll())
             {
                 sb.Append($" {player.ToString()}");
             }
