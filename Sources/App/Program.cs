@@ -134,6 +134,7 @@ namespace App
                 Console.WriteLine($"{game.GetWhoPlaysNow()}'s turn\n" +
                     "q... quit\n" +
                     "h... show history\n" +
+                    "s... save\n" +
                     "any other... throw");
                 menuChoicePlay = Console.ReadLine();
                 switch (menuChoicePlay)
@@ -145,6 +146,9 @@ namespace App
                         {
                             Console.WriteLine(turn);
                         }
+                        break;
+                    case "s":
+                        gameRunner.Add(game);
                         break;
                     default:
                         GameRunner.PlayGame(game);
