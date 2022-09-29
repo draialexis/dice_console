@@ -109,27 +109,25 @@ namespace Tests.Model_UTs
 
 
             // Act
-            Game result = stubGameRunner.GetOneByName("thereisbasicalllynowaythatthisgamenamealreadyexists");
+            Game result = stubGameRunner.GetOneByName("thereisbasicallynowaythatthisgamenamealreadyexists");
 
             // Assert
             Assert.Null(result);
         }
 
-        [Theory]
-        [InlineData("Bob")]
-        [InlineData("bob")]
-        [InlineData("bob ")]
-        [InlineData(" boB ")]
-        public void TestGetOneByNameIfValidThenReturnPlayer(string name)
+        [Fact]
+        public void TestGetOneByNameIfValidThenReturnGame()
         {
             // Arrange
-
+            GameRunner gameRunner = new(new PlayerManager(), new DieManager());
+            Game game = stubGameRunner.GetAll().First();
 
             // Act
-
+            Game actual = gameRunner.Add(game);
+            Game expected = game;
 
             // Assert
-
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
