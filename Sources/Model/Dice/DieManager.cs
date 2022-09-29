@@ -1,4 +1,5 @@
 ﻿using Model.Dice.Faces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,7 +11,8 @@ namespace Model.Dice
 
         public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> Add(KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> toAdd)
         {
-            diceGroups.Add(toAdd.Key, toAdd.Value);
+            // on trim la clé d'abord
+            diceGroups.Add(toAdd.Key.Trim(), toAdd.Value);
             return toAdd;
         }
 
@@ -21,6 +23,8 @@ namespace Model.Dice
 
         public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> GetOneByName(string name)
         {
+            // les groupes de dés nommés :
+            // ils sont case-sensistive, mais "mon jeu" == "mon jeu " == "  mon jeu"
             return new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(name, diceGroups[name]);
         }
 
@@ -31,11 +35,19 @@ namespace Model.Dice
 
         public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> Update(KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> before, KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> after)
         {
-            // check if key 1 exists
-            // check if both keys same
-            diceGroups.Remove(before.Key);
-            diceGroups.Add(after.Key, after.Value);
-            return after;
+            // pas autorisé de changer les dés, juste le nom
+            if (!before.Value.Equals(after.Value))
+            {
+                if (string.IsNullOrWhiteSpace(before.Key) || string.IsNullOrWhiteSpace(after.Key))
+                {
+                    throw new ArgumentNullException(nameof(before), "dice group name should not be null or empty");
+                }
+
+                diceGroups.Remove(before.Key);
+                diceGroups.Add(after.Key, after.Value);
+                return after;
+            }
+            return before;
         }
     }
 }
