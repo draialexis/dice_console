@@ -9,20 +9,21 @@ namespace Data
 {
     public class Stub : ILoader
     {
-
-        // when the other classes are ready
-        // the Stub should just make and return a GameRunner, and the GameRunner should have
-        // a PlayerManager, a collection of Games, a FavGroupManager, etc. (see diagram)
-
         public GameRunner LoadApp()
         {
-            IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> globalDieManager = new DieManager();
+            GameRunner gr = new(new PlayerManager(), new DieManager());
+
+            Player player1 = new("Alice"), player2 = new("Bob"), player3 = new("Clyde");
+
+            gr.GlobalPlayerManager.Add(player1);
+            gr.GlobalPlayerManager.Add(player2);
+            gr.GlobalPlayerManager.Add(player3);
+
 
             List<AbstractDie<AbstractDieFace>> monopolyDice = new();
             List<AbstractDie<AbstractDieFace>> dndDice = new();
 
-            string monopolyName = "Monopoly";
-            string dndName = "DnD";
+            string monopolyName = "Monopoly", dndName = "DnD";
 
             NumberDieFace[] d6Faces = new NumberDieFace[] { new(1), new(2), new(3), new(4), new(5), new(6) };
 
@@ -39,40 +40,26 @@ namespace Data
 
             dndDice.Add(new NumberDie(d20Faces));
 
-            globalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(monopolyName, monopolyDice.AsEnumerable()));
-            globalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(dndName, dndDice.AsEnumerable()));
+            gr.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(dndName, dndDice.AsEnumerable()));
+            gr.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(monopolyName, monopolyDice.AsEnumerable()));
 
-            IEnumerable<AbstractDie<AbstractDieFace>> dice1 = globalDieManager.GetOneByName(monopolyName).Value;
-            IEnumerable<AbstractDie<AbstractDieFace>> dice2 = globalDieManager.GetOneByName(dndName).Value;
+            string game1 = "Forgotten Realms", game2 = "4e", game3 = "The Coopers";
 
-            string g1 = "game1", g2 = "game2", g3 = "game3";
+            gr.Add(new(game1, new PlayerManager(), dndDice.AsEnumerable()));
+            gr.Add(new(game2, new PlayerManager(), dndDice.AsEnumerable()));
+            gr.Add(new(game3, new PlayerManager(), monopolyDice.AsEnumerable()));
 
-            Game game1 = new(name: g1, playerManager: new PlayerManager(), dice: dice1);
-            Game game2 = new(name: g2, playerManager: new PlayerManager(), dice: dice2);
-            Game game3 = new(name: g3, playerManager: new PlayerManager(), dice: dice1);
+            gr.GetOneByName(game1).PlayerManager.Add(player1);
+            gr.GetOneByName(game1).PlayerManager.Add(player2);
 
-            List<Game> games = new() { game1, game2, game3 };
+            gr.GetOneByName(game2).PlayerManager.Add(player1);
+            gr.GetOneByName(game2).PlayerManager.Add(player2);
+            gr.GetOneByName(game2).PlayerManager.Add(player3);
 
-            Player player1 = new("Alice"), player2 = new("Bob"), player3 = new("Clyde");
+            gr.GetOneByName(game3).PlayerManager.Add(player1);
+            gr.GetOneByName(game3).PlayerManager.Add(player3);
 
-            PlayerManager globalPlayerManager = new();
-            globalPlayerManager.Add(player1);
-            globalPlayerManager.Add(player2);
-            globalPlayerManager.Add(player3);
-
-            GameRunner gameRunner = new(globalPlayerManager, globalDieManager, games);
-
-            game1.PlayerManager.Add(player1);
-            game1.PlayerManager.Add(player2);
-
-            game2.PlayerManager.Add(player1);
-            game2.PlayerManager.Add(player2);
-            game2.PlayerManager.Add(player3);
-
-            game3.PlayerManager.Add(player1);
-            game3.PlayerManager.Add(player3);
-
-            foreach (Game game in games)
+            foreach (Game game in gr.GetAll())
             {
                 for (int i = 0; i < 10; i++)
                 {
@@ -82,7 +69,7 @@ namespace Data
                 }
             }
 
-            return gameRunner;
+            return gr;
         }
     }
 }
