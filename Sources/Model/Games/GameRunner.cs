@@ -67,10 +67,10 @@ namespace Model.Games
         /// creates a new game
         /// </summary>
         /// <exception cref="NotSupportedException"></exception>
-        public void StartNewGame(string name, PlayerManager playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
+        public Game StartNewGame(string name, PlayerManager playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
         {
             Game game = new(name, playerManager, dice);
-            Add(game);
+            return Add(game);
         }
 
         public void Remove(Game toRemove)
