@@ -20,8 +20,8 @@ namespace Data
             gr.GlobalPlayerManager.Add(player3);
 
 
-            List<AbstractDie<AbstractDieFace>> monopolyDice = new();
-            List<AbstractDie<AbstractDieFace>> dndDice = new();
+            List<HomogeneousDice> monopolyDice = new();
+            List<HomogeneousDice> dndDice = new();
 
             string monopolyName = "Monopoly", dndName = "DnD";
 

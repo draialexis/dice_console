@@ -57,8 +57,8 @@ namespace Model.Games
         /// <summary>
         /// the group of dice used for this game
         /// </summary>
-        public IEnumerable<AbstractDie<AbstractDieFace>> Dice => dice;
-        private readonly IEnumerable<AbstractDie<AbstractDieFace>> dice;
+        public IEnumerable<AbstractDie<AbstractDieFace<object>,object>> Dice => dice;
+        private readonly IEnumerable<AbstractDie<AbstractDieFace<object>, object>> dice;
 
         /// <summary>
         /// constructs a Game with its own history of Turns. 
@@ -68,7 +68,7 @@ namespace Model.Games
         /// <param name="turns">the turns that have been done so far</param>
         /// <param name="playerManager">the game's player manager, doing CRUD on players and switching whose turn it is</param>
         /// <param name="favGroup">the group of dice used for this game</param>
-        public Game(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice, IEnumerable<Turn> turns)
+        public Game(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace<object>, object>> dice, IEnumerable<Turn> turns)
         {
             Name = name;
             PlayerManager = playerManager;
@@ -83,7 +83,7 @@ namespace Model.Games
         /// <param name="name">the name of the game 😎</param>
         /// <param name="playerManager">the game's player manager, doing CRUD on players and switching whose turn it is</param>
         /// <param name="favGroup">the group of dice used for this game</param>
-        public Game(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
+        public Game(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace<object>, object>> dice)
             : this(name, playerManager, dice, null)
         { }
 
