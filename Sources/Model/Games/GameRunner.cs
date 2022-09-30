@@ -108,5 +108,10 @@ namespace Model.Games
             game.PerformTurn(current);
             game.PrepareNextPlayer(current);
         }
+
+        public Game GetOneByID(Guid ID)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
