@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model.Dice.Faces
 {
-    public abstract class AbstractDieFace
+    public abstract class AbstractDieFace<T>
     {
         /// <summary>
         /// every die face has a value, and they can all be represented by an int,
@@ -14,9 +14,14 @@ namespace Model.Dice.Faces
         /// <br/>
         /// USE GetPracticalValue for a Value specific to face type
         /// </summary>
-        public int Value { get; protected set; }
+        public T Value { get; protected set; }
 
-        public abstract object GetPracticalValue();
+        public abstract T GetPracticalValue();
+
+        public AbstractDieFace(T value)
+        {
+            Value = value;
+        }
 
         public override string ToString()
         {

@@ -5,7 +5,7 @@ using Model.Dice.Faces;
 
 namespace Model.Dice
 {
-    public abstract class AbstractDie<T> : RandomnessHaver where T : AbstractDieFace
+    public abstract class AbstractDie<T,G> : RandomnessHaver where T : AbstractDieFace<G>
     {
         public IEnumerable<T> ListFaces => listFaces;
 

@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace Model.Dice.Faces
 {
-    public class NumberDieFace : AbstractDieFace
+    public class NumberDieFace : AbstractDieFace<int>
     {
-        public NumberDieFace(int value)
-        {
-            Value = value;
-        }
+        public NumberDieFace(int value):base(value)
+        {}
 
-        public override object GetPracticalValue()
+        public override int GetPracticalValue()
         {
             return Value;
         }

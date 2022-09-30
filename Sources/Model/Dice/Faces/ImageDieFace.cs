@@ -7,21 +7,16 @@ using System.Threading.Tasks;
 
 namespace Model.Dice.Faces
 {
-    public class ImageDieFace : AbstractDieFace
+    public class ImageDieFace : AbstractDieFace<Uri>
     {
-        public ImageDieFace(string uri)
-        {
-            Value = int.Parse(Path.GetFileNameWithoutExtension(uri));
-        }
+        public ImageDieFace(Uri uri):base(uri)
+        {}
 
-        public ImageDieFace(int code)
-        {
-            Value = code;
-        }
 
-        public override object GetPracticalValue()
+
+        public override Uri GetPracticalValue()
         {
-            return string.Format($"Assets/images/{Value}.png");
+            return Value;
         }
     }
 }
