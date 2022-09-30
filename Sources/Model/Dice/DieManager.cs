@@ -21,6 +21,11 @@ namespace Model.Dice
             return diceGroups.AsEnumerable();
         }
 
+        public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> GetOneByID(Guid ID)
+        {
+            throw new NotImplementedException();
+        }
+
         public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> GetOneByName(string name)
         {
             // les groupes de dés nommés :
