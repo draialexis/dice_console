@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Data.EF.Players
 {
-    internal class PlayerEntity
+    public class PlayerEntity
     {
         public Guid ID { get; set; }
         public string Name { get; set; }

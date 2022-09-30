@@ -7,15 +7,11 @@ using System.Threading.Tasks;
 
 namespace Data.EF.Players
 {
-    internal class PlayerDBManager : IManager<PlayerEntity>
+    public class PlayerDBManager : IManager<PlayerEntity>
     {
-        PlayerDBContext context = new PlayerDBContext();
         
         public PlayerEntity Add(PlayerEntity toAdd)
         {
-            // just to check...
-
-            context.PlayersSet.Add(toAdd);
             throw new NotImplementedException();
         }
 

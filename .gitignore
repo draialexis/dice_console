@@ -4,6 +4,13 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Migrations and DB files
+# useful while the DB is still fluid, in the early stages
+[Mm]igrations/
+*.db
+*.db-wal
+*.db-shm
+
 # User-specific files
 *.rsuser
 *.suo
