@@ -220,9 +220,23 @@ namespace App
                 Console.WriteLine("create a face with an image uri, or enter 'ok' if you're finished");
                 menuChoiceNewFaces = Console.ReadLine();
 
-                if (menuChoiceNewFaces != "ok") faces.Add(new(new Uri(menuChoiceNewFaces)));
+                if (menuChoiceNewFaces != "ok")
+                {
+                    try
+                    {
+                        faces.Add(new(new Uri(menuChoiceNewFaces)));
+                    }
+                    catch (ArgumentNullException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    catch (UriFormatException ex)
+                    {
+                        Console.WriteLine("that URI was not valid");
+                        Console.WriteLine(ex.Message);
+                    }
+                }
             }
-
             die = new ImageDie(faces.ToArray());
             return die;
         }

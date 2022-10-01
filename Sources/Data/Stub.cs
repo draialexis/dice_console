@@ -43,12 +43,14 @@ namespace Data
 
             monopolyDice.Add(new ColorDie(colorFaces));
 
+            string rootPath = "https://unsplash.com/photos/";
+
             ImageFace[] imageFaces = new ImageFace[]
             {
-                new(new Uri("https://unsplash.com/photos/TLD6iCOlyb0")),
-                new(new Uri("https://unsplash.com/photos/rTZW4f02zY8")),
-                new(new Uri("https://unsplash.com/photos/Hyu76loQLdk")),
-                new(new Uri("https://unsplash.com/photos/A_Ncbi-RH6s")),
+                new(new Uri(rootPath + "TLD6iCOlyb0")),
+                new(new Uri(rootPath + "rTZW4f02zY8")),
+                new(new Uri(rootPath + "Hyu76loQLdk")),
+                new(new Uri(rootPath + "A_Ncbi-RH6s")),
             };
 
             monopolyDice.Add(new ImageDie(imageFaces));
