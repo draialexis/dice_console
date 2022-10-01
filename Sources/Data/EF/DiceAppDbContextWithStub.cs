@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Data.EF
 {
-    internal class DiceAppDbContextWithStub : DiceAppDbContext
+    public class DiceAppDbContextWithStub : DiceAppDbContext
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

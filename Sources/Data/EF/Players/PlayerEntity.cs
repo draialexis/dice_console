@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Model.Players;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,15 +9,36 @@ using System.Threading.Tasks;
 namespace Data.EF.Players
 {
     [Index(nameof(Name), IsUnique = true)]
-    internal class PlayerEntity
+    public sealed class PlayerEntity : IEquatable<PlayerEntity>
     {
         public Guid ID { get; set; }
 
         public string? Name { get; set; }
 
+        public override bool Equals(object? obj)
+        {
+            if (obj is not Player)
+            {
+                return false;
+            }
+            return Equals(obj as Player);
+        }
+
+        public bool Equals(PlayerEntity? other)
+        {
+            return other is not null && this.ID == other!.ID && this.Name == other.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(ID, Name);
+        }
+
         public override string? ToString()
         {
-            return $"{ID} -- {Name}";
+            return $"{ID.ToString().ToUpper()} -- {Name}";
         }
+
+
     }
 }

@@ -128,6 +128,19 @@ namespace Tests.Model_UTs
             Assert.False(p2.Equals(p1));
         }
 
+        [Fact]
+        public void TestEqualsFalseIfNull()
+        {
+            // Arrange
+            Player player;
+
+            // Act
+            player = new("Panama");
+
+            // Assert
+            Assert.False(player.Equals(null));
+        }
+
         [Theory]
         [InlineData("devoN")]
         [InlineData(" devon")]

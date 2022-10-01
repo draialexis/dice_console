@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Data.EF
 {
-    internal class DiceAppDbContext : DbContext
+    public class DiceAppDbContext : DbContext
     {
         public DbSet<PlayerEntity>? Players { get; set; }
 
