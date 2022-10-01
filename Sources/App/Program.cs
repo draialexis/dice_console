@@ -5,6 +5,7 @@ using Model.Games;
 using Model.Players;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace App
@@ -61,7 +62,7 @@ namespace App
                             Console.WriteLine("make at least one dice group first, then try again");
                             break;
                         }
-                        IEnumerable<AbstractDie<AbstractDieFace>> newGameDice = PrepareDice(gameRunner);
+                        IEnumerable<Die> newGameDice = PrepareDice(gameRunner);
 
                         string newGameName;
                         Console.WriteLine("give this new game a name\n>");
@@ -83,11 +84,11 @@ namespace App
                         Console.WriteLine("give this new dice group a name");
                         newGroupName = Console.ReadLine();
 
-                        List<AbstractDie<AbstractDieFace>> newGroupDice = new();
+                        List<Die> newGroupDice = new();
                         string menuChoiceNewDice = "";
                         while (!(menuChoiceNewDice.Equals("ok") && newGroupDice.Any()))
                         {
-                            AbstractDie<AbstractDieFace> die = null;
+                            Die die = null;
                             Console.WriteLine("create a die you want to add (at least one), or enter 'ok' if you're finished");
                             Console.WriteLine("what type of die ?\n" +
                                 "n... number\n" +
@@ -114,7 +115,7 @@ namespace App
                                 newGroupDice.Add(die);
                             }
                         }
-                        gameRunner.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(newGroupName, newGroupDice));
+                        gameRunner.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<Die>>(newGroupName, newGroupDice));
                         break;
 
                     default:
@@ -173,7 +174,7 @@ namespace App
         private static NumberDie MakeNumberDie()
         {
             NumberDie die;
-            List<NumberDieFace> faces = new();
+            List<NumberFace> faces = new();
             string menuChoiceNewFaces = "";
 
             while (menuChoiceNewFaces != "ok")
@@ -194,14 +195,14 @@ namespace App
         private static ColorDie MakeColorDie()
         {
             ColorDie die;
-            List<ColorDieFace> faces = new();
+            List<ColorFace> faces = new();
             string menuChoiceNewFaces = "";
 
             while (!menuChoiceNewFaces.Equals("ok"))
             {
-                Console.WriteLine("create a face with an color hex code, or enter 'ok' if you're finished");
+                Console.WriteLine("create a face with an color name, or enter 'ok' if you're finished");
                 menuChoiceNewFaces = Console.ReadLine();
-                if (menuChoiceNewFaces != "ok") faces.Add(new(menuChoiceNewFaces));
+                if (menuChoiceNewFaces != "ok") faces.Add(new(Color.FromName(menuChoiceNewFaces)));
             }
 
             die = new ColorDie(faces.ToArray());
@@ -211,27 +212,27 @@ namespace App
         private static ImageDie MakeImageDie()
         {
             ImageDie die;
-            List<ImageDieFace> faces = new();
+            List<ImageFace> faces = new();
             string menuChoiceNewFaces = "";
 
             while (!menuChoiceNewFaces.Equals("ok"))
             {
-                Console.WriteLine("create a face with an image url, or enter 'ok' if you're finished");
+                Console.WriteLine("create a face with an image uri, or enter 'ok' if you're finished");
                 menuChoiceNewFaces = Console.ReadLine();
 
-                if (menuChoiceNewFaces != "ok") faces.Add(new(menuChoiceNewFaces));
+                if (menuChoiceNewFaces != "ok") faces.Add(new(new Uri(menuChoiceNewFaces)));
             }
 
             die = new ImageDie(faces.ToArray());
             return die;
         }
 
-        private static IEnumerable<AbstractDie<AbstractDieFace>> PrepareDice(GameRunner gameRunner)
+        private static IEnumerable<Die> PrepareDice(GameRunner gameRunner)
         {
-            List<AbstractDie<AbstractDieFace>> result = new();
+            List<Die> result = new();
             Console.WriteLine("add dice to the game");
             Console.WriteLine("all known dice or groups of dice:");
-            foreach ((string name, IEnumerable<AbstractDie<AbstractDieFace>> dice) in gameRunner.GlobalDieManager.GetAll())
+            foreach ((string name, IEnumerable<Die> dice) in gameRunner.GlobalDieManager.GetAll())
             {
                 Console.WriteLine($"{name} -- {dice}");
             }
@@ -243,8 +244,8 @@ namespace App
                 //  no checks, this is temporary
                 if (!menuChoiceDice.Equals("ok"))
                 {
-                    IEnumerable<AbstractDie<AbstractDieFace>> chosenDice = gameRunner.GlobalDieManager.GetOneByName(menuChoiceDice).Value;
-                    foreach (AbstractDie<AbstractDieFace> die in chosenDice)
+                    IEnumerable<Die> chosenDice = gameRunner.GlobalDieManager.GetOneByName(menuChoiceDice).Value;
+                    foreach (Die die in chosenDice)
                     {
                         result.Add(die);
                     }

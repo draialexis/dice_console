@@ -5,40 +5,40 @@ using System.Linq;
 
 namespace Model.Dice
 {
-    public class DieManager : IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>>
+    public class DieManager : IManager<KeyValuePair<string, IEnumerable<Die>>>
     {
-        private readonly Dictionary<string, IEnumerable<AbstractDie<AbstractDieFace>>> diceGroups = new();
+        private readonly Dictionary<string, IEnumerable<Die>> diceGroups = new();
 
-        public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> Add(KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> toAdd)
+        public KeyValuePair<string, IEnumerable<Die>> Add(KeyValuePair<string, IEnumerable<Die>> toAdd)
         {
             // on trim la clé d'abord
             diceGroups.Add(toAdd.Key.Trim(), toAdd.Value);
             return toAdd;
         }
 
-        public IEnumerable<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> GetAll()
+        public IEnumerable<KeyValuePair<string, IEnumerable<Die>>> GetAll()
         {
             return diceGroups.AsEnumerable();
         }
 
-        public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> GetOneByID(Guid ID)
+        public KeyValuePair<string, IEnumerable<Die>> GetOneByID(Guid ID)
         {
             throw new NotImplementedException();
         }
 
-        public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> GetOneByName(string name)
+        public KeyValuePair<string, IEnumerable<Die>> GetOneByName(string name)
         {
             // les groupes de dés nommés :
             // ils sont case-sensistive, mais "mon jeu" == "mon jeu " == "  mon jeu"
-            return new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(name, diceGroups[name]);
+            return new KeyValuePair<string, IEnumerable<Die>>(name, diceGroups[name]);
         }
 
-        public void Remove(KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> toRemove)
+        public void Remove(KeyValuePair<string, IEnumerable<Die>> toRemove)
         {
             diceGroups.Remove(toRemove.Key);
         }
 
-        public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> Update(KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> before, KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> after)
+        public KeyValuePair<string, IEnumerable<Die>> Update(KeyValuePair<string, IEnumerable<Die>> before, KeyValuePair<string, IEnumerable<Die>> after)
         {
             // pas autorisé de changer les dés, juste le nom
             if (!before.Value.Equals(after.Value))

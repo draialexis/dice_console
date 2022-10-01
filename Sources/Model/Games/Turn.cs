@@ -33,8 +33,8 @@ namespace Model.Games
         /// <summary>
         /// the collection of Face that were rolled
         /// </summary>
-        public IEnumerable<KeyValuePair<AbstractDie<AbstractDieFace>, AbstractDieFace>> DiceNFaces => diceNFaces.AsEnumerable();
-        private readonly Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> diceNFaces;
+        public IEnumerable<KeyValuePair<Die, Face>> DiceNFaces => diceNFaces.AsEnumerable();
+        private readonly Dictionary<Die, Face> diceNFaces;
 
         /// <summary>
         /// this private constructor is to be used only by factories
@@ -42,7 +42,7 @@ namespace Model.Games
         /// <param name="when">date and time of the turn</param>
         /// <param name="player">player who played the turn</param>
         /// <param name="faces">faces that were rolled</param>
-        private Turn(DateTime when, Player player, Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> diceNFaces)
+        private Turn(DateTime when, Player player, Dictionary<Die, Face> diceNFaces)
         {
             When = when;
             Player = player;
@@ -59,7 +59,7 @@ namespace Model.Games
         /// <param name="player">player who played the turn</param>
         /// <param name="faces">faces that were rolled</param>
         /// <returns>a new Turn object</returns>
-        public static Turn CreateWithSpecifiedTime(DateTime when, Player player, Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> diceNFaces)
+        public static Turn CreateWithSpecifiedTime(DateTime when, Player player, Dictionary<Die, Face> diceNFaces)
         {
             if (player is null)
             {
@@ -87,7 +87,7 @@ namespace Model.Games
         /// <param name="player">player who played the turn</param>
         /// <param name="faces">faces that were rolled</param>
         /// <returns>a new Turn object</returns>
-        public static Turn CreateWithDefaultTime(Player player, Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> diceNFaces)
+        public static Turn CreateWithDefaultTime(Player player, Dictionary<Die, Face> diceNFaces)
         {
             return CreateWithSpecifiedTime(DateTime.UtcNow, player, diceNFaces);
         }
@@ -108,7 +108,7 @@ namespace Model.Games
                 date,
                 time,
                 Player.ToString());
-            foreach (AbstractDieFace face in this.diceNFaces.Values)
+            foreach (Face face in this.diceNFaces.Values)
             {
                 sb.Append(" " + face.ToString());
             }

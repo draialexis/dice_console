@@ -1,15 +1,11 @@
 ﻿using Model.Dice.Faces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model.Dice
 {
-    public class ImageDie : AbstractDie<AbstractDieFace>
+    public class ImageDie : HomogeneousDie<Uri>
     {
-        public ImageDie(params ImageDieFace[] faces) : base(faces)
+        public ImageDie(params ImageFace[] faces) : base(faces)
         {
         }
     }
