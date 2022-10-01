@@ -6,8 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Data.EF.Players;
+using Tests.Model_UTs;
 
-namespace Tests.Model_UTs
+namespace Tests.Data_UTs.Players
 {
     public class PlayerEntityTest
     {
@@ -91,7 +92,7 @@ namespace Tests.Model_UTs
         public void TestGoesThruToSecondMethodIfObjIsTypePlayerEntity()
         {
             // Arrange
-            Object p1;
+            object p1;
             PlayerEntity p2;
 
             // Act

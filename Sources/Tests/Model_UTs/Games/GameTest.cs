@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using Xunit;
 
-namespace Tests.Model_UTs
+namespace Tests.Model_UTs.Games
 {
     public class GameTest
     {

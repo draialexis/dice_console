@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Tests.Model_UTs
+namespace Tests.Data_UTs.Players
 {
     public class PlayerExtensionsTest
     {
