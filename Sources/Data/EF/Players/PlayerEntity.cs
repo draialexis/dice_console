@@ -8,10 +8,15 @@ using System.Threading.Tasks;
 namespace Data.EF.Players
 {
     [Index(nameof(Name), IsUnique = true)]
-    public class PlayerEntity
+    internal class PlayerEntity
     {
         public Guid ID { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
+
+        public override string? ToString()
+        {
+            return $"{ID} -- {Name}";
+        }
     }
 }

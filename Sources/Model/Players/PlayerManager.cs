@@ -19,7 +19,7 @@ namespace Model.Players
         /// add a new player
         /// </summary>
         /// <param name="toAdd">player to be added</param>
-        /// <returns>added player, or null if <paramref name="toAdd"/> was null</returns>
+        /// <returns>added player</returns>
         public Player Add(Player toAdd)
         {
             if (toAdd is null)

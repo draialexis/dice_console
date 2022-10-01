@@ -15,14 +15,30 @@ namespace Data
     {
         static void Main(string[] args)
         {
-            using (DiceAppDbContext db = new DiceAppDbContextWithStub()) // we will remove the "WithStub" bit when we release
+            using (PlayerDBManager playerDBManager = new())
             {
-                if (db.Players is not null)
+                PrintTable(playerDBManager.GetAll(), "Before");
+                try
                 {
-                    foreach (PlayerEntity entity in db.Players)
-                    {
-                        Debug.WriteLine($"{entity.ID} -- {entity.Name}");
-                    }
+                    playerDBManager.Add(PlayerExtensions.ToEntity(new Player("Ernesto")));
+
+                }
+                catch (ArgumentException ex)
+                {
+                    Debug.WriteLine($"{ex.Message}\n... Never mind");
+                }
+                PrintTable(playerDBManager.GetAll(), "After");
+            }
+        }
+
+        static void PrintTable(IEnumerable table, string description)
+        {
+            Debug.WriteLine(description);
+            if (table is not null)
+            {
+                foreach (var entity in table)
+                {
+                    Debug.WriteLine(entity);
                 }
             }
         }

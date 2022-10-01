@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,17 +8,30 @@ using System.Threading.Tasks;
 
 namespace Data.EF.Players
 {
-    public class PlayerDBManager : IManager<PlayerEntity>
+    internal class PlayerDBManager : IManager<PlayerEntity>, IDisposable
     {
-        
+        private readonly DiceAppDbContext db = new DiceAppDbContextWithStub();
+
+        public void Dispose()
+        {
+            db.Dispose();
+        }
+
         public PlayerEntity Add(PlayerEntity toAdd)
         {
-            throw new NotImplementedException();
+            if (db.Players!.Where(entity => entity.Name == toAdd.Name).Any())
+            {
+                throw new ArgumentException("this username is already taken", nameof(toAdd));
+            }
+            EntityEntry ee = db.Players!.Add(toAdd);
+            db.SaveChanges();
+            return (PlayerEntity)ee.Entity;
         }
+
 
         public IEnumerable<PlayerEntity> GetAll()
         {
-            throw new NotImplementedException();
+            return db.Players!.AsEnumerable();
         }
 
         public PlayerEntity GetOneByName(string name)

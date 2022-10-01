@@ -2,7 +2,7 @@
 
 namespace Data.EF.Players
 {
-    public static class PlayerExtensions
+    internal static class PlayerExtensions
     {
         public static Player ToModel(this PlayerEntity entity)
         {
