@@ -48,5 +48,10 @@ namespace Data.EF.Players
         {
             throw new NotImplementedException();
         }
+
+        public PlayerEntity GetOneByID(Guid ID)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
