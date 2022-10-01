@@ -11,7 +11,7 @@ using System.Runtime.Intrinsics.Arm;
 
 namespace Data
 {
-    class Program
+    internal static class Program
     {
         static void Main(string[] args)
         {
