@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Model.Dice
 {
-    public class ColorDie : AbstractDie<ColorDieFace,Color>
+    public class ColorDie : AbstractDie<Color>
     {
         public ColorDie(params ColorDieFace[] faces) : base(faces)
         {

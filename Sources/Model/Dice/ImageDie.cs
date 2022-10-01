@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Model.Dice
 {
-    public class ImageDie : HomogeneousDice
+    public class ImageDie : HomogeneousDice<Uri>
     {
         public ImageDie(params ImageDieFace[] faces) : base(faces)
         {

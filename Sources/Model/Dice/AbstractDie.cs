@@ -9,14 +9,14 @@ namespace Model.Dice
     {
         public IEnumerable<AbstractDieFace<T>> ListFaces => listFaces;
 
-        private readonly List<T> listFaces = new();
+        private readonly List<AbstractDieFace<T>> listFaces = new();
 
-        protected AbstractDie(params T[] faces)
+        protected AbstractDie(params AbstractDieFace<T>[] faces)
         {
             listFaces.AddRange(faces);
         }
 
-        public T GetRandomFace()
+        public AbstractDieFace<T> GetRandomFace()
         {
             int faceIndex = rnd.Next(0, ListFaces.Count());
             return ListFaces.ElementAt(faceIndex);
