@@ -12,6 +12,15 @@ namespace Model.Dice
         public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> Add(KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> toAdd)
         {
             // on trim la clé d'abord
+            if (toAdd.Key == null)
+            {
+                throw new ArgumentNullException(nameof(toAdd), "param should not be null");
+
+            }
+            if (diceGroups.Contains(toAdd))
+            {
+                throw new ArgumentException("this username is already taken", nameof(toAdd));
+            }
             diceGroups.Add(toAdd.Key.Trim(), toAdd.Value);
             return toAdd;
         }
@@ -30,12 +39,28 @@ namespace Model.Dice
         {
             // les groupes de dés nommés :
             // ils sont case-sensistive, mais "mon jeu" == "mon jeu " == "  mon jeu"
-            return new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(name, diceGroups[name]);
+            if (name != null)
+            {
+                return new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(name, diceGroups[name]);
+            }
+            else {
+                throw new ArgumentNullException(nameof(name), "param should not be null");
+
+
+            }
         }
 
         public void Remove(KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> toRemove)
         {
-            diceGroups.Remove(toRemove.Key);
+            if (toRemove.Key != null)
+            { 
+                throw new ArgumentNullException(nameof(toRemove), "param should not be null"); }
+            else
+            {
+                diceGroups.Remove(toRemove.Key);
+            }
+
+
         }
 
         public KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> Update(KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> before, KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>> after)
