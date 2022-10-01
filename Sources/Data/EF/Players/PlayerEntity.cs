@@ -17,11 +17,11 @@ namespace Data.EF.Players
 
         public override bool Equals(object? obj)
         {
-            if (obj is not Player)
+            if (obj is not PlayerEntity)
             {
                 return false;
             }
-            return Equals(obj as Player);
+            return Equals(obj as PlayerEntity);
         }
 
         public bool Equals(PlayerEntity? other)
