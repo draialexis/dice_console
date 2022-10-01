@@ -7,21 +7,21 @@ namespace Model.Dice
 {
     public abstract class Die
     {
-        public IEnumerable<Face> ListFaces => listFaces;
+        public IEnumerable<Face> Faces => faces;
 
         protected static readonly Random rnd = new();
 
-        private readonly List<Face> listFaces = new();
+        private readonly List<Face> faces = new();
 
         protected Die(params Face[] faces)
         {
-            listFaces.AddRange(faces);
+            this.faces.AddRange(faces);
         }
 
-        public Face GetRandomFace()
+        public virtual Face GetRandomFace()
         {
-            int faceIndex = rnd.Next(0, ListFaces.Count());
-            return ListFaces.ElementAt(faceIndex);
+            int faceIndex = rnd.Next(0, Faces.Count());
+            return Faces.ElementAt(faceIndex);
         }
     }
 }

@@ -7,5 +7,10 @@ namespace Model.Dice
         protected HomogeneousDie(params Face<T>[] faces) : base(faces)
         {
         }
+
+        public override Face<T> GetRandomFace()
+        {
+            return (Face<T>)base.GetRandomFace();
+        }
     }
 }
