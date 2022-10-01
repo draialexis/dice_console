@@ -15,32 +15,10 @@ namespace Data
     {
         static void Main(string[] args)
         {
-            using (PlayerDBManager playerDBManager = new())
-            {
-                PrintTable(playerDBManager.GetAll(), "Before");
-                try
-                {
-                    playerDBManager.Add(PlayerExtensions.ToEntity(new Player("Ernesto")));
-
-                }
-                catch (ArgumentException ex)
-                {
-                    Debug.WriteLine($"{ex.Message}\n... Never mind");
-                }
-                PrintTable(playerDBManager.GetAll(), "After");
-            }
-        }
-
-        static void PrintTable(IEnumerable table, string description)
-        {
-            Debug.WriteLine(description);
-            if (table is not null)
-            {
-                foreach (var entity in table)
-                {
-                    Debug.WriteLine(entity);
-                }
-            }
+            using PlayerDBManager playerDBManager = new();
+            try { playerDBManager.Add(PlayerExtensions.ToEntity(new Player("Ernesto"))); }
+            catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
+            foreach (PlayerEntity entity in playerDBManager.GetAll()) { Debug.WriteLine(entity); }
         }
     }
 }
