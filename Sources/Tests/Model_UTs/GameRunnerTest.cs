@@ -1,5 +1,4 @@
-﻿using Data;
-using Model;
+﻿using Model;
 using Model.Dice;
 using Model.Dice.Faces;
 using Model.Games;
@@ -8,13 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
+using Data;
 
 namespace Tests.Model_UTs
 {
     public class GameRunnerTest
     {
         private readonly GameRunner stubGameRunner = new Stub().LoadApp();
-        
+
         [Fact]
         public void TestConstructorWhenNoGamesThenNewIEnumerable()
         {
