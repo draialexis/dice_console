@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Data.EF.Players
 {
-    internal class PlayerDBManager : IManager<PlayerEntity>, IDisposable
+    internal sealed class PlayerDBManager : IManager<PlayerEntity>, IDisposable
     {
         private readonly DiceAppDbContext db = new DiceAppDbContextWithStub();
 
