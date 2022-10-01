@@ -12,7 +12,7 @@ namespace Model.Players
         /// <summary>
         /// a player's unique username
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; private set; } = "John Doe";
         public Player(string name)
         {
             if (!string.IsNullOrWhiteSpace(name))
