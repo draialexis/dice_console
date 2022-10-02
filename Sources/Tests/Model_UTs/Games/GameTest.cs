@@ -1,18 +1,14 @@
-﻿using Model.Dice.Faces;
-using Model.Dice;
+﻿using Model.Dice;
+using Model.Dice.Faces;
 using Model.Games;
 using Model.Players;
-using Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-using static System.Collections.Specialized.BitVector32;
 using System.Diagnostics;
+using System.Linq;
+using Xunit;
 
-namespace Tests.Model_UTs
+namespace Tests.Model_UTs.Games
 {
     public class GameTest
     {

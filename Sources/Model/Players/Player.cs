@@ -37,7 +37,7 @@ namespace Model.Players
 
         public bool Equals(Player other)
         {
-            return Name.ToUpper() == other.Name.ToUpper(); // equality is case insensitive
+            return other is not null && Name.ToUpper() == other.Name.ToUpper(); // equality is case insensitive
         }
 
         public override bool Equals(object obj)

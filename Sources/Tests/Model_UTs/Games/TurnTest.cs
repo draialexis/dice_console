@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using Xunit;
 
-namespace Tests.Model_UTs
+namespace Tests.Model_UTs.Games
 {
     public class TurnTest
 
@@ -233,7 +233,7 @@ namespace Tests.Model_UTs
         public void TestGoesThruToSecondMethodIfObjIsTypeTurn()
         {
             // Arrange
-            Object t1;
+            object t1;
             Turn t2;
             Player player1 = new Player("Marvin");
             Player player2 = new Player("Noah");
@@ -254,8 +254,8 @@ namespace Tests.Model_UTs
         public void TestEqualsFalseIfNotSamePlayer()
         {
             // Arrange
-            Player player1= new("Panama");
-            Player player2= new("Clyde");
+            Player player1 = new("Panama");
+            Player player2 = new("Clyde");
 
             // Act
             Turn t1 = Turn.CreateWithDefaultTime(player1, DICE_N_FACES_2);

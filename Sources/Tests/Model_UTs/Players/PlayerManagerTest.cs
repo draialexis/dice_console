@@ -3,10 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Xml.Linq;
 using Xunit;
 
-namespace Tests.Model_UTs
+namespace Tests.Model_UTs.Players
 {
     public class PlayerManagerTest
     {

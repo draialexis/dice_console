@@ -2,7 +2,7 @@ using Model.Players;
 using System;
 using Xunit;
 
-namespace Tests.Model_UTs
+namespace Tests.Model_UTs.Players
 {
     public class PlayerTest
     {
@@ -99,7 +99,7 @@ namespace Tests.Model_UTs
         public void TestGoesThruToSecondMethodIfObjIsTypePlayer()
         {
             // Arrange
-            Object p1;
+            object p1;
             Player p2;
 
             // Act
@@ -126,6 +126,19 @@ namespace Tests.Model_UTs
             // Assert
             Assert.False(p1.Equals(p2));
             Assert.False(p2.Equals(p1));
+        }
+
+        [Fact]
+        public void TestEqualsFalseIfNull()
+        {
+            // Arrange
+            Player player;
+
+            // Act
+            player = new("Panama");
+
+            // Assert
+            Assert.False(player.Equals(null));
         }
 
         [Theory]
