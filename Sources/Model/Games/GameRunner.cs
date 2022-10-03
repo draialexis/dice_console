@@ -12,17 +12,17 @@ namespace Model.Games
     public class GameRunner : IManager<Game>
     {
         public IManager<Player> GlobalPlayerManager { get; private set; }
-        public IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace<object>,object>>>> GlobalDieManager { get; private set; }
+        public IManager<KeyValuePair<string, IEnumerable<AbstractDie<object>>>> GlobalDieManager { get; private set; }
         private readonly List<Game> games;
 
-        public GameRunner(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace<object>,object>>>> globalDieManager, List<Game> games)
+        public GameRunner(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<AbstractDie<object>>>> globalDieManager, List<Game> games)
         {
             GlobalPlayerManager = globalPlayerManager;
             GlobalDieManager = globalDieManager;
             this.games = games ?? new();
         }
 
-        public GameRunner(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace<object>,object>>>> globalDieManager)
+        public GameRunner(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<AbstractDie<object>>>> globalDieManager)
             : this(globalPlayerManager, globalDieManager, null){ }
 
 
@@ -65,7 +65,7 @@ namespace Model.Games
         /// <summary>
         /// creates a new game
         /// </summary>
-        public Game StartNewGame(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace<object>,object>> dice)
+        public Game StartNewGame(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<object>> dice)
         {
             Game game = new(name, playerManager, dice);
             return Add(game);

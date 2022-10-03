@@ -14,6 +14,7 @@ namespace Model.Dice
     {
         public ColorDie(params ColorDieFace[] faces) : base(faces)
         {
+
         }
     }
 }

@@ -20,16 +20,16 @@ namespace Data
             gr.GlobalPlayerManager.Add(player3);
 
 
-            List<HomogeneousDice> monopolyDice = new();
-            List<HomogeneousDice> dndDice = new();
+            List<HomogeneousDice<int>> monopolyDice = new();
+            List<NumberDie> dndDice = new();
 
             string monopolyName = "Monopoly", dndName = "DnD";
 
             NumberDieFace[] d6Faces = new NumberDieFace[] { new(1), new(2), new(3), new(4), new(5), new(6) };
 
+            monopolyDice.Add(new NumberDie(new NumberDieFace(1), new NumberDieFace(1), new NumberDieFace(1), new NumberDieFace(1)));
             monopolyDice.Add(new NumberDie(d6Faces));
-            monopolyDice.Add(new NumberDie(d6Faces));
-            monopolyDice.Add(new ColorDie(new("#ff0000"), new("#00ff00"), new("#0000ff"), new("#ffff00"), new("#000000"), new("#ffffff")));
+            //monopolyDice.Add(new ColorDie(new("#ff0000"), new("#00ff00"), new("#0000ff"), new("#ffff00"), new("#000000"), new("#ffffff")));
 
             NumberDieFace[] d20Faces = new NumberDieFace[] {
                 new(1), new(2), new(3), new(4), new(5),
@@ -40,8 +40,8 @@ namespace Data
 
             dndDice.Add(new NumberDie(d20Faces));
 
-            gr.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(dndName, dndDice.AsEnumerable()));
-            gr.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(monopolyName, monopolyDice.AsEnumerable()));
+            gr.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace<object>>>>(dndName, dndDice.AsEnumerable()));
+            gr.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace<object>>>>(monopolyName, monopolyDice.AsEnumerable()));
 
             string game1 = "Forgotten Realms", game2 = "4e", game3 = "The Coopers";
 
