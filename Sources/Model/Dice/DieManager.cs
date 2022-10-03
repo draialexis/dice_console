@@ -5,45 +5,40 @@ using System.Linq;
 
 namespace Model.Dice
 {
-    public class DieManager : IManager<KeyValuePair<string, IEnumerable<AbstractDie<object>>>>
+    public class DieManager : IManager<KeyValuePair<string, IEnumerable<Die>>>
     {
-        private readonly Dictionary<string, IEnumerable<AbstractDie<object>>> diceGroups = new();
+        private readonly Dictionary<string, IEnumerable<Die>> diceGroups = new();
 
-        public KeyValuePair<string, IEnumerable<AbstractDie<object>>> Add(KeyValuePair<string, IEnumerable<AbstractDie<object>>> toAdd)
+        public KeyValuePair<string, IEnumerable<Die>> Add(KeyValuePair<string, IEnumerable<Die>> toAdd)
         {
             // on trim la clé d'abord
             diceGroups.Add(toAdd.Key.Trim(), toAdd.Value);
             return toAdd;
         }
 
-        public IEnumerable<KeyValuePair<string, IEnumerable<AbstractDie<object>>>> GetAll()
+        public IEnumerable<KeyValuePair<string, IEnumerable<Die>>> GetAll()
         {
             return diceGroups.AsEnumerable();
         }
 
-        public KeyValuePair<string, IEnumerable<AbstractDie<object>>> GetOneByName(string name)
+        public KeyValuePair<string, IEnumerable<Die>> GetOneByID(Guid ID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public KeyValuePair<string, IEnumerable<Die>> GetOneByName(string name)
         {
             // les groupes de dés nommés :
             // ils sont case-sensistive, mais "mon jeu" == "mon jeu " == "  mon jeu"
-            return new KeyValuePair<string, IEnumerable<AbstractDie<object>>>(name, diceGroups[name]);
+            return new KeyValuePair<string, IEnumerable<Die>>(name, diceGroups[name]);
         }
 
-        public void Remove(KeyValuePair<string, IEnumerable<AbstractDie<object>>> toRemove)
+        public void Remove(KeyValuePair<string, IEnumerable<Die>> toRemove)
         {
             diceGroups.Remove(toRemove.Key);
         }
 
-        /*public void Remove(KeyValuePair<string, IEnumerable<AbstractDie<Faces.AbstractDieFace<object>, object>>> toRemove)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Remove(KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace<object>, object>>> toRemove)
-        {
-            throw new NotImplementedException();
-        }*/
-
-        public KeyValuePair<string, IEnumerable<AbstractDie<object>>> Update(KeyValuePair<string, IEnumerable<AbstractDie<object>>> before, KeyValuePair<string, IEnumerable<AbstractDie<object>>> after)
+        public KeyValuePair<string, IEnumerable<Die>> Update(KeyValuePair<string, IEnumerable<Die>> before, KeyValuePair<string, IEnumerable<Die>> after)
         {
             // pas autorisé de changer les dés, juste le nom
             if (!before.Value.Equals(after.Value))

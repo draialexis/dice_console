@@ -95,5 +95,10 @@ namespace Model.Players
             // the built-in Remove() method will use our redefined Equals(), using Name only
             players.Remove(toRemove);
         }
+
+        public Player GetOneByID(Guid ID)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

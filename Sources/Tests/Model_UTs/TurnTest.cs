@@ -1,4 +1,5 @@
-﻿using Model.Dice;
+﻿using Data;
+using Model.Dice;
 using Model.Dice.Faces;
 using Model.Games;
 using Model.Players;
@@ -13,68 +14,15 @@ namespace Tests.Model_UTs
     public class TurnTest
 
     {
-        private readonly Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> DICE_N_FACES_1;
-        private readonly Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> DICE_N_FACES_2;
+        private readonly GameRunner stubGameRunner = new Stub().LoadApp();
 
-        private static readonly AbstractDieFace FACE_ONE = new NumberDieFace(1);
-        private static readonly AbstractDieFace FACE_TWO = new NumberDieFace(12);
-        private static readonly AbstractDieFace FACE_THREE = new ImageDieFace(54);
-        private static readonly AbstractDieFace FACE_FOUR = new ColorDieFace(16548);
-
-        private readonly static NumberDieFace[] FACES1 = new NumberDieFace[]
-        {
-            FACE_ONE as NumberDieFace,
-            new NumberDieFace(2),
-            new NumberDieFace(3),
-            new NumberDieFace(4)
-        };
-
-        private readonly static NumberDieFace[] FACES2 = new NumberDieFace[] {
-                  new NumberDieFace(9),
-                  new NumberDieFace(10),
-                  new NumberDieFace(11),
-                  FACE_TWO as NumberDieFace,
-                  new NumberDieFace(13),
-                  new NumberDieFace(14)
-            };
-
-        private readonly static ImageDieFace[] FACES3 = new ImageDieFace[] {
-                  new ImageDieFace(13),
-                  new ImageDieFace(27),
-                  new ImageDieFace(38),
-                  FACE_THREE as ImageDieFace
-            };
-
-        private readonly static ColorDieFace[] FACES4 = new ColorDieFace[] {
-                  new(11651),
-                  new(24651),
-                  FACE_FOUR as ColorDieFace,
-                  new(412)
-            };
-
-        private readonly AbstractDie<AbstractDieFace> NUM1 = new NumberDie(FACES1);
-        private readonly AbstractDie<AbstractDieFace> NUM2 = new NumberDie(FACES2);
-        private readonly AbstractDie<AbstractDieFace> IMG1 = new ImageDie(FACES3);
-        private readonly AbstractDie<AbstractDieFace> CLR1 = new ColorDie(FACES4);
+        Dictionary<Die, Face> DICE_N_FACES_1, DICE_N_FACES_2;
 
         public TurnTest()
         {
-            DICE_N_FACES_1 = new()
-            {
-                { NUM1, FACE_ONE },
-                { NUM2, FACE_TWO },
-                { IMG1, FACE_THREE },
-                { CLR1, FACE_FOUR }
-            };
-            DICE_N_FACES_2 = new()
-            {
-                { NUM1, FACE_TWO },
-                { IMG1, FACE_THREE },
-                { CLR1, FACE_FOUR }
-            };
+            DICE_N_FACES_1 = (Dictionary<Die, Face>)stubGameRunner.GetAll().First().GetHistory().First().DiceNFaces;
+            DICE_N_FACES_2 = (Dictionary<Die, Face>)stubGameRunner.GetAll().Last().GetHistory().Last().DiceNFaces;
         }
-
-
 
         [Fact]
         public void TestCreateWithSpecifiedTimeNotUTCThenValid()
@@ -171,31 +119,6 @@ namespace Tests.Model_UTs
             // N.B.: might fail between 11:59:59PM and 00:00:00AM
         }
 
-
-
-        [Fact]
-        public void TestToStringValidIfAllNormal()
-        {
-            // Arrange
-            DateTime dateTime = new(year: 2018, month: 06, day: 15, hour: 16, minute: 30, second: 0, kind: DateTimeKind.Utc);
-            string name = "Bobby";
-            Player player = new(name);
-            string expected = $"2018-06-15 16:30:00 -- {name} rolled: "
-                + FACE_ONE.ToString() + " "
-                + FACE_TWO.ToString() + " "
-                + FACE_THREE.ToString() + " "
-                + FACE_FOUR.ToString();
-
-            Turn turn = Turn.CreateWithSpecifiedTime(dateTime, player, DICE_N_FACES_1);
-
-            // Act
-            string actual = turn.ToString();
-            Debug.WriteLine(actual);
-
-            // Assert
-            Assert.Equal(expected, actual);
-        }
-
         [Fact]
         public void TestDiceNFacesProperty()
         {
@@ -204,7 +127,7 @@ namespace Tests.Model_UTs
 
             // Act
             Turn turn = Turn.CreateWithDefaultTime(player, DICE_N_FACES_1);
-            IEnumerable<KeyValuePair<AbstractDie<AbstractDieFace>, AbstractDieFace>> expected = DICE_N_FACES_1.AsEnumerable();
+            IEnumerable<KeyValuePair<Die, Face>> expected = DICE_N_FACES_1.AsEnumerable();
 
             // Assert
             Assert.Equal(expected, turn.DiceNFaces);
@@ -254,8 +177,8 @@ namespace Tests.Model_UTs
         public void TestEqualsFalseIfNotSamePlayer()
         {
             // Arrange
-            Player player1= new("Panama");
-            Player player2= new("Clyde");
+            Player player1 = new("Panama");
+            Player player2 = new("Clyde");
 
             // Act
             Turn t1 = Turn.CreateWithDefaultTime(player1, DICE_N_FACES_2);

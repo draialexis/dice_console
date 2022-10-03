@@ -7,9 +7,9 @@ using Model.Dice.Faces;
 
 namespace Model.Dice
 {
-    public class HomogeneousDice<T>: AbstractDie<T>
+    public class HomogeneousDice<T>: Die
     {
-        public HomogeneousDice(params AbstractDieFace<T>[] faces) : base(faces)
+        public HomogeneousDice(params Face[] faces) : base(faces)
         {
 
         }
