@@ -1,5 +1,4 @@
-﻿using Data;
-using Model.Dice;
+﻿using Model.Dice;
 using Model.Dice.Faces;
 using Model.Games;
 using Model.Players;
@@ -7,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Data;
 
 namespace App
 {

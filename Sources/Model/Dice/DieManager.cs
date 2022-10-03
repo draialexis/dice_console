@@ -12,6 +12,15 @@ namespace Model.Dice
         public KeyValuePair<string, IEnumerable<Die>> Add(KeyValuePair<string, IEnumerable<Die>> toAdd)
         {
             // on trim la clé d'abord
+            if (string.IsNullOrWhiteSpace(toAdd.Key))
+            {
+                throw new ArgumentNullException(nameof(toAdd), "param should not be null or empty");
+
+            }
+            if (diceGroups.Contains(toAdd))
+            {
+                throw new ArgumentException("this username is already taken", nameof(toAdd));
+            }
             diceGroups.Add(toAdd.Key.Trim(), toAdd.Value);
             return toAdd;
         }
@@ -30,12 +39,28 @@ namespace Model.Dice
         {
             // les groupes de dés nommés :
             // ils sont case-sensistive, mais "mon jeu" == "mon jeu " == "  mon jeu"
-            return new KeyValuePair<string, IEnumerable<Die>>(name, diceGroups[name]);
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException(nameof(name), "param should not be null or empty");
+            }
+            else
+            {
+                return new KeyValuePair<string, IEnumerable<Die>>(name, diceGroups[name]);
+            }
         }
 
         public void Remove(KeyValuePair<string, IEnumerable<Die>> toRemove)
         {
-            diceGroups.Remove(toRemove.Key);
+            if (toRemove.Key is null)
+            {
+                throw new ArgumentNullException(nameof(toRemove), "param should not be null");
+            }
+            else
+            {
+                diceGroups.Remove(toRemove.Key);
+            }
+
+
         }
 
         public KeyValuePair<string, IEnumerable<Die>> Update(KeyValuePair<string, IEnumerable<Die>> before, KeyValuePair<string, IEnumerable<Die>> after)
@@ -55,17 +80,6 @@ namespace Model.Dice
             return before;
         }
 
-/*
-        IEnumerable<KeyValuePair<string, IEnumerable<AbstractDie<Faces.AbstractDieFace<object>>>> IManager<KeyValuePair<string, IEnumerable<AbstractDie<Faces.AbstractDieFace<object>>>>>.GetAll()
-        {
-            throw new NotImplementedException();
-        }
 
-
-        KeyValuePair<string, IEnumerable<AbstractDie<Faces.AbstractDieFace<object>>>> IManager<KeyValuePair<string, IEnumerable<AbstractDie<Faces.AbstractDieFace<object>>>>>.GetOneByName(string name)
-        {
-            throw new NotImplementedException();
-        }
-*/
     }
 }
