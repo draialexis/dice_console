@@ -12,17 +12,17 @@ namespace Model.Games
     public class GameRunner : IManager<Game>
     {
         public IManager<Player> GlobalPlayerManager { get; private set; }
-        public IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> GlobalDieManager { get; private set; }
+        public IManager<KeyValuePair<string, IEnumerable<Die>>> GlobalDieManager { get; private set; }
         private readonly List<Game> games;
 
-        public GameRunner(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> globalDieManager, List<Game> games)
+        public GameRunner(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<Die>>> globalDieManager, List<Game> games)
         {
             GlobalPlayerManager = globalPlayerManager;
             GlobalDieManager = globalDieManager;
             this.games = games ?? new();
         }
 
-        public GameRunner(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>> globalDieManager)
+        public GameRunner(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<Die>>> globalDieManager)
             : this(globalPlayerManager, globalDieManager, null){ }
 
 
@@ -65,7 +65,7 @@ namespace Model.Games
         /// <summary>
         /// creates a new game
         /// </summary>
-        public Game StartNewGame(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
+        public Game StartNewGame(string name, IManager<Player> playerManager, IEnumerable<Die> dice)
         {
             Game game = new(name, playerManager, dice);
             return Add(game);

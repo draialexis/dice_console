@@ -4,6 +4,7 @@ using Model.Dice.Faces;
 using Model.Games;
 using Model.Players;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Data
 {
@@ -20,18 +21,42 @@ namespace Data
             gr.GlobalPlayerManager.Add(player3);
 
 
-            List<AbstractDie<AbstractDieFace>> monopolyDice = new();
-            List<AbstractDie<AbstractDieFace>> dndDice = new();
+            List<Die> monopolyDice = new();
+            List<Die> dndDice = new();
 
             string monopolyName = "Monopoly", dndName = "DnD";
 
-            NumberDieFace[] d6Faces = new NumberDieFace[] { new(1), new(2), new(3), new(4), new(5), new(6) };
+            NumberFace[] d6Faces = new NumberFace[] { new(1), new(2), new(3), new(4), new(5), new(6) };
 
+            monopolyDice.Add(new NumberDie(new NumberFace(1), new NumberFace(1), new NumberFace(1), new NumberFace(1)));
             monopolyDice.Add(new NumberDie(d6Faces));
             monopolyDice.Add(new NumberDie(d6Faces));
-            monopolyDice.Add(new ColorDie(new("#ff0000"), new("#00ff00"), new("#0000ff"), new("#ffff00"), new("#000000"), new("#ffffff")));
 
-            NumberDieFace[] d20Faces = new NumberDieFace[] {
+            ColorFace[] colorFaces = new ColorFace[]
+            {
+                new(Color.FromName("blue")),
+                new(Color.FromName("red")),
+                new(Color.FromName("yellow")),
+                new(Color.FromName("green")),
+                new(Color.FromName("black")),
+                new(Color.FromName("white"))
+            };
+
+            monopolyDice.Add(new ColorDie(colorFaces));
+
+            string rootPath = "https://unsplash.com/photos/";
+
+            ImageFace[] imageFaces = new ImageFace[]
+            {
+                new(new Uri(rootPath + "TLD6iCOlyb0")),
+                new(new Uri(rootPath + "rTZW4f02zY8")),
+                new(new Uri(rootPath + "Hyu76loQLdk")),
+                new(new Uri(rootPath + "A_Ncbi-RH6s")),
+            };
+
+            monopolyDice.Add(new ImageDie(imageFaces));
+
+            NumberFace[] d20Faces = new NumberFace[] {
                 new(1), new(2), new(3), new(4), new(5),
                 new(6), new(7), new(8), new(9), new(10),
                 new(11), new(12), new(13), new(14), new(15),
@@ -40,8 +65,8 @@ namespace Data
 
             dndDice.Add(new NumberDie(d20Faces));
 
-            gr.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(dndName, dndDice.AsEnumerable()));
-            gr.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<AbstractDie<AbstractDieFace>>>(monopolyName, monopolyDice.AsEnumerable()));
+            gr.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<Die>>(dndName, dndDice.AsEnumerable()));
+            gr.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<Die>>(monopolyName, monopolyDice.AsEnumerable()));
 
             string game1 = "Forgotten Realms", game2 = "4e", game3 = "The Coopers";
 

@@ -57,8 +57,8 @@ namespace Model.Games
         /// <summary>
         /// the group of dice used for this game
         /// </summary>
-        public IEnumerable<AbstractDie<AbstractDieFace>> Dice => dice;
-        private readonly IEnumerable<AbstractDie<AbstractDieFace>> dice;
+        public IEnumerable<Die> Dice => dice;
+        private readonly IEnumerable<Die> dice;
 
         /// <summary>
         /// constructs a Game with its own history of Turns. 
@@ -68,7 +68,7 @@ namespace Model.Games
         /// <param name="turns">the turns that have been done so far</param>
         /// <param name="playerManager">the game's player manager, doing CRUD on players and switching whose turn it is</param>
         /// <param name="favGroup">the group of dice used for this game</param>
-        public Game(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice, IEnumerable<Turn> turns)
+        public Game(string name, IManager<Player> playerManager, IEnumerable<Die> dice, IEnumerable<Turn> turns)
         {
             Name = name;
             PlayerManager = playerManager;
@@ -83,7 +83,7 @@ namespace Model.Games
         /// <param name="name">the name of the game 😎</param>
         /// <param name="playerManager">the game's player manager, doing CRUD on players and switching whose turn it is</param>
         /// <param name="favGroup">the group of dice used for this game</param>
-        public Game(string name, IManager<Player> playerManager, IEnumerable<AbstractDie<AbstractDieFace>> dice)
+        public Game(string name, IManager<Player> playerManager, IEnumerable<Die> dice)
             : this(name, playerManager, dice, null)
         { }
 
@@ -161,10 +161,10 @@ namespace Model.Games
         /// throws all the Dice in FavGroup and returns a list of their Faces
         /// </summary>
         /// <returns>list of AbstractDieFaces after a throw</returns>
-        private Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> ThrowAll()
+        private Dictionary<Die, Face> ThrowAll()
         {
-            Dictionary<AbstractDie<AbstractDieFace>, AbstractDieFace> faces = new();
-            foreach (AbstractDie<AbstractDieFace> die in dice)
+            Dictionary<Die, Face> faces = new();
+            foreach (Die die in dice)
             {
                 faces.Add(die, die.GetRandomFace());
             }
