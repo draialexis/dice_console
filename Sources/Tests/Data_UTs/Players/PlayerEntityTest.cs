@@ -1,12 +1,7 @@
-﻿using Model.Players;
+﻿using Data.EF.Players;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-using Data.EF.Players;
 using Tests.Model_UTs;
+using Xunit;
 
 namespace Tests.Data_UTs.Players
 {

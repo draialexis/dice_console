@@ -1,4 +1,3 @@
-﻿using Model.Dice.Faces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,8 +58,6 @@ namespace Model.Dice
             {
                 diceGroups.Remove(toRemove.Key);
             }
-
-
         }
 
         public KeyValuePair<string, IEnumerable<Die>> Update(KeyValuePair<string, IEnumerable<Die>> before, KeyValuePair<string, IEnumerable<Die>> after)
@@ -79,7 +76,5 @@ namespace Model.Dice
             }
             return before;
         }
-
-
     }
 }

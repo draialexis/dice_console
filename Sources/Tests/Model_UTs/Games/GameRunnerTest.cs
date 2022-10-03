@@ -1,13 +1,11 @@
-﻿using Model;
+﻿using Data;
 using Model.Dice;
-using Model.Dice.Faces;
 using Model.Games;
 using Model.Players;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
-using Data;
 
 namespace Tests.Model_UTs.Games
 {

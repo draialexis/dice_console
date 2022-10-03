@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Model.Dice;
+using Model.Dice.Faces;
+using Model.Players;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Model.Dice;
-using Model.Dice.Faces;
-using Model.Players;
 
 namespace Model.Games
 {
@@ -116,8 +116,8 @@ namespace Model.Games
 
         public bool Equals(Turn other)
         {
-            return Player.Equals(other.Player) 
-                && When.Equals(other.When) 
+            return Player.Equals(other.Player)
+                && When.Equals(other.When)
                 && DiceNFaces.SequenceEqual(other.DiceNFaces);
 
         }

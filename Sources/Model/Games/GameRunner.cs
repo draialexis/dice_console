@@ -1,11 +1,8 @@
-﻿using System;
+﻿using Model.Dice;
+using Model.Players;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Model.Dice;
-using Model.Dice.Faces;
-using Model.Players;
 
 namespace Model.Games
 {
@@ -23,7 +20,7 @@ namespace Model.Games
         }
 
         public GameRunner(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<Die>>> globalDieManager)
-            : this(globalPlayerManager, globalDieManager, null){ }
+            : this(globalPlayerManager, globalDieManager, null) { }
 
 
         public IEnumerable<Game> GetAll() => games.AsEnumerable();
@@ -55,7 +52,7 @@ namespace Model.Games
             {
                 throw new ArgumentNullException(nameof(toAdd), "param should not be null");
             }
-            
+
             games.Remove(games.FirstOrDefault(g => g.Name == toAdd.Name));
             // will often be an update: if game with that name exists, it is removed, else, nothing happens above
             games.Add(toAdd);

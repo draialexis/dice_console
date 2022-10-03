@@ -1,13 +1,6 @@
-﻿
-using Data.EF;
-using Data.EF.Players;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Data.EF.Players;
 using Model.Players;
-using System.Collections;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.Intrinsics.Arm;
 
 namespace Data
 {
