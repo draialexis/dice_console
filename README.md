@@ -24,13 +24,13 @@ The console prototype loads a stub with a few small games that you can test, and
 
 ### DiceApp DB context with stub
 
-We also now have a budding persistence solution, using Entity Framework. 
+Still in *Program.cs*, we also now have a nacent data layer, using Entity Framework. 
 
-Open the any of our *solutions* and navigate to the *Data* project. The *Program.cs* file has a `Main()` method that can be launched.
+Open the *DiceAppConsole.sln* solution and navigate to the *App* project. The *Program.cs* file has a `Main()` method that can be launched. 
 
 The NuGet packages are managed in files that are versioned, so you shouldn't need to manage the dependencies yourself. *"The Line"* is taken care of too.
 
-However, you do need to create the migrations and DB.
+However, you do need to create the migrations and DB (and you probably should delete them everytime you want to reload).
 
 First, in Visual Studio's terminal ("Developer PowerShell"), go to *DiceApp/Sources/Data*, and make sure Entity Framework is installed and / or updated.
 ```
@@ -39,10 +39,10 @@ dotnet tool update --global dotnet-ef
 ```
 Now the migrations and DB. Since we have a `DbContext` *and* and `DbContextWithStub`, you will need to specify which one to use. Make sure you are in *DiceApp/Sources/Data*.
 ```
-dotnet ef migrations add dice_app_db --context DiceAppDbContextWithStub
-dotnet ef database update --context DiceAppDbContextWithStub
+dotnet ef migrations add dice_app_db --context DiceAppDbContextWithStub (OR 'DbContext' if you want an empty DB)
+dotnet ef database update --context DiceAppDbContextWithStub --startup-project ../App (OR 'DbContext' if you want an empty DB)
 ```
-You can now run the *Data* program, and check out your local DB. 
+You can now run the *App* program, and check out your local DB. 
 
 You may not want to read tables in the debug window -- in which case, just download [DB Brower for SQLite](https://sqlitebrowser.org/dl/) and open the *.db* file in it.
 
