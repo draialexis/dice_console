@@ -37,11 +37,13 @@ First, in Visual Studio's terminal ("Developer PowerShell"), go to *DiceApp/Sour
 dotnet tool install --global dotnet-ef
 dotnet tool update --global dotnet-ef
 ```
-Now the migrations and DB. Since we have a `DbContext` *and* and `DbContextWithStub`, you will need to specify which one to use. Make sure you are in *DiceApp/Sources/Data*.
+Now the migrations and DB. Since we have a `DiceAppDbContext` *and* and `DiceAppDbContextWithStub`, you will need to specify which one to use. Make sure you are in *DiceApp/Sources/Data*.
 ```
-dotnet ef migrations add dice_app_db --context DiceAppDbContextWithStub (OR 'DbContext' if you want an empty DB)
-dotnet ef database update --context DiceAppDbContextWithStub --startup-project ../App (OR 'DbContext' if you want an empty DB)
+dotnet ef migrations add dice_app_db --context DiceAppDbContextWithStub
+dotnet ef database update --context DiceAppDbContextWithStub --startup-project ../App
 ```
+Replace `DiceAppDbContextWithStub` with `DiceAppDbContext` if you want to launch an app with an empty DB.
+
 You can now run the *App* program, and check out your local DB. 
 
 You may not want to read tables in the debug window -- in which case, just download [DB Brower for SQLite](https://sqlitebrowser.org/dl/) and open the *.db* file in it.
