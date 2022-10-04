@@ -1,12 +1,14 @@
-﻿using Model.Dice;
+﻿using Data;
+using Data.EF.Players;
+using Model.Dice;
 using Model.Dice.Faces;
 using Model.Games;
 using Model.Players;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using Data;
 
 namespace App
 {
@@ -14,6 +16,39 @@ namespace App
     {
         static void Main(string[] args)
         {
+            /*
+             * the DB stuff and the Model stuff are completely separate here
+             * 
+             * that will change
+             */
+
+            // DB stuff
+            // if you've run the 'dotnet' 'ef' commands, you should have a DB with 1 table, and 4 players in it
+            using PlayerDBManager playerDBManager = new();
+
+            // we'll add a 5th player from the App
+            PlayerEntity playerEntity = new Player("Ernesto").ToEntity();
+
+            try
+            {
+                playerDBManager.Add(playerEntity);
+            } // what if there's already a player with that name? Exception (see PlayerEntity's annotations)
+            catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
+            catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Did you make sure that the DATABASE exists?"); }
+
+            try
+            {
+                IEnumerable<PlayerEntity> allPlayersFromDB = playerDBManager.GetAll();
+
+                foreach (PlayerEntity entity in allPlayersFromDB)
+                {
+                    Debug.WriteLine(entity);
+                }
+            }
+            catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Did you make sure that the DATABASE exists?"); }
+
+
+            // Model stuff
             ILoader loader = new Stub();
             GameRunner gameRunner;
             try
