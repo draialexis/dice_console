@@ -1,4 +1,5 @@
 ﻿using Data;
+using Data.EF;
 using Data.EF.Players;
 using Model.Dice;
 using Model.Dice.Faces;
@@ -16,39 +17,7 @@ namespace App
     {
         static void Main(string[] args)
         {
-            /*
-             * the DB stuff and the Model stuff are completely separate here
-             * 
-             * that will change
-             */
-
-            // DB stuff
-            // if you've run the 'dotnet' 'ef' commands, you should have a DB with 1 table, and 4 players in it
-            using PlayerDBManager playerDBManager = new();
-
-            // we'll add a 5th player from the App
-            PlayerEntity playerEntity = new Player("Ernesto").ToEntity();
-
-            try
-            {
-                playerDBManager.Add(playerEntity);
-            } // what if there's already a player with that name? Exception (see PlayerEntity's annotations)
-            catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
-            catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Did you make sure that the DATABASE exists?"); }
-
-            try
-            {
-                IEnumerable<PlayerEntity> allPlayersFromDB = playerDBManager.GetAll();
-
-                foreach (PlayerEntity entity in allPlayersFromDB)
-                {
-                    Debug.WriteLine(entity);
-                }
-            }
-            catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Did you make sure that the DATABASE exists?"); }
-
-
-            // Model stuff
+            // MODEL stuff
             ILoader loader = new Stub();
             GameRunner gameRunner;
             try
@@ -60,6 +29,24 @@ namespace App
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
                 gameRunner = new(new PlayerManager(), new DieManager(), null);
+            }
+
+            // DB stuff when the app opens
+
+            // Later, we'll use a GameDBRunner
+            using (PlayerDBManager playerDBManager = new(new DiceAppDbContext()))
+            {
+                // get all the players from the DB
+                IEnumerable<PlayerEntity> entities = playerDBManager.GetAll();
+
+                foreach (PlayerEntity entity in entities)
+                {
+                    try // to persist them
+                    { // as models ! 
+                        gameRunner.GlobalPlayerManager.Add(entity.ToModel());
+                    }
+                    catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Did you make sure that the DATABASE exists?"); }
+                }
             }
 
             string menuChoice = "nothing";
@@ -159,6 +146,23 @@ namespace App
                 }
             }
 
+            // DB stuff when the app closes
+            using (PlayerDBManager playerDBManager = new(new DiceAppDbContext()))
+            {
+                // get all the players from the app's memory
+                IEnumerable<Player> models = gameRunner.GlobalPlayerManager.GetAll();
+
+                foreach (Player model in models)
+                {
+                    try // to persist them
+                    { // as entities !
+                        playerDBManager.Add(model.ToEntity());
+                    }
+                    // what if there's already a player with that name? Exception (see PlayerEntity's annotations)
+                    catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
+                    catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Did you make sure that the DATABASE exists?"); }
+                }
+            }
         }
 
         private static void Play(GameRunner gameRunner, string name)
@@ -325,7 +329,12 @@ namespace App
                         gameRunner.GlobalPlayerManager.Add(player);
                     }
                     // almost no checks, this is temporary
-                    result.Add(player);
+                    try
+                    {
+                        result.Add(player);
+                    }
+                    catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
+
                 }
             }
 

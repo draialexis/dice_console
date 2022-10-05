@@ -5,7 +5,11 @@ namespace Data.EF.Players
 {
     public sealed class PlayerDBManager : IManager<PlayerEntity>, IDisposable
     {
-        private readonly DiceAppDbContext db = new DiceAppDbContextWithStub();
+        private readonly DiceAppDbContext db;
+        public PlayerDBManager(DiceAppDbContext db)
+        {
+            this.db = db;
+        }
 
         public void Dispose()
         {

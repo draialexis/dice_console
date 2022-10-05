@@ -12,7 +12,7 @@ namespace Data
         {
             GameRunner gr = new(new PlayerManager(), new DieManager());
 
-            Player player1 = new("Alice"), player2 = new("Bob"), player3 = new("Clyde");
+            Player player1 = new("Alice(Old Stub)"), player2 = new("Bob(Old Stub)"), player3 = new("Clyde(Old Stub)");
 
             gr.GlobalPlayerManager.Add(player1);
             gr.GlobalPlayerManager.Add(player2);
