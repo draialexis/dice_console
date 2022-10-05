@@ -34,7 +34,7 @@ namespace App
             // DB stuff when the app opens
 
             // Later, we'll use a GameDBRunner
-            using (PlayerDBManager playerDBManager = new(new DiceAppDbContext()))
+            using (PlayerDbManager playerDBManager = new(new DiceAppDbContext()))
             {
                 // get all the players from the DB
                 IEnumerable<PlayerEntity> entities = playerDBManager.GetAll();
@@ -147,7 +147,7 @@ namespace App
             }
 
             // DB stuff when the app closes
-            using (PlayerDBManager playerDBManager = new(new DiceAppDbContext()))
+            using (PlayerDbManager playerDBManager = new(new DiceAppDbContext()))
             {
                 // get all the players from the app's memory
                 IEnumerable<Player> models = gameRunner.GlobalPlayerManager.GetAll();
