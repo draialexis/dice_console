@@ -32,12 +32,12 @@ namespace App
             }
 
             // DB stuff when the app opens
-
-            // Later, we'll use a GameDBRunner
-            using (PlayerDbManager playerDBManager = new(new DiceAppDbContext()))
+            using (DiceAppDbContext db = new())
             {
+                // Later, we'll use the DiceAppDbContext to get a GameDbRunner
+
                 // get all the players from the DB
-                IEnumerable<PlayerEntity> entities = playerDBManager.GetAll();
+                IEnumerable<PlayerEntity> entities = db.Players;
 
                 foreach (PlayerEntity entity in entities)
                 {
@@ -147,16 +147,19 @@ namespace App
             }
 
             // DB stuff when the app closes
-            using (PlayerDbManager playerDBManager = new(new DiceAppDbContext()))
+            using (DiceAppDbContext db = new())
             {
                 // get all the players from the app's memory
                 IEnumerable<Player> models = gameRunner.GlobalPlayerManager.GetAll();
+
+                // create a PlayerDbManager (and inject it with the DB)
+                PlayerDbManager playerDbManager = new(db);
 
                 foreach (Player model in models)
                 {
                     try // to persist them
                     { // as entities !
-                        playerDBManager.Add(model.ToEntity());
+                        playerDbManager.Add(model.ToEntity());
                     }
                     // what if there's already a player with that name? Exception (see PlayerEntity's annotations)
                     catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
@@ -294,7 +297,6 @@ namespace App
             {
                 Console.WriteLine("write the name of a dice group you want to add (at least one), or 'ok' if you're finished");
                 menuChoiceDice = Console.ReadLine();
-                //  no checks, this is temporary
                 if (!menuChoiceDice.Equals("ok"))
                 {
                     IEnumerable<Die> chosenDice = gameRunner.GlobalDieManager.GetOneByName(menuChoiceDice).Value;

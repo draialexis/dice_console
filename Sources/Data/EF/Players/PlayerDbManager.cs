@@ -3,17 +3,12 @@ using Model;
 
 namespace Data.EF.Players
 {
-    public sealed class PlayerDbManager : IManager<PlayerEntity>, IDisposable
+    public sealed class PlayerDbManager : IManager<PlayerEntity>
     {
         private readonly DiceAppDbContext db;
         public PlayerDbManager(DiceAppDbContext db)
         {
             this.db = db;
-        }
-
-        public void Dispose()
-        {
-            db.Dispose();
         }
 
         public PlayerEntity Add(PlayerEntity toAdd)
