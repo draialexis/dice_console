@@ -33,6 +33,29 @@ namespace Tests.Data_UTs.Players
                 .Options;
         }
 
+        [Theory]
+        [InlineData("Alice")]
+        [InlineData("Bob")]
+        [InlineData("Clyde")]
+        [InlineData("Dahlia")]
+        public void TestDbStubContainsAll(string name)
+        {
+            // Arrange
+
+            PlayerDbManager mgr;
+
+            // Act
+
+            using (DiceAppDbContextWithStub db = new(options))
+            {
+                db.Database.EnsureCreated();
+                mgr = new(db);
+
+                // Assert
+
+                Assert.True(mgr.IsPresentByName(name));
+            }
+        }
 
         [Fact]
         public void TestConstructorWhenGivenContextThenConstructs()

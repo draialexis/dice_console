@@ -12,15 +12,22 @@ namespace Data.EF
             throw new NotImplementedException();
         }
 
+        public DiceAppDbContextWithStub()
+        { }
+
+        public DiceAppDbContextWithStub(DbContextOptions<DiceAppDbContext> options)
+            : base(options)
+        { }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<PlayerEntity>().HasData(
-            new PlayerEntity { ID = Guid.NewGuid(), Name = "Alice" },
-            new PlayerEntity { ID = Guid.NewGuid(), Name = "Bob" },
-            new PlayerEntity { ID = Guid.NewGuid(), Name = "Clyde" },
-            new PlayerEntity { ID = Guid.NewGuid(), Name = "Dahlia" }
+            new PlayerEntity { ID = Guid.NewGuid(), Name = "Alice" }, // some tests depend on this name
+            new PlayerEntity { ID = Guid.NewGuid(), Name = "Bob" }, // some tests depend on this name
+            new PlayerEntity { ID = Guid.NewGuid(), Name = "Clyde" }, // some tests depend on this name
+            new PlayerEntity { ID = Guid.NewGuid(), Name = "Dahlia" } // some tests depend on this name
             );
         }
     }
