@@ -180,14 +180,12 @@ namespace Tests.Model_UTs.Players
             Player player = new("Dylan");
             playerManager.Add(player);
             Player notPlayer = new("Eric");
-            IEnumerable<Player> expected = new Collection<Player> { player };
 
             // Act
             playerManager.Remove(notPlayer);
-            IEnumerable<Player> actual = playerManager.GetAll();
 
             // Assert
-            Assert.Equal(actual, expected);
+            Assert.DoesNotContain(notPlayer, playerManager.GetAll());
         }
 
         [Fact]
