@@ -31,23 +31,26 @@ namespace App
                 gameRunner = new(new PlayerManager(), new DieManager(), null);
             }
 
-            // DB stuff when the app opens
-            using (DiceAppDbContext db = new())
+            try
             {
-                // Later, we'll use the DiceAppDbContext to get a GameDbRunner
-
-                // get all the players from the DB
-                IEnumerable<PlayerEntity> entities = db.Players;
-
-                foreach (PlayerEntity entity in entities)
+                // DB stuff when the app opens
+                using (DiceAppDbContext db = new())
                 {
-                    try // to persist them
-                    { // as models ! 
+                    // Later, we'll use the DiceAppDbContext to get a GameDbRunner
+
+                    // get all the players from the DB
+                    IEnumerable<PlayerEntity> entities = db.Players;
+
+                    Debug.WriteLine("Loading players");
+
+                    foreach (PlayerEntity entity in entities)
+                    {
+                        // persist them  as models !
                         gameRunner.GlobalPlayerManager.Add(entity.ToModel());
                     }
-                    catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Did you make sure that the DATABASE exists?"); }
                 }
             }
+            catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Couldn't use the database"); }
 
             string menuChoice = "nothing";
 
@@ -146,26 +149,30 @@ namespace App
                 }
             }
 
-            // DB stuff when the app closes
-            using (DiceAppDbContext db = new())
+            try
             {
-                // get all the players from the app's memory
-                IEnumerable<Player> models = gameRunner.GlobalPlayerManager.GetAll();
-
-                // create a PlayerDbManager (and inject it with the DB)
-                PlayerDbManager playerDbManager = new(db);
-
-                foreach (Player model in models)
+                // DB stuff when the app closes
+                using (DiceAppDbContext db = new())
                 {
-                    try // to persist them
-                    { // as entities !
-                        playerDbManager.Add(model.ToEntity());
+                    // get all the players from the app's memory
+                    IEnumerable<Player> models = gameRunner.GlobalPlayerManager.GetAll();
+
+                    // create a PlayerDbManager (and inject it with the DB)
+                    PlayerDbManager playerDbManager = new(db);
+
+                    Debug.WriteLine("Saving players");
+
+                    foreach (Player model in models)
+                    {
+                        try // to persist them
+                        { // as entities !
+                            playerDbManager.Add(model.ToEntity());
+                        }
+                        // what if there's already a player with that name? Exception (see PlayerEntity's annotations)
+                        catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
                     }
-                    // what if there's already a player with that name? Exception (see PlayerEntity's annotations)
-                    catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
-                    catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Did you make sure that the DATABASE exists?"); }
                 }
-            }
+            } catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Couldn't use the database"); }
         }
 
         private static void Play(GameRunner gameRunner, string name)
