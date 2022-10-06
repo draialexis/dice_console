@@ -45,8 +45,13 @@ namespace App
 
                     foreach (PlayerEntity entity in entities)
                     {
-                        // persist them  as models !
-                        gameRunner.GlobalPlayerManager.Add(entity.ToModel());
+                        try
+                        {
+                            // persist them  as models !
+                            gameRunner.GlobalPlayerManager.Add(entity.ToModel());
+                            Debug.WriteLine($"{entity.ID} -- {entity.Name}");
+                        } 
+                        catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
                     }
                 }
             }
@@ -60,7 +65,10 @@ namespace App
                     "l... load a game\n" +
                     "n... start new game\n" +
                     "d... delete a game\n" +
+                    "i... see all dice\n" +
                     "c... create a group of dice\n" +
+                    "p... see all players\n" +
+                    "y... create players\n" +
                     "q... QUIT\n" +
                     ">"
                     );
@@ -87,11 +95,14 @@ namespace App
                             Console.WriteLine("make at least one dice group first, then try again");
                             break;
                         }
+                        Console.WriteLine("add dice to the game");
                         IEnumerable<Die> newGameDice = PrepareDice(gameRunner);
 
                         string newGameName;
                         Console.WriteLine("give this new game a name\n>");
                         newGameName = Console.ReadLine();
+
+                        Console.WriteLine("add players to the game");
                         PlayerManager playerManager = PreparePlayers(gameRunner);
 
                         gameRunner.StartNewGame(newGameName, playerManager, newGameDice);
@@ -143,6 +154,18 @@ namespace App
                         gameRunner.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<Die>>(newGroupName, newGroupDice));
                         break;
 
+                    case "p":
+                        ShowPlayers(gameRunner);
+                        break;
+
+                    case "i":
+                        ShowDice(gameRunner);
+                        break;
+
+                    case "y":
+                        PreparePlayers(gameRunner);
+                        break;
+
                     default:
                         Console.WriteLine("u wot m8?");
                         break;
@@ -166,7 +189,9 @@ namespace App
                     {
                         try // to persist them
                         { // as entities !
-                            playerDbManager.Add(model.ToEntity());
+                            PlayerEntity entity = model.ToEntity();
+                            playerDbManager.Add(entity);
+                            Debug.WriteLine($"{entity.ID} -- {entity.Name}");
                         }
                         // what if there's already a player with that name? Exception (see PlayerEntity's annotations)
                         catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
@@ -218,6 +243,23 @@ namespace App
             }
             name = Console.ReadLine();
             return name;
+        }
+
+        private static void ShowPlayers(GameRunner gameRunner)
+        {
+            Console.WriteLine("Look at all them players!");
+            foreach (Player player in gameRunner.GlobalPlayerManager.GetAll())
+            {
+                Console.WriteLine(player);
+            }
+        }
+
+        private static void ShowDice(GameRunner gameRunner)
+        {
+            foreach ((string name, IEnumerable<Die> dice) in gameRunner.GlobalDieManager.GetAll())
+            {
+                Console.WriteLine($"{name} -- {dice}");
+            }
         }
 
         private static NumberDie MakeNumberDie()
@@ -293,12 +335,8 @@ namespace App
         private static IEnumerable<Die> PrepareDice(GameRunner gameRunner)
         {
             List<Die> result = new();
-            Console.WriteLine("add dice to the game");
             Console.WriteLine("all known dice or groups of dice:");
-            foreach ((string name, IEnumerable<Die> dice) in gameRunner.GlobalDieManager.GetAll())
-            {
-                Console.WriteLine($"{name} -- {dice}");
-            }
+            ShowDice(gameRunner);
             string menuChoiceDice = "";
             while (!(menuChoiceDice.Equals("ok") && result.Any()))
             {
@@ -318,12 +356,8 @@ namespace App
         private static PlayerManager PreparePlayers(GameRunner gameRunner)
         {
             PlayerManager result = new();
-            Console.WriteLine("add players to the game");
             Console.WriteLine("all known players:");
-            foreach (Player player in gameRunner.GlobalPlayerManager.GetAll())
-            {
-                Console.WriteLine(player);
-            }
+            ShowPlayers(gameRunner);
             string menuChoicePlayers = "";
             while (!(menuChoicePlayers.Equals("ok") && result.GetAll().Any()))
             {
