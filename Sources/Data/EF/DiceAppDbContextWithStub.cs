@@ -7,17 +7,12 @@ namespace Data.EF
 {
     public class DiceAppDbContextWithStub : DiceAppDbContext
     {
-        public override GameRunner LoadApp()
-        {
-            throw new NotImplementedException();
-        }
+        public override GameRunner LoadApp() { throw new NotImplementedException(); }
 
-        public DiceAppDbContextWithStub()
-        { }
+        public DiceAppDbContextWithStub() { }
 
         public DiceAppDbContextWithStub(DbContextOptions<DiceAppDbContext> options)
-            : base(options)
-        { }
+            : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

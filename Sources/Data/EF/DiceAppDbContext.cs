@@ -6,28 +6,18 @@ namespace Data.EF
 {
     public class DiceAppDbContext : DbContext, ILoader
     {
-        public virtual GameRunner LoadApp()
-        {
-            throw new NotImplementedException();
-        }
+        public virtual GameRunner LoadApp() { throw new NotImplementedException(); }
 
         public DbSet<PlayerEntity> Players { get; set; }
 
-        public DiceAppDbContext()
-        { }
+        public DiceAppDbContext() { }
 
         public DiceAppDbContext(DbContextOptions<DiceAppDbContext> options)
-            : base(options)
-        { }
+            : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder
-                    .UseSqlite("Data Source=EFDice.DiceApp.db")
-                    .EnableSensitiveDataLogging();
-            }
+            if (!optionsBuilder.IsConfigured) optionsBuilder.UseSqlite("Data Source=EFDice.DiceApp.db").EnableSensitiveDataLogging();
         }
     }
 }
