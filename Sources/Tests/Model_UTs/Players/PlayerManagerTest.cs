@@ -76,6 +76,21 @@ namespace Tests.Model_UTs.Players
             Assert.Throws<ArgumentException>(action);
         }
 
+
+        [Fact]
+        public void TestGetOneByIdThrowsException()
+        {
+            // Arrange
+            PlayerManager playerManager = new();
+
+            // Act
+           
+            void action() => playerManager.GetOneByID(new("1a276327-75fc-45b9-8854-e7c4101088f8"));
+
+            // Assert
+            Assert.Throws<NotImplementedException>(action);
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData(null)]
