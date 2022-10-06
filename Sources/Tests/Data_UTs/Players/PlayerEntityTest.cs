@@ -27,7 +27,7 @@ namespace Tests.Data_UTs.Players
         {
             // Arrange
             PlayerEntity player = new();
-            Guid expected = new("c8f60957-dd36-4e47-a7ce-1281f4f8bea4");
+            Guid expected = Guid.NewGuid();
 
             // Act
             player.ID = expected;
@@ -107,10 +107,16 @@ namespace Tests.Data_UTs.Players
             PlayerEntity p2;
             PlayerEntity p3;
 
+            Guid id1 = Guid.NewGuid();
+            Guid id2 = Guid.NewGuid();
+
+            string name1 = "Panama";
+            string name2 = "Clyde";
+
             // Act
-            p1 = new() { ID = new Guid("ae04ef10-bd25-4f4e-b4c1-4860fe3daaa0"), Name = "Panama" };
-            p2 = new() { ID = new Guid("ae04ef10-bd25-4f4e-b4c1-4860fe3daaa0"), Name = "Clyde" };
-            p3 = new() { ID = new Guid("846d332f-56ca-44fc-8170-6cfd28dab88b"), Name = "Clyde" };
+            p1 = new() { ID = id1, Name = name1 };
+            p2 = new() { ID = id1, Name = name2 };
+            p3 = new() { ID = id2, Name = name2 };
 
             // Assert
             Assert.False(p1.Equals(p2));
@@ -127,10 +133,12 @@ namespace Tests.Data_UTs.Players
             // Arrange
             PlayerEntity p1;
             PlayerEntity p2;
+            Guid id = Guid.NewGuid();
+            string name = "Marley";
 
             // Act
-            p1 = new() { ID = new Guid("ae04ef10-bd25-4f4e-b4c1-4860fe3daaa0"), Name = "Marley" };
-            p2 = new() { ID = new Guid("ae04ef10-bd25-4f4e-b4c1-4860fe3daaa0"), Name = "Marley" };
+            p1 = new() { ID = id, Name = name };
+            p2 = new() { ID = id, Name = name };
 
             // Assert
             Assert.True(p1.Equals(p2));
@@ -145,10 +153,16 @@ namespace Tests.Data_UTs.Players
             PlayerEntity p2;
             PlayerEntity p3;
 
+            Guid id1 = Guid.NewGuid();
+            Guid id2 = Guid.NewGuid();
+
+            string name1 = "Panama";
+            string name2 = "Clyde";
+
             // Act
-            p1 = new() { ID = new Guid("ae04ef10-bd25-4f4e-b4c1-4860fe3daaa0"), Name = "Panama" };
-            p2 = new() { ID = new Guid("ae04ef10-bd25-4f4e-b4c1-4860fe3daaa0"), Name = "Clyde" };
-            p3 = new() { ID = new Guid("846d332f-56ca-44fc-8170-6cfd28dab88b"), Name = "Clyde" };
+            p1 = new() { ID = id1, Name = name1 };
+            p2 = new() { ID = id1, Name = name2 };
+            p3 = new() { ID = id2, Name = name2 };
 
             // Assert
             Assert.False(p1.GetHashCode().Equals(p2.GetHashCode()));
@@ -165,10 +179,12 @@ namespace Tests.Data_UTs.Players
             // Arrange
             PlayerEntity p1;
             PlayerEntity p2;
+            Guid id = Guid.NewGuid();
+            string name = "Marley";
 
             // Act
-            p1 = new() { ID = new Guid("ae04ef10-bd25-4f4e-b4c1-4860fe3daaa0"), Name = "Marley" };
-            p2 = new() { ID = new Guid("ae04ef10-bd25-4f4e-b4c1-4860fe3daaa0"), Name = "Marley" };
+            p1 = new() { ID = id, Name = name };
+            p2 = new() { ID = id, Name = name };
 
             // Assert
             Assert.True(p1.GetHashCode().Equals(p2.GetHashCode()));

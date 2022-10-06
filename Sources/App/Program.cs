@@ -1,4 +1,5 @@
 ﻿using Data;
+using Data.EF;
 using Data.EF.Players;
 using Model.Dice;
 using Model.Dice.Faces;
@@ -16,39 +17,7 @@ namespace App
     {
         static void Main(string[] args)
         {
-            /*
-             * the DB stuff and the Model stuff are completely separate here
-             * 
-             * that will change
-             */
-
-            // DB stuff
-            // if you've run the 'dotnet' 'ef' commands, you should have a DB with 1 table, and 4 players in it
-            using PlayerDBManager playerDBManager = new();
-
-            // we'll add a 5th player from the App
-            PlayerEntity playerEntity = new Player("Ernesto").ToEntity();
-
-            try
-            {
-                playerDBManager.Add(playerEntity);
-            } // what if there's already a player with that name? Exception (see PlayerEntity's annotations)
-            catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
-            catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Did you make sure that the DATABASE exists?"); }
-
-            try
-            {
-                IEnumerable<PlayerEntity> allPlayersFromDB = playerDBManager.GetAll();
-
-                foreach (PlayerEntity entity in allPlayersFromDB)
-                {
-                    Debug.WriteLine(entity);
-                }
-            }
-            catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Did you make sure that the DATABASE exists?"); }
-
-
-            // Model stuff
+            // MODEL stuff
             ILoader loader = new Stub();
             GameRunner gameRunner;
             try
@@ -62,6 +31,32 @@ namespace App
                 gameRunner = new(new PlayerManager(), new DieManager(), null);
             }
 
+            try
+            {
+                // DB stuff when the app opens
+                using (DiceAppDbContext db = new())
+                {
+                    // Later, we'll use the DiceAppDbContext to get a GameDbRunner
+
+                    // get all the players from the DB
+                    IEnumerable<PlayerEntity> entities = db.Players;
+
+                    Debug.WriteLine("Loading players");
+
+                    foreach (PlayerEntity entity in entities)
+                    {
+                        try
+                        {
+                            // persist them  as models !
+                            gameRunner.GlobalPlayerManager.Add(entity.ToModel());
+                            Debug.WriteLine($"{entity.ID} -- {entity.Name}");
+                        } 
+                        catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
+                    }
+                }
+            }
+            catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Couldn't use the database"); }
+
             string menuChoice = "nothing";
 
             while (menuChoice != "q")
@@ -70,7 +65,10 @@ namespace App
                     "l... load a game\n" +
                     "n... start new game\n" +
                     "d... delete a game\n" +
+                    "i... see all dice\n" +
                     "c... create a group of dice\n" +
+                    "p... see all players\n" +
+                    "y... create players\n" +
                     "q... QUIT\n" +
                     ">"
                     );
@@ -97,11 +95,14 @@ namespace App
                             Console.WriteLine("make at least one dice group first, then try again");
                             break;
                         }
+                        Console.WriteLine("add dice to the game");
                         IEnumerable<Die> newGameDice = PrepareDice(gameRunner);
 
                         string newGameName;
                         Console.WriteLine("give this new game a name\n>");
                         newGameName = Console.ReadLine();
+
+                        Console.WriteLine("add players to the game");
                         PlayerManager playerManager = PreparePlayers(gameRunner);
 
                         gameRunner.StartNewGame(newGameName, playerManager, newGameDice);
@@ -153,12 +154,50 @@ namespace App
                         gameRunner.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<Die>>(newGroupName, newGroupDice));
                         break;
 
+                    case "p":
+                        ShowPlayers(gameRunner);
+                        break;
+
+                    case "i":
+                        ShowDice(gameRunner);
+                        break;
+
+                    case "y":
+                        PreparePlayers(gameRunner);
+                        break;
+
                     default:
                         Console.WriteLine("u wot m8?");
                         break;
                 }
             }
 
+            try
+            {
+                // DB stuff when the app closes
+                using (DiceAppDbContext db = new())
+                {
+                    // get all the players from the app's memory
+                    IEnumerable<Player> models = gameRunner.GlobalPlayerManager.GetAll();
+
+                    // create a PlayerDbManager (and inject it with the DB)
+                    PlayerDbManager playerDbManager = new(db);
+
+                    Debug.WriteLine("Saving players");
+
+                    foreach (Player model in models)
+                    {
+                        try // to persist them
+                        { // as entities !
+                            PlayerEntity entity = model.ToEntity();
+                            playerDbManager.Add(entity);
+                            Debug.WriteLine($"{entity.ID} -- {entity.Name}");
+                        }
+                        // what if there's already a player with that name? Exception (see PlayerEntity's annotations)
+                        catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
+                    }
+                }
+            } catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Couldn't use the database"); }
         }
 
         private static void Play(GameRunner gameRunner, string name)
@@ -204,6 +243,23 @@ namespace App
             }
             name = Console.ReadLine();
             return name;
+        }
+
+        private static void ShowPlayers(GameRunner gameRunner)
+        {
+            Console.WriteLine("Look at all them players!");
+            foreach (Player player in gameRunner.GlobalPlayerManager.GetAll())
+            {
+                Console.WriteLine(player);
+            }
+        }
+
+        private static void ShowDice(GameRunner gameRunner)
+        {
+            foreach ((string name, IEnumerable<Die> dice) in gameRunner.GlobalDieManager.GetAll())
+            {
+                Console.WriteLine($"{name} -- {dice}");
+            }
         }
 
         private static NumberDie MakeNumberDie()
@@ -279,18 +335,13 @@ namespace App
         private static IEnumerable<Die> PrepareDice(GameRunner gameRunner)
         {
             List<Die> result = new();
-            Console.WriteLine("add dice to the game");
             Console.WriteLine("all known dice or groups of dice:");
-            foreach ((string name, IEnumerable<Die> dice) in gameRunner.GlobalDieManager.GetAll())
-            {
-                Console.WriteLine($"{name} -- {dice}");
-            }
+            ShowDice(gameRunner);
             string menuChoiceDice = "";
             while (!(menuChoiceDice.Equals("ok") && result.Any()))
             {
                 Console.WriteLine("write the name of a dice group you want to add (at least one), or 'ok' if you're finished");
                 menuChoiceDice = Console.ReadLine();
-                //  no checks, this is temporary
                 if (!menuChoiceDice.Equals("ok"))
                 {
                     IEnumerable<Die> chosenDice = gameRunner.GlobalDieManager.GetOneByName(menuChoiceDice).Value;
@@ -305,12 +356,8 @@ namespace App
         private static PlayerManager PreparePlayers(GameRunner gameRunner)
         {
             PlayerManager result = new();
-            Console.WriteLine("add players to the game");
             Console.WriteLine("all known players:");
-            foreach (Player player in gameRunner.GlobalPlayerManager.GetAll())
-            {
-                Console.WriteLine(player);
-            }
+            ShowPlayers(gameRunner);
             string menuChoicePlayers = "";
             while (!(menuChoicePlayers.Equals("ok") && result.GetAll().Any()))
             {
@@ -325,7 +372,12 @@ namespace App
                         gameRunner.GlobalPlayerManager.Add(player);
                     }
                     // almost no checks, this is temporary
-                    result.Add(player);
+                    try
+                    {
+                        result.Add(player);
+                    }
+                    catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
+
                 }
             }
 

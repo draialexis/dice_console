@@ -76,6 +76,21 @@ namespace Tests.Model_UTs.Players
             Assert.Throws<ArgumentException>(action);
         }
 
+
+        [Fact]
+        public void TestGetOneByIdThrowsException()
+        {
+            // Arrange
+            PlayerManager playerManager = new();
+
+            // Act
+           
+            void action() => playerManager.GetOneByID(new("1a276327-75fc-45b9-8854-e7c4101088f8"));
+
+            // Assert
+            Assert.Throws<NotImplementedException>(action);
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData(null)]
@@ -165,14 +180,12 @@ namespace Tests.Model_UTs.Players
             Player player = new("Dylan");
             playerManager.Add(player);
             Player notPlayer = new("Eric");
-            IEnumerable<Player> expected = new Collection<Player> { player };
 
             // Act
             playerManager.Remove(notPlayer);
-            IEnumerable<Player> actual = playerManager.GetAll();
 
             // Assert
-            Assert.Equal(actual, expected);
+            Assert.DoesNotContain(notPlayer, playerManager.GetAll());
         }
 
         [Fact]

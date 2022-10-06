@@ -7,9 +7,9 @@ namespace Data.EF.Players
     {
         public Guid ID { get; set; }
 
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             if (obj is not PlayerEntity)
             {
@@ -18,9 +18,9 @@ namespace Data.EF.Players
             return Equals(obj as PlayerEntity);
         }
 
-        public bool Equals(PlayerEntity? other)
+        public bool Equals(PlayerEntity other)
         {
-            return other is not null && this.ID == other!.ID && this.Name == other.Name;
+            return other is not null && this.ID == other.ID && this.Name == other.Name;
         }
 
         public override int GetHashCode()
@@ -28,7 +28,7 @@ namespace Data.EF.Players
             return HashCode.Combine(ID, Name);
         }
 
-        public override string? ToString()
+        public override string ToString()
         {
             return $"{ID.ToString().ToUpper()} -- {Name}";
         }

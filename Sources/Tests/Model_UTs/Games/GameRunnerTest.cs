@@ -79,6 +79,20 @@ namespace Tests.Model_UTs.Games
             Assert.DoesNotContain(null, stubGameRunner.GetAll());
         }
 
+        [Fact]
+        public void TestGetOneByIdThrowsException()
+        {
+            // Arrange
+            GameRunner gameRunner = stubGameRunner;
+
+            // Act
+
+            void action() => gameRunner.GetOneByID(new("62bb72e6-f9fb-442e-a879-e1b70f8f52f3"));
+
+            // Assert
+            Assert.Throws<NotImplementedException>(action);
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData(null)]
