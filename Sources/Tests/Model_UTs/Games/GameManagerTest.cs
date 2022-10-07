@@ -15,7 +15,7 @@ namespace Tests.Model_UTs.Games
 {
     public class GameManagerTest
     {
-        private readonly GameRunner stubGameRunner = new Stub().LoadApp();
+        private readonly MasterOfCeremonies stubGameRunner = new Stub().LoadApp();
 
         [Fact]
         public void TestConstructorReturnsEmptyEnumerable()

@@ -13,14 +13,14 @@ namespace Tests.Model_UTs.Games
     public class TurnTest
 
     {
-        private readonly GameRunner stubGameRunner = new Stub().LoadApp();
+        private readonly MasterOfCeremonies stubMasterOfCeremonies = new Stub().LoadApp();
 
         Dictionary<Die, Face> DICE_N_FACES_1, DICE_N_FACES_2;
 
         public TurnTest()
         {
-            DICE_N_FACES_1 = (Dictionary<Die, Face>)stubGameRunner.GameManager.GetAll().First().GetHistory().First().DiceNFaces;
-            DICE_N_FACES_2 = (Dictionary<Die, Face>)stubGameRunner.GameManager.GetAll().Last().GetHistory().Last().DiceNFaces;
+            DICE_N_FACES_1 = (Dictionary<Die, Face>)stubMasterOfCeremonies.GameManager.GetAll().First().GetHistory().First().DiceNFaces;
+            DICE_N_FACES_2 = (Dictionary<Die, Face>)stubMasterOfCeremonies.GameManager.GetAll().Last().GetHistory().Last().DiceNFaces;
         }
 
         [Fact]

@@ -19,16 +19,16 @@ namespace App
         {
             // MODEL stuff
             ILoader loader = new Stub();
-            GameRunner gameRunner;
+            MasterOfCeremonies masterOfCeremonies;
             try
             {
-                gameRunner = loader.LoadApp();
+                masterOfCeremonies = loader.LoadApp();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                gameRunner = new(new PlayerManager(), new DieManager(), null);
+                masterOfCeremonies = new(new PlayerManager(), new DieManager(), null);
             }
 
             try
@@ -48,7 +48,7 @@ namespace App
                         try
                         {
                             // persist them  as models !
-                            gameRunner.GlobalPlayerManager.Add(entity.ToModel());
+                            masterOfCeremonies.GlobalPlayerManager.Add(entity.ToModel());
                             Debug.WriteLine($"{entity.ID} -- {entity.Name}");
                         }
                         catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
@@ -81,38 +81,38 @@ namespace App
                         break;
 
                     case "l":
-                        string loadName = ChooseGame(gameRunner);
-                        if (gameRunner.GameManager.GetOneByName(loadName) != null)
+                        string loadName = ChooseGame(masterOfCeremonies);
+                        if (masterOfCeremonies.GameManager.GetOneByName(loadName) != null)
                         {
-                            Play(gameRunner, loadName);
+                            Play(masterOfCeremonies, loadName);
                         }
                         break;
 
                     case "n":
 
-                        if (!gameRunner.DieGroupManager.GetAll().Any())
+                        if (!masterOfCeremonies.DieGroupManager.GetAll().Any())
                         {
                             Console.WriteLine("make at least one dice group first, then try again");
                             break;
                         }
                         Console.WriteLine("add dice to the game");
-                        IEnumerable<Die> newGameDice = PrepareDice(gameRunner);
+                        IEnumerable<Die> newGameDice = PrepareDice(masterOfCeremonies);
 
                         string newGameName;
                         Console.WriteLine("give this new game a name\n>");
                         newGameName = Console.ReadLine();
 
                         Console.WriteLine("add players to the game");
-                        PlayerManager playerManager = PreparePlayers(gameRunner);
+                        PlayerManager playerManager = PreparePlayers(masterOfCeremonies);
 
-                        gameRunner.StartNewGame(newGameName, playerManager, newGameDice);
-                        Play(gameRunner, newGameName);
+                        masterOfCeremonies.StartNewGame(newGameName, playerManager, newGameDice);
+                        Play(masterOfCeremonies, newGameName);
 
                         break;
 
                     case "d":
-                        string deleteName = ChooseGame(gameRunner);
-                        gameRunner.GameManager.Remove(gameRunner.GameManager.GetOneByName(deleteName));
+                        string deleteName = ChooseGame(masterOfCeremonies);
+                        masterOfCeremonies.GameManager.Remove(masterOfCeremonies.GameManager.GetOneByName(deleteName));
                         break;
 
                     case "c":
@@ -151,19 +151,19 @@ namespace App
                                 newGroupDice.Add(die);
                             }
                         }
-                        gameRunner.DieGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(newGroupName, newGroupDice));
+                        masterOfCeremonies.DieGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(newGroupName, newGroupDice));
                         break;
 
                     case "p":
-                        ShowPlayers(gameRunner);
+                        ShowPlayers(masterOfCeremonies);
                         break;
 
                     case "i":
-                        ShowDice(gameRunner);
+                        ShowDice(masterOfCeremonies);
                         break;
 
                     case "y":
-                        PreparePlayers(gameRunner);
+                        PreparePlayers(masterOfCeremonies);
                         break;
 
                     default:
@@ -178,7 +178,7 @@ namespace App
                 using (DiceAppDbContext db = new())
                 {
                     // get all the players from the app's memory
-                    IEnumerable<Player> models = gameRunner.GlobalPlayerManager.GetAll();
+                    IEnumerable<Player> models = masterOfCeremonies.GlobalPlayerManager.GetAll();
 
                     // create a PlayerDbManager (and inject it with the DB)
                     PlayerDbManager playerDbManager = new(db);
@@ -201,12 +201,12 @@ namespace App
             catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Couldn't use the database"); }
         }
 
-        private static void Play(GameRunner gameRunner, string name)
+        private static void Play(MasterOfCeremonies masterOfCeremonies, string name)
         {
             string menuChoicePlay = "";
             while (menuChoicePlay != "q")
             {
-                Game game = gameRunner.GameManager.GetOneByName(name);
+                Game game = masterOfCeremonies.GameManager.GetOneByName(name);
                 Console.WriteLine($"{game.GetWhoPlaysNow()}'s turn\n" +
                     "q... quit\n" +
                     "h... show history\n" +
@@ -224,21 +224,21 @@ namespace App
                         }
                         break;
                     case "s":
-                        gameRunner.GameManager.Add(game);
+                        masterOfCeremonies.GameManager.Add(game);
                         break;
                     default:
-                        GameRunner.PlayGame(game);
+                        MasterOfCeremonies.PlayGame(game);
                         Console.WriteLine(game.GetHistory().Last());
                         break;
                 }
             }
         }
 
-        private static string ChooseGame(GameRunner gameRunner)
+        private static string ChooseGame(MasterOfCeremonies masterOfCeremonies)
         {
             string name;
             Console.WriteLine("which of these games?\n(choose by name)\n>");
-            foreach (Game game in gameRunner.GameManager.GetAll())
+            foreach (Game game in masterOfCeremonies.GameManager.GetAll())
             {
                 Console.WriteLine(game);
             }
@@ -246,18 +246,18 @@ namespace App
             return name;
         }
 
-        private static void ShowPlayers(GameRunner gameRunner)
+        private static void ShowPlayers(MasterOfCeremonies masterOfCeremonies)
         {
             Console.WriteLine("Look at all them players!");
-            foreach (Player player in gameRunner.GlobalPlayerManager.GetAll())
+            foreach (Player player in masterOfCeremonies.GlobalPlayerManager.GetAll())
             {
                 Console.WriteLine(player);
             }
         }
 
-        private static void ShowDice(GameRunner gameRunner)
+        private static void ShowDice(MasterOfCeremonies masterOfCeremonies)
         {
-            foreach ((string name, IEnumerable<Die> dice) in gameRunner.DieGroupManager.GetAll())
+            foreach ((string name, IEnumerable<Die> dice) in masterOfCeremonies.DieGroupManager.GetAll())
             {
                 Console.WriteLine($"{name} -- {dice}");
             }
@@ -333,11 +333,11 @@ namespace App
             return die;
         }
 
-        private static IEnumerable<Die> PrepareDice(GameRunner gameRunner)
+        private static IEnumerable<Die> PrepareDice(MasterOfCeremonies masterOfCeremonies)
         {
             List<Die> result = new();
             Console.WriteLine("all known dice or groups of dice:");
-            ShowDice(gameRunner);
+            ShowDice(masterOfCeremonies);
             string menuChoiceDice = "";
             while (!(menuChoiceDice.Equals("ok") && result.Any()))
             {
@@ -345,7 +345,7 @@ namespace App
                 menuChoiceDice = Console.ReadLine();
                 if (!menuChoiceDice.Equals("ok"))
                 {
-                    IEnumerable<Die> chosenDice = gameRunner.DieGroupManager.GetOneByName(menuChoiceDice).Value;
+                    IEnumerable<Die> chosenDice = masterOfCeremonies.DieGroupManager.GetOneByName(menuChoiceDice).Value;
                     foreach (Die die in chosenDice)
                     {
                         result.Add(die);
@@ -354,11 +354,11 @@ namespace App
             }
             return result.AsEnumerable();
         }
-        private static PlayerManager PreparePlayers(GameRunner gameRunner)
+        private static PlayerManager PreparePlayers(MasterOfCeremonies masterOfCeremonies)
         {
             PlayerManager result = new();
             Console.WriteLine("all known players:");
-            ShowPlayers(gameRunner);
+            ShowPlayers(masterOfCeremonies);
             string menuChoicePlayers = "";
             while (!(menuChoicePlayers.Equals("ok") && result.GetAll().Any()))
             {
@@ -367,10 +367,10 @@ namespace App
                 if (!menuChoicePlayers.Equals("ok"))
                 {
                     Player player = new(menuChoicePlayers);
-                    if (!gameRunner.GlobalPlayerManager.GetAll().Contains(player))
+                    if (!masterOfCeremonies.GlobalPlayerManager.GetAll().Contains(player))
                     {
                         // if the player didn't exist, now it does... this is temporary
-                        gameRunner.GlobalPlayerManager.Add(player);
+                        masterOfCeremonies.GlobalPlayerManager.Add(player);
                     }
                     // almost no checks, this is temporary
                     try

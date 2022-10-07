@@ -8,9 +8,9 @@ namespace Data
 {
     public class Stub : ILoader
     {
-        public GameRunner LoadApp()
+        public MasterOfCeremonies LoadApp()
         {
-            GameRunner gr = new(new PlayerManager(), new DieManager(), new GameManager());
+            MasterOfCeremonies gr = new(new PlayerManager(), new DieManager(), new GameManager());
 
             Player player1 = new("Alice(Old Stub)"), player2 = new("Bob(Old Stub)"), player3 = new("Clyde(Old Stub)");
 

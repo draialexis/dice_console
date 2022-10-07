@@ -13,15 +13,15 @@ namespace Tests.Model_UTs.Games
 {
     public class GameTest
     {
-        private readonly GameRunner stubGameRunner = new Stub().LoadApp();
+        private readonly MasterOfCeremonies stubMasterOfCeremonies = new Stub().LoadApp();
         private static readonly string GAME_NAME = "my game";
 
         private static readonly Player PLAYER_1 = new("Alice"), PLAYER_2 = new("Bob"), PLAYER_3 = new("Clyde");
         private readonly IEnumerable<Die> DICE_1, DICE_2;
         public GameTest()
         {
-            DICE_1 = stubGameRunner.DieGroupManager.GetAll().First().Value;
-            DICE_2 = stubGameRunner.DieGroupManager.GetAll().Last().Value;
+            DICE_1 = stubMasterOfCeremonies.DieGroupManager.GetAll().First().Value;
+            DICE_2 = stubMasterOfCeremonies.DieGroupManager.GetAll().Last().Value;
         }
 
 
@@ -81,7 +81,7 @@ namespace Tests.Model_UTs.Games
         public void TestGetHistory()
         {
             // Arrange
-            Dictionary<Die, Face> diceNFaces = (Dictionary<Die, Face>)stubGameRunner.GameManager.GetAll().First().GetHistory().First().DiceNFaces;
+            Dictionary<Die, Face> diceNFaces = (Dictionary<Die, Face>)stubMasterOfCeremonies.GameManager.GetAll().First().GetHistory().First().DiceNFaces;
 
             Turn turn1 = Turn.CreateWithDefaultTime(PLAYER_1, diceNFaces);
             Turn turn2 = Turn.CreateWithDefaultTime(PLAYER_2, diceNFaces); // yeah they rolled the same

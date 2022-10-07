@@ -6,7 +6,7 @@ namespace Data.EF
 {
     public class DiceAppDbContext : DbContext, ILoader
     {
-        public virtual GameRunner LoadApp() { throw new NotImplementedException(); }
+        public virtual MasterOfCeremonies LoadApp() { throw new NotImplementedException(); }
 
         public DbSet<PlayerEntity> Players { get; set; }
 

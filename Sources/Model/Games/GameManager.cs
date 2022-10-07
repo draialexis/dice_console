@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Model.Games
 {
@@ -27,7 +25,7 @@ namespace Model.Games
         /// <summary>
         /// finds the game with that name and returns it
         /// <br/>
-        /// that copy does not belong to this gamerunner's games, so it should not be modified 
+        /// that copy does not belong to this manager's games, so it should not be modified 
         /// </summary>
         /// <param name="name">a games's name</param>
         /// <returns>game with said name, <em>or null</em> if no such game was found</returns>
