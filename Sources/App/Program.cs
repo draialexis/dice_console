@@ -28,7 +28,7 @@ namespace App
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                masterOfCeremonies = new(new PlayerManager(), new DieManager(), null);
+                masterOfCeremonies = new(new PlayerManager(), new DiceGroupManager(), null);
             }
 
             try
@@ -90,7 +90,7 @@ namespace App
 
                     case "n":
 
-                        if (!masterOfCeremonies.DieGroupManager.GetAll().Any())
+                        if (!masterOfCeremonies.DiceGroupManager.GetAll().Any())
                         {
                             Console.WriteLine("make at least one dice group first, then try again");
                             break;
@@ -151,7 +151,7 @@ namespace App
                                 newGroupDice.Add(die);
                             }
                         }
-                        masterOfCeremonies.DieGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(newGroupName, newGroupDice));
+                        masterOfCeremonies.DiceGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(newGroupName, newGroupDice));
                         break;
 
                     case "p":
@@ -257,7 +257,7 @@ namespace App
 
         private static void ShowDice(MasterOfCeremonies masterOfCeremonies)
         {
-            foreach ((string name, IEnumerable<Die> dice) in masterOfCeremonies.DieGroupManager.GetAll())
+            foreach ((string name, IEnumerable<Die> dice) in masterOfCeremonies.DiceGroupManager.GetAll())
             {
                 Console.WriteLine($"{name} -- {dice}");
             }
@@ -345,7 +345,7 @@ namespace App
                 menuChoiceDice = Console.ReadLine();
                 if (!menuChoiceDice.Equals("ok"))
                 {
-                    IEnumerable<Die> chosenDice = masterOfCeremonies.DieGroupManager.GetOneByName(menuChoiceDice).Value;
+                    IEnumerable<Die> chosenDice = masterOfCeremonies.DiceGroupManager.GetOneByName(menuChoiceDice).Value;
                     foreach (Die die in chosenDice)
                     {
                         result.Add(die);

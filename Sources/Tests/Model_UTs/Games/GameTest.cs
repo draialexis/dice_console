@@ -20,8 +20,8 @@ namespace Tests.Model_UTs.Games
         private readonly IEnumerable<Die> DICE_1, DICE_2;
         public GameTest()
         {
-            DICE_1 = stubMasterOfCeremonies.DieGroupManager.GetAll().First().Value;
-            DICE_2 = stubMasterOfCeremonies.DieGroupManager.GetAll().Last().Value;
+            DICE_1 = stubMasterOfCeremonies.DiceGroupManager.GetAll().First().Value;
+            DICE_2 = stubMasterOfCeremonies.DiceGroupManager.GetAll().Last().Value;
         }
 
 
