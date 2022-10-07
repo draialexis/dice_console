@@ -10,7 +10,6 @@ namespace Model.Dice
 
         public KeyValuePair<string, IEnumerable<Die>> Add(KeyValuePair<string, IEnumerable<Die>> toAdd)
         {
-            // on trim la clé d'abord
             if (string.IsNullOrWhiteSpace(toAdd.Key))
             {
                 throw new ArgumentNullException(nameof(toAdd), "param should not be null or empty");
@@ -60,21 +59,29 @@ namespace Model.Dice
             }
         }
 
+        /// <summary>
+        /// updates a (string, IEnumerable-of-Die) couple. only the name can be updated
+        /// </summary>
+        /// <param name="before">original couple</param>
+        /// <param name="after">new couple</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         public KeyValuePair<string, IEnumerable<Die>> Update(KeyValuePair<string, IEnumerable<Die>> before, KeyValuePair<string, IEnumerable<Die>> after)
         {
             // pas autorisé de changer les dés, juste le nom
             if (!before.Value.Equals(after.Value))
             {
-                if (string.IsNullOrWhiteSpace(before.Key) || string.IsNullOrWhiteSpace(after.Key))
-                {
-                    throw new ArgumentNullException(nameof(before), "dice group name should not be null or empty");
-                }
-
-                diceGroups.Remove(before.Key);
-                diceGroups.Add(after.Key, after.Value);
-                return after;
+                throw new ArgumentException("the group of dice cannot be updated, only the name", nameof(before));
             }
-            return before;
+            if (string.IsNullOrWhiteSpace(before.Key) || string.IsNullOrWhiteSpace(after.Key))
+            {
+                throw new ArgumentNullException(nameof(before), "dice group name should not be null or empty");
+            }
+            diceGroups.Remove(before.Key);
+            diceGroups.Add(after.Key, after.Value);
+            return after;
+
         }
     }
 }
