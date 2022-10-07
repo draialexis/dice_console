@@ -11,28 +11,26 @@ namespace Tests.Model_UTs.Dice.Faces
 {
     public class FaceColorTest
     {
-
-
-
-        [Theory]
-        [InlineData(Color.FromName("Chocolate"))]
-        [InlineData(Color.FromArgb(144, 255, 78, 240))]
-        public void ColorFaceValueTest(Color color)
+        [Fact]
+        public void ColorFaceValueTest()
         {
-
+            Color color1 = Color.FromName("Chocolate");
+            Color color2 = Color.FromArgb(144, 255, 78, 240);
 
             //Arrage 
-            ColorFace face = new ColorFace(color);
-
+            ColorFace face1 = new(color1);
+            ColorFace face2 = new(color2);
 
             //Act
-            Color expected = color;
-            Color actual = face.Value;
+            Color expected1 = color1;
+            Color actual1 = face1.Value;
 
-
+            Color expected2 = color2;
+            Color actual2 = face2.Value;
 
             //Assert
-            Assert.Equal(expected, actual);
+            Assert.Equal(expected1, actual1);
+            Assert.Equal(expected2, actual2);
         }
     }
 }
