@@ -50,7 +50,7 @@ namespace App
                             // persist them  as models !
                             gameRunner.GlobalPlayerManager.Add(entity.ToModel());
                             Debug.WriteLine($"{entity.ID} -- {entity.Name}");
-                        } 
+                        }
                         catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
                     }
                 }
@@ -82,7 +82,7 @@ namespace App
 
                     case "l":
                         string loadName = ChooseGame(gameRunner);
-                        if (gameRunner.GetOneByName(loadName) != null)
+                        if (gameRunner.GameManager.GetOneByName(loadName) != null)
                         {
                             Play(gameRunner, loadName);
                         }
@@ -90,7 +90,7 @@ namespace App
 
                     case "n":
 
-                        if (!gameRunner.GlobalDieManager.GetAll().Any())
+                        if (!gameRunner.DieGroupManager.GetAll().Any())
                         {
                             Console.WriteLine("make at least one dice group first, then try again");
                             break;
@@ -112,7 +112,7 @@ namespace App
 
                     case "d":
                         string deleteName = ChooseGame(gameRunner);
-                        gameRunner.Remove(gameRunner.GetOneByName(deleteName));
+                        gameRunner.GameManager.Remove(gameRunner.GameManager.GetOneByName(deleteName));
                         break;
 
                     case "c":
@@ -151,7 +151,7 @@ namespace App
                                 newGroupDice.Add(die);
                             }
                         }
-                        gameRunner.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<Die>>(newGroupName, newGroupDice));
+                        gameRunner.DieGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(newGroupName, newGroupDice));
                         break;
 
                     case "p":
@@ -197,7 +197,8 @@ namespace App
                         catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
                     }
                 }
-            } catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Couldn't use the database"); }
+            }
+            catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Couldn't use the database"); }
         }
 
         private static void Play(GameRunner gameRunner, string name)
@@ -205,7 +206,7 @@ namespace App
             string menuChoicePlay = "";
             while (menuChoicePlay != "q")
             {
-                Game game = gameRunner.GetOneByName(name);
+                Game game = gameRunner.GameManager.GetOneByName(name);
                 Console.WriteLine($"{game.GetWhoPlaysNow()}'s turn\n" +
                     "q... quit\n" +
                     "h... show history\n" +
@@ -223,7 +224,7 @@ namespace App
                         }
                         break;
                     case "s":
-                        gameRunner.Add(game);
+                        gameRunner.GameManager.Add(game);
                         break;
                     default:
                         GameRunner.PlayGame(game);
@@ -237,7 +238,7 @@ namespace App
         {
             string name;
             Console.WriteLine("which of these games?\n(choose by name)\n>");
-            foreach (Game game in gameRunner.GetAll())
+            foreach (Game game in gameRunner.GameManager.GetAll())
             {
                 Console.WriteLine(game);
             }
@@ -256,7 +257,7 @@ namespace App
 
         private static void ShowDice(GameRunner gameRunner)
         {
-            foreach ((string name, IEnumerable<Die> dice) in gameRunner.GlobalDieManager.GetAll())
+            foreach ((string name, IEnumerable<Die> dice) in gameRunner.DieGroupManager.GetAll())
             {
                 Console.WriteLine($"{name} -- {dice}");
             }
@@ -344,7 +345,7 @@ namespace App
                 menuChoiceDice = Console.ReadLine();
                 if (!menuChoiceDice.Equals("ok"))
                 {
-                    IEnumerable<Die> chosenDice = gameRunner.GlobalDieManager.GetOneByName(menuChoiceDice).Value;
+                    IEnumerable<Die> chosenDice = gameRunner.DieGroupManager.GetOneByName(menuChoiceDice).Value;
                     foreach (Die die in chosenDice)
                     {
                         result.Add(die);

@@ -19,8 +19,8 @@ namespace Tests.Model_UTs.Games
 
         public TurnTest()
         {
-            DICE_N_FACES_1 = (Dictionary<Die, Face>)stubGameRunner.GetAll().First().GetHistory().First().DiceNFaces;
-            DICE_N_FACES_2 = (Dictionary<Die, Face>)stubGameRunner.GetAll().Last().GetHistory().Last().DiceNFaces;
+            DICE_N_FACES_1 = (Dictionary<Die, Face>)stubGameRunner.GameManager.GetAll().First().GetHistory().First().DiceNFaces;
+            DICE_N_FACES_2 = (Dictionary<Die, Face>)stubGameRunner.GameManager.GetAll().Last().GetHistory().Last().DiceNFaces;
         }
 
         [Fact]

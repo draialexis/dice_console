@@ -10,7 +10,7 @@ namespace Data
     {
         public GameRunner LoadApp()
         {
-            GameRunner gr = new(new PlayerManager(), new DieManager());
+            GameRunner gr = new(new PlayerManager(), new DieManager(), new GameManager());
 
             Player player1 = new("Alice(Old Stub)"), player2 = new("Bob(Old Stub)"), player3 = new("Clyde(Old Stub)");
 
@@ -63,26 +63,26 @@ namespace Data
 
             dndDice.Add(new NumberDie(d20Faces));
 
-            gr.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<Die>>(dndName, dndDice.AsEnumerable()));
-            gr.GlobalDieManager.Add(new KeyValuePair<string, IEnumerable<Die>>(monopolyName, monopolyDice.AsEnumerable()));
+            gr.DieGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(dndName, dndDice.AsEnumerable()));
+            gr.DieGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(monopolyName, monopolyDice.AsEnumerable()));
 
             string game1 = "Forgotten Realms", game2 = "4e", game3 = "The Coopers";
 
-            gr.Add(new(game1, new PlayerManager(), dndDice.AsEnumerable()));
-            gr.Add(new(game2, new PlayerManager(), dndDice.AsEnumerable()));
-            gr.Add(new(game3, new PlayerManager(), monopolyDice.AsEnumerable()));
+            gr.GameManager.Add(new(game1, new PlayerManager(), dndDice.AsEnumerable()));
+            gr.GameManager.Add(new(game2, new PlayerManager(), dndDice.AsEnumerable()));
+            gr.GameManager.Add(new(game3, new PlayerManager(), monopolyDice.AsEnumerable()));
 
-            gr.GetOneByName(game1).PlayerManager.Add(player1);
-            gr.GetOneByName(game1).PlayerManager.Add(player2);
+            gr.GameManager.GetOneByName(game1).PlayerManager.Add(player1);
+            gr.GameManager.GetOneByName(game1).PlayerManager.Add(player2);
 
-            gr.GetOneByName(game2).PlayerManager.Add(player1);
-            gr.GetOneByName(game2).PlayerManager.Add(player2);
-            gr.GetOneByName(game2).PlayerManager.Add(player3);
+            gr.GameManager.GetOneByName(game2).PlayerManager.Add(player1);
+            gr.GameManager.GetOneByName(game2).PlayerManager.Add(player2);
+            gr.GameManager.GetOneByName(game2).PlayerManager.Add(player3);
 
-            gr.GetOneByName(game3).PlayerManager.Add(player1);
-            gr.GetOneByName(game3).PlayerManager.Add(player3);
+            gr.GameManager.GetOneByName(game3).PlayerManager.Add(player1);
+            gr.GameManager.GetOneByName(game3).PlayerManager.Add(player3);
 
-            foreach (Game game in gr.GetAll())
+            foreach (Game game in gr.GameManager.GetAll())
             {
                 for (int i = 0; i < 10; i++)
                 {

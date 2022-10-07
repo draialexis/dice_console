@@ -20,8 +20,8 @@ namespace Tests.Model_UTs.Games
         private readonly IEnumerable<Die> DICE_1, DICE_2;
         public GameTest()
         {
-            DICE_1 = stubGameRunner.GlobalDieManager.GetAll().First().Value;
-            DICE_2 = stubGameRunner.GlobalDieManager.GetAll().Last().Value;
+            DICE_1 = stubGameRunner.DieGroupManager.GetAll().First().Value;
+            DICE_2 = stubGameRunner.DieGroupManager.GetAll().Last().Value;
         }
 
 
@@ -81,7 +81,7 @@ namespace Tests.Model_UTs.Games
         public void TestGetHistory()
         {
             // Arrange
-            Dictionary<Die, Face> diceNFaces = (Dictionary<Die, Face>)stubGameRunner.GetAll().First().GetHistory().First().DiceNFaces;
+            Dictionary<Die, Face> diceNFaces = (Dictionary<Die, Face>)stubGameRunner.GameManager.GetAll().First().GetHistory().First().DiceNFaces;
 
             Turn turn1 = Turn.CreateWithDefaultTime(PLAYER_1, diceNFaces);
             Turn turn2 = Turn.CreateWithDefaultTime(PLAYER_2, diceNFaces); // yeah they rolled the same
