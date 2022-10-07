@@ -95,3 +95,8 @@ On [the repository's main page](https://codefirst.iut.uca.fr/git/alexis.drai/dic
 It should then allow you to `merge into: ...:main` and `pull from: ...:new-feature`  
 
 Follow the platform's instructions, until you've made a "work in progress" (WIP) pull request. You can now assign reviewers among your colleagues. They will get familiar with your new code -- and will either accept the branch as it is, or help you arrange it.
+
+## Known issues and limitations
+
+### copies of games
+As of now, this app does not allow making copies of a game. We're not trying to make a roguelike, it's just not considered to be a priority feature.
