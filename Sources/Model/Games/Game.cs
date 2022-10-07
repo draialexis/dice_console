@@ -19,7 +19,7 @@ namespace Model.Games
             {
                 return name;
             }
-            set // GameRunner will need to take care of forbidding
+            set // MasterOfCeremonies will need to take care of forbidding
                 // (or allowing) having two Games with the same name etc.
             {
                 if (string.IsNullOrWhiteSpace(value))

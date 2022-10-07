@@ -7,7 +7,7 @@ namespace Data.EF
 {
     public class DiceAppDbContextWithStub : DiceAppDbContext
     {
-        public override GameRunner LoadApp() { throw new NotImplementedException(); }
+        public override MasterOfCeremonies LoadApp() { throw new NotImplementedException(); }
 
         public DiceAppDbContextWithStub() { }
 

@@ -4,6 +4,6 @@ namespace Data
 {
     public interface ILoader
     {
-        public GameRunner LoadApp();
+        public MasterOfCeremonies LoadApp();
     }
 }
