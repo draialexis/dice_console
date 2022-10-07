@@ -10,7 +10,7 @@ namespace Data
     {
         public MasterOfCeremonies LoadApp()
         {
-            MasterOfCeremonies gr = new(new PlayerManager(), new DieManager(), new GameManager());
+            MasterOfCeremonies gr = new(new PlayerManager(), new DiceGroupManager(), new GameManager());
 
             Player player1 = new("Alice(Old Stub)"), player2 = new("Bob(Old Stub)"), player3 = new("Clyde(Old Stub)");
 
@@ -63,8 +63,8 @@ namespace Data
 
             dndDice.Add(new NumberDie(d20Faces));
 
-            gr.DieGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(dndName, dndDice.AsEnumerable()));
-            gr.DieGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(monopolyName, monopolyDice.AsEnumerable()));
+            gr.DiceGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(dndName, dndDice.AsEnumerable()));
+            gr.DiceGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(monopolyName, monopolyDice.AsEnumerable()));
 
             string game1 = "Forgotten Realms", game2 = "4e", game3 = "The Coopers";
 
