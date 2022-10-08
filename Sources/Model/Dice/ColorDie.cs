@@ -5,9 +5,9 @@ namespace Model.Dice
 {
     public class ColorDie : HomogeneousDie<Color>
     {
-        public ColorDie(params ColorFace[] faces) : base(faces)
+        public ColorDie(ColorFace first, params ColorFace[] faces) 
+            : base(first, faces)
         {
-
         }
     }
 }

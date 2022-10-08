@@ -27,8 +27,8 @@ namespace Data
             NumberFace[] d6Faces = new NumberFace[] { new(1), new(2), new(3), new(4), new(5), new(6) };
 
             monopolyDice.Add(new NumberDie(new NumberFace(1), new NumberFace(1), new NumberFace(1), new NumberFace(1)));
-            monopolyDice.Add(new NumberDie(d6Faces));
-            monopolyDice.Add(new NumberDie(d6Faces));
+            monopolyDice.Add(new NumberDie(d6Faces[0], d6Faces[1..]));
+            monopolyDice.Add(new NumberDie(d6Faces[0], d6Faces[1..]));
 
             ColorFace[] colorFaces = new ColorFace[]
             {
@@ -40,7 +40,7 @@ namespace Data
                 new(Color.FromName("white"))
             };
 
-            monopolyDice.Add(new ColorDie(colorFaces));
+            monopolyDice.Add(new ColorDie(colorFaces[0], colorFaces[1..]));
 
             string rootPath = "https://unsplash.com/photos/";
 
@@ -52,7 +52,7 @@ namespace Data
                 new(new Uri(rootPath + "A_Ncbi-RH6s")),
             };
 
-            monopolyDice.Add(new ImageDie(imageFaces));
+            monopolyDice.Add(new ImageDie(imageFaces[0], imageFaces[1..]));
 
             NumberFace[] d20Faces = new NumberFace[] {
                 new(1), new(2), new(3), new(4), new(5),
@@ -61,7 +61,7 @@ namespace Data
                 new(16), new(17), new(18), new(19), new(20)
             };
 
-            dndDice.Add(new NumberDie(d20Faces));
+            dndDice.Add(new NumberDie(d20Faces[0], d20Faces[1..]));
 
             gr.DiceGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(dndName, dndDice.AsEnumerable()));
             gr.DiceGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(monopolyName, monopolyDice.AsEnumerable()));
