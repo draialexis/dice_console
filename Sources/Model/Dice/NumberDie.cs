@@ -4,7 +4,8 @@ namespace Model.Dice
 {
     public class NumberDie : HomogeneousDie<int>
     {
-        public NumberDie(params NumberFace[] faces) : base(faces)
+        public NumberDie(NumberFace first, params NumberFace[] faces) 
+            : base(first, faces)
         {
         }
     }

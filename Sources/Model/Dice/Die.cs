@@ -13,9 +13,9 @@ namespace Model.Dice
 
         private readonly List<Face> faces = new();
 
-        protected Die(params Face[] faces)
+        protected Die(Face first, params Face[] faces)
         {
-            this.faces.AddRange(faces);
+            this.faces.AddRange(faces.Append(first));
         }
 
         public virtual Face GetRandomFace()

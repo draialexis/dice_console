@@ -5,7 +5,8 @@ namespace Model.Dice
 {
     public class ImageDie : HomogeneousDie<Uri>
     {
-        public ImageDie(params ImageFace[] faces) : base(faces)
+        public ImageDie(ImageFace first, params ImageFace[] faces) 
+            : base(first, faces)
         {
         }
     }

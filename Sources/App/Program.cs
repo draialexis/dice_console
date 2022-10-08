@@ -274,13 +274,17 @@ namespace App
                 Console.WriteLine("create a face with a number, or enter 'ok' if you're finished");
                 menuChoiceNewFaces = Console.ReadLine();
 
+                PreventEmptyDieCreation(ref menuChoiceNewFaces, faces.Count);
+
                 if (!menuChoiceNewFaces.Equals("ok") && int.TryParse(menuChoiceNewFaces, out int num))
                 {
                     faces.Add(new(num));
                 }
             }
 
-            die = new NumberDie(faces.ToArray());
+            NumberFace[] facesArr = faces.ToArray();
+
+            die = new NumberDie(facesArr[0], facesArr[1..]);
             return die;
         }
 
@@ -294,10 +298,15 @@ namespace App
             {
                 Console.WriteLine("create a face with an color name, or enter 'ok' if you're finished");
                 menuChoiceNewFaces = Console.ReadLine();
+
+                PreventEmptyDieCreation(ref menuChoiceNewFaces, faces.Count);
+
                 if (menuChoiceNewFaces != "ok") faces.Add(new(Color.FromName(menuChoiceNewFaces)));
             }
 
-            die = new ColorDie(faces.ToArray());
+            ColorFace[] facesArr = faces.ToArray();
+
+            die = new ColorDie(facesArr[0], facesArr[1..]);
             return die;
         }
 
@@ -311,6 +320,8 @@ namespace App
             {
                 Console.WriteLine("create a face with an image uri, or enter 'ok' if you're finished");
                 menuChoiceNewFaces = Console.ReadLine();
+
+                PreventEmptyDieCreation(ref menuChoiceNewFaces, faces.Count);
 
                 if (menuChoiceNewFaces != "ok")
                 {
@@ -329,8 +340,21 @@ namespace App
                     }
                 }
             }
-            die = new ImageDie(faces.ToArray());
+
+            ImageFace[] facesArr = faces.ToArray();
+
+            die = new ImageDie(facesArr[0], facesArr[1..]);
             return die;
+        }
+
+
+        private static void PreventEmptyDieCreation(ref string menuChoice, int count)
+        {
+            if (menuChoice.Equals("ok") && count == 0)
+            {
+                Console.WriteLine("create at least one valid face");
+                menuChoice = ""; // persiste en dehors du scope de cette fonction
+            }
         }
 
         private static IEnumerable<Die> PrepareDice(MasterOfCeremonies masterOfCeremonies)
