@@ -11,9 +11,6 @@ namespace Model.Games
     /// <summary>
     /// a Turn consists of a Player, a DateTime, and a IEnumerable of AbstractDieFace
     /// Like a turn in some game.
-    /// <br/>
-    /// Two turns are equal if they are litterally the same instance in RAM
-    /// (default behaviors Equals() and GetHashCode())
     /// </summary>
     public sealed class Turn : IEquatable<Turn>
     {
