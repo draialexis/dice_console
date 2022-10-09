@@ -21,7 +21,7 @@ namespace Model.Players
         /// </summary>
         /// <param name="toAdd">player to be added</param>
         /// <returns>added player</returns>
-        public async Task<Player> Add(Player toAdd)
+        public Task<Player> Add(Player toAdd)
         {
             if (toAdd is null)
             {
@@ -32,29 +32,27 @@ namespace Model.Players
                 throw new ArgumentException("this username is already taken", nameof(toAdd));
             }
             players.Add(toAdd);
-            return await Task.FromResult(toAdd);
+            return Task.FromResult(toAdd);
         }
 
         /// <summary>
-        /// finds the player with that name and returns A COPY OF IT
-        /// <br/>
-        /// that copy does not belong to this manager's players, so it should not be modified 
+        /// finds the player with that name and returns it
         /// </summary>
         /// <param name="name">a player's unique name</param>
         /// <returns>player with said name, <em>or null</em> if no such player was found</returns>
-        public async Task<Player> GetOneByName(string name)
+        public Task<Player> GetOneByName(string name)
         {
-            if (!string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
-                Player wanted = new(name);
-                Player result = players.FirstOrDefault(p => p.Equals(wanted));
-                if (result == null)
-                {
-                    return null;
-                }
-                return await Task.FromResult(new Player(result)); // THIS IS A COPY (using a copy constructor)
+                throw new ArgumentException("param should not be null or blank", nameof(name));
             }
-            throw new ArgumentException("param should not be null or blank", nameof(name));
+
+            Player result = players.FirstOrDefault(p => p.Name.ToUpper().Equals(name.ToUpper().Trim()));
+            if (result == null)
+            {
+                return Task.FromResult<Player>(null);
+            }
+            return Task.FromResult(result);
         }
 
         /// </summary>
@@ -62,7 +60,7 @@ namespace Model.Players
         /// so that the only way to modify the collection of players is to use this class's methods
         /// </summary>
         /// <returns>a readonly enumerable of all this manager's players</returns>
-        public async Task<IEnumerable<Player>> GetAll() => await Task.FromResult(players.AsEnumerable());
+        public Task<IEnumerable<Player>> GetAll() => Task.FromResult(players.AsEnumerable());
 
         /// <summary>
         /// update a player from <paramref name="before"/> to <paramref name="after"/>
@@ -70,7 +68,7 @@ namespace Model.Players
         /// <param name="before">player to be updated</param>
         /// <param name="after">player in the state that it needs to be in after the update</param>
         /// <returns>updated player</returns>
-        public async Task<Player> Update(Player before, Player after)
+        public Task<Player> Update(Player before, Player after)
         {
             Player[] args = { before, after };
 
@@ -84,7 +82,7 @@ namespace Model.Players
                 }
             }
             Remove(before);
-            return await Add(after);
+            return Add(after);
         }
 
         /// <summary>

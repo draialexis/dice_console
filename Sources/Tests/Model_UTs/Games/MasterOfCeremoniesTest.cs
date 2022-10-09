@@ -12,7 +12,7 @@ namespace Tests.Model_UTs.Games
 {
     public class MasterOfCeremoniesTest
     {
-        private readonly MasterOfCeremonies stubMasterOfCeremonies = new Stub().LoadApp().Result;
+        private readonly MasterOfCeremonies stubMasterOfCeremonies = new Stub().LoadApp()?.Result;
 
         [Fact]
         public async Task TestPlayGameWhenPlayThenAddNewTurnToHistoryAsync()
@@ -46,7 +46,7 @@ namespace Tests.Model_UTs.Games
             await masterOfCeremonies.StartNewGame(
                 name,
                 new PlayerManager(),
-                stubMasterOfCeremonies.GameManager.GetAll().Result.First().Dice
+                stubMasterOfCeremonies.GameManager.GetAll()?.Result.First().Dice
                 );
 
             // Assert

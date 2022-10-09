@@ -21,7 +21,7 @@ namespace Model.Games
         /// gets an unmodifiable collection of the games
         /// </summary>
         /// <returns>unmodifiable collection of the games</returns>
-        public async Task<IEnumerable<Game>> GetAll() => await Task.FromResult(games.AsEnumerable());
+        public Task<IEnumerable<Game>> GetAll() => Task.FromResult(games.AsEnumerable());
 
         /// <summary>
         /// finds the game with that name and returns it
@@ -30,11 +30,11 @@ namespace Model.Games
         /// </summary>
         /// <param name="name">a games's name</param>
         /// <returns>game with said name, <em>or null</em> if no such game was found</returns>
-        public async Task<Game> GetOneByName(string name)
+        public Task<Game> GetOneByName(string name)
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                return await Task.FromResult(games.FirstOrDefault(g => g.Name == name)); // may return null
+                return Task.FromResult(games.FirstOrDefault(g => g.Name == name)); // may return null
             }
             throw new ArgumentException("param should not be null or blank", nameof(name));
         }
@@ -54,7 +54,7 @@ namespace Model.Games
         /// saves a given game -- does not allow copies yet: if a game with the same name exists, it is overwritten
         /// </summary>
         /// <param name="toAdd">a game to save</param>
-        public async Task<Game> Add(Game toAdd)
+        public Task<Game> Add(Game toAdd)
         {
             if (toAdd is null)
             {
@@ -64,7 +64,7 @@ namespace Model.Games
             games.Remove(games.FirstOrDefault(g => g.Name == toAdd.Name));
             // will often be an update: if game with that name exists, it is removed, else, nothing happens above
             games.Add(toAdd);
-            return await Task.FromResult(toAdd);
+            return Task.FromResult(toAdd);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Model.Games
         /// <param name="after">new game</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task<Game> Update(Game before, Game after)
+        public Task<Game> Update(Game before, Game after)
         {
 
             Game[] args = { before, after };
@@ -103,7 +103,7 @@ namespace Model.Games
                 }
             }
             Remove(before);
-            return await Add(after);
+            return (Add(after));
         }
     }
 }

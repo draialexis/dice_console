@@ -14,14 +14,14 @@ namespace Tests.Model_UTs.Games
 {
     public class GameTest
     {
-        private readonly MasterOfCeremonies stubMasterOfCeremonies = new Stub().LoadApp().Result;
+        private readonly MasterOfCeremonies stubMasterOfCeremonies = new Stub().LoadApp()?.Result;
         private static readonly string GAME_NAME = "my game";
 
         private static readonly Player PLAYER_1 = new("Alice"), PLAYER_2 = new("Bob"), PLAYER_3 = new("Clyde");
         private readonly IEnumerable<Die> DICE_1, DICE_2;
         public GameTest()
         {
-            IEnumerable<KeyValuePair<string, IEnumerable<Die>>> diceGroups = stubMasterOfCeremonies.DiceGroupManager.GetAll().Result;
+            IEnumerable<KeyValuePair<string, IEnumerable<Die>>> diceGroups = stubMasterOfCeremonies.DiceGroupManager.GetAll()?.Result;
             DICE_1 = diceGroups.First().Value;
             DICE_2 = diceGroups.Last().Value;
         }

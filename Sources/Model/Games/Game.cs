@@ -180,7 +180,7 @@ namespace Model.Games
             sb.Append($"Game: {Name}");
 
             sb.Append("\nPlayers:");
-            foreach (Player player in PlayerManager.GetAll().Result)
+            foreach (Player player in PlayerManager.GetAll()?.Result)
             {
                 sb.Append($" {player.ToString()}");
             }

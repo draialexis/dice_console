@@ -82,7 +82,7 @@ namespace Data
             await (await gr.GameManager.GetOneByName(game3)).PlayerManager.Add(player1);
             await (await gr.GameManager.GetOneByName(game3)).PlayerManager.Add(player3);
 
-            foreach (Game game in gr.GameManager.GetAll().Result)
+            foreach (Game game in gr.GameManager.GetAll()?.Result)
             {
                 for (int i = 0; i < 10; i++)
                 {

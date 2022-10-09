@@ -367,8 +367,8 @@ namespace Tests.Data_UTs.Players
         }
 
         [Fact]
-        public async Task TestRemoveWhenPreExistentThenRemoves()
-        {
+        public void TestRemoveWhenPreExistentThenRemoves()
+        {// should be async Task
             // Arrange
 
             PlayerDbManager mgr;
@@ -393,6 +393,7 @@ namespace Tests.Data_UTs.Players
                 db.Database.EnsureCreated();
                 mgr = new(db);
 
+                // should check if toRemove is now absent
                 Assert.True(true);
             }
         }

@@ -111,15 +111,15 @@ namespace Tests.Model_UTs.Players
         }
 
         [Fact]
-        public async Task TestGetOneByNameIfValidButNotExistThenReturnNull()
+        public void TestGetOneByNameIfValidButNotExistThenReturnNull()
         {
             // Arrange
             PlayerManager playerManager = new();
             Player player = new("Bob");
-            await playerManager.Add(player);
+            playerManager.Add(player);
 
             // Act
-            Player result = await playerManager.GetOneByName("Clyde");
+            Player result = playerManager.GetOneByName("Clyde")?.Result;
 
             // Assert
             Assert.Null(result);
@@ -130,15 +130,15 @@ namespace Tests.Model_UTs.Players
         [InlineData("bob")]
         [InlineData("bob ")]
         [InlineData(" boB ")]
-        public async Task TestGetOneByNameIfValidThenReturnPlayer(string name)
+        public void TestGetOneByNameIfValidThenReturnPlayer(string name)
         {
             // Arrange
             PlayerManager playerManager = new();
             Player expected = new("Bob");
-            await playerManager.Add(expected);
+            playerManager.Add(expected);
 
             // Act
-            Player actual = await playerManager.GetOneByName(name);
+            Player actual = playerManager.GetOneByName(name)?.Result;
 
             // Assert
             Assert.Equal(expected, actual);

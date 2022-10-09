@@ -45,7 +45,7 @@ namespace Data.EF.Players
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public async Task<PlayerEntity> Add(PlayerEntity toAdd)
+        public Task<PlayerEntity> Add(PlayerEntity toAdd)
         {
             CleanPlayerEntity(toAdd);
 
@@ -54,6 +54,11 @@ namespace Data.EF.Players
                 throw new ArgumentException("this username is already taken", nameof(toAdd));
             }
 
+            return InternalAdd(toAdd);
+        }
+
+        private async Task<PlayerEntity> InternalAdd(PlayerEntity toAdd)
+        {
             EntityEntry ee = await db.Players.AddAsync(toAdd);
             await db.SaveChangesAsync();
             return (PlayerEntity)ee.Entity;
@@ -74,16 +79,21 @@ namespace Data.EF.Players
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public async Task<PlayerEntity> GetOneByName(string name)
+        public Task<PlayerEntity> GetOneByName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException("Name property should not be null or whitespace", nameof(name));
             }
             name = name.Trim();
-            return await db.Players.Where(p => p.Name == name).FirstAsync();
+            return InternalGetOneByName(name);
         }
 
+
+        private async Task<PlayerEntity> InternalGetOneByName(string name)
+        {
+            return await db.Players.Where(p => p.Name == name).FirstAsync();
+        }
 
         public async Task<bool> IsPresentByName(string name)
         {
@@ -119,7 +129,7 @@ namespace Data.EF.Players
         /// <returns>the updated entity</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public async Task<PlayerEntity> Update(PlayerEntity before, PlayerEntity after)
+        public Task<PlayerEntity> Update(PlayerEntity before, PlayerEntity after)
         {
             PlayerEntity[] args = { before, after };
 
@@ -133,9 +143,14 @@ namespace Data.EF.Players
                 throw new ArgumentException("ID cannot be updated", nameof(after));
             }
 
+            return InternalUpdate(before, after);
+
+        }
+
+        private async Task<PlayerEntity> InternalUpdate(PlayerEntity before, PlayerEntity after)
+        {
             Remove(before);
             return await Add(after);
-
         }
 
         /// <summary>
