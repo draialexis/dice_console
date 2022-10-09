@@ -34,6 +34,7 @@ However, you do need to create the migrations and DB (and you probably should de
 
 First, in Visual Studio's terminal ("Developer PowerShell"), go to *DiceApp/Sources/Data*, and make sure Entity Framework is installed and / or updated.
 ```
+cd Data
 dotnet tool install --global dotnet-ef
 dotnet tool update --global dotnet-ef
 ```
