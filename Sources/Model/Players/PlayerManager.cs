@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Model.Players
 {
@@ -20,7 +21,7 @@ namespace Model.Players
         /// </summary>
         /// <param name="toAdd">player to be added</param>
         /// <returns>added player</returns>
-        public Player Add(Player toAdd)
+        public async Task<Player> Add(Player toAdd)
         {
             if (toAdd is null)
             {
@@ -31,7 +32,7 @@ namespace Model.Players
                 throw new ArgumentException("this username is already taken", nameof(toAdd));
             }
             players.Add(toAdd);
-            return toAdd;
+            return await Task.FromResult(toAdd);
         }
 
         /// <summary>
@@ -41,13 +42,17 @@ namespace Model.Players
         /// </summary>
         /// <param name="name">a player's unique name</param>
         /// <returns>player with said name, <em>or null</em> if no such player was found</returns>
-        public Player GetOneByName(string name)
+        public async Task<Player> GetOneByName(string name)
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
                 Player wanted = new(name);
                 Player result = players.FirstOrDefault(p => p.Equals(wanted));
-                return result is null ? null : new Player(result); // THIS IS A COPY (using a copy constructor)
+                if (result == null)
+                {
+                    return null;
+                }
+                return await Task.FromResult(new Player(result)); // THIS IS A COPY (using a copy constructor)
             }
             throw new ArgumentException("param should not be null or blank", nameof(name));
         }
@@ -57,7 +62,7 @@ namespace Model.Players
         /// so that the only way to modify the collection of players is to use this class's methods
         /// </summary>
         /// <returns>a readonly enumerable of all this manager's players</returns>
-        public IEnumerable<Player> GetAll() => players.AsEnumerable();
+        public async Task<IEnumerable<Player>> GetAll() => await Task.FromResult(players.AsEnumerable());
 
         /// <summary>
         /// update a player from <paramref name="before"/> to <paramref name="after"/>
@@ -65,7 +70,7 @@ namespace Model.Players
         /// <param name="before">player to be updated</param>
         /// <param name="after">player in the state that it needs to be in after the update</param>
         /// <returns>updated player</returns>
-        public Player Update(Player before, Player after)
+        public async Task<Player> Update(Player before, Player after)
         {
             Player[] args = { before, after };
 
@@ -79,7 +84,7 @@ namespace Model.Players
                 }
             }
             Remove(before);
-            return Add(after);
+            return await Add(after);
         }
 
         /// <summary>
@@ -96,7 +101,7 @@ namespace Model.Players
             players.Remove(toRemove);
         }
 
-        public Player GetOneByID(Guid ID)
+        public Task<Player> GetOneByID(Guid ID)
         {
             throw new NotImplementedException();
         }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Model.Games
 {
@@ -112,13 +113,13 @@ namespace Model.Games
         /// </summary>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public Player GetWhoPlaysNow()
+        public async Task<Player> GetWhoPlaysNow()
         {
-            if (!PlayerManager.GetAll().Any())
+            if (!(await PlayerManager.GetAll()).Any())
             {
                 throw new MemberAccessException("you are exploring an empty collection\nthis should not have happened");
             }
-            return PlayerManager.GetAll().ElementAt(nextIndex);
+            return (await PlayerManager.GetAll()).ElementAt(nextIndex);
         }
 
         /// <summary>
@@ -128,9 +129,9 @@ namespace Model.Games
         /// <exception cref="MemberAccessException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public void PrepareNextPlayer(Player current)
+        public async Task PrepareNextPlayer(Player current)
         {
-            IEnumerable<Player> players = PlayerManager.GetAll();
+            IEnumerable<Player> players = await PlayerManager.GetAll();
             if (!players.Any())
             {
                 throw new MemberAccessException("you are exploring an empty collection\nthis should not have happened");
@@ -179,7 +180,7 @@ namespace Model.Games
             sb.Append($"Game: {Name}");
 
             sb.Append("\nPlayers:");
-            foreach (Player player in PlayerManager.GetAll())
+            foreach (Player player in PlayerManager.GetAll().Result)
             {
                 sb.Append($" {player.ToString()}");
             }

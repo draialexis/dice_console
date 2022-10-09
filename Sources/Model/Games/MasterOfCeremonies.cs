@@ -1,6 +1,7 @@
 ﻿using Model.Dice;
 using Model.Players;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Model.Games
 {
@@ -24,21 +25,21 @@ namespace Model.Games
         /// <param name="playerManager"></param>
         /// <param name="dice"></param>
         /// <returns></returns>
-        public Game StartNewGame(string name, IManager<Player> playerManager, IEnumerable<Die> dice)
+        public async Task<Game> StartNewGame(string name, IManager<Player> playerManager, IEnumerable<Die> dice)
         {
             Game game = new(name, playerManager, dice);
-            return GameManager.Add(game);
+            return await GameManager.Add(game);
         }
 
         /// <summary>
         /// plays one turn of the game
         /// </summary>
         /// <param name="game">the game from which a turn will be played</param>
-        public static void PlayGame(Game game)
+        public static async Task PlayGame(Game game)
         {
-            Player current = game.GetWhoPlaysNow();
+            Player current = await game.GetWhoPlaysNow();
             game.PerformTurn(current);
-            game.PrepareNextPlayer(current);
+            await game.PrepareNextPlayer(current);
         }
 
     }
