@@ -37,8 +37,9 @@ First, in Visual Studio's terminal ("Developer PowerShell"), go to *DiceApp/Sour
 dotnet tool install --global dotnet-ef
 dotnet tool update --global dotnet-ef
 ```
-Now the migrations and DB. Since we have a `DiceAppDbContext` *and* and `DiceAppDbContextWithStub`, you will need to specify which one to use. Make sure you are in *DiceApp/Sources/Data*.
+Now the migrations and DB. Since we have a `DiceAppDbContext` *and* and `DiceAppDbContextWithStub`, you will need to specify which one to use.
 ```
+cd Data
 dotnet ef migrations add dice_app_db --context DiceAppDbContextWithStub
 dotnet ef database update --context DiceAppDbContextWithStub --startup-project ../App
 ```
