@@ -1,9 +1,11 @@
-﻿using Data.EF;
+﻿using Data;
+using Data.EF;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.Dice;
 using Model.Dice.Faces;
+using Model.Games;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,9 +18,11 @@ namespace Tests.Data_UTs.Dice
 {
     public class DiceGroupManagerTest
     {
+        private readonly MasterOfCeremonies stubGameRunner = new Stub().LoadApp();
         [Fact]
         public void TestConstructorReturnsEmptyEnumerable()
         {
+
             // Arrange
             DiceGroupManager diceGroupManager = new();
             Dictionary<string, IEnumerable<Die>> expected;
@@ -34,54 +38,36 @@ namespace Tests.Data_UTs.Dice
         }
 
         [Fact]
-        public void TestAddIfDieGroupThenDoAddAndDieGroup()
+
+        public void TestAddWhenDiceGroupThenDoAddAndReturnDiceGroup()
         {
-            List<NumberFace> faces = new ();
-            faces.Add(new NumberFace(2));
-            faces.Add(new NumberFace(3));
-            faces.Add(new NumberFace(7));
+            // Arrange
+            DiceGroupManager dgm = new();
+            KeyValuePair<string, IEnumerable<Die>> group1 = stubGameRunner.DiceGroupManager.GetAll().First();
+            KeyValuePair<string, IEnumerable<Die>> group2 = stubGameRunner.DiceGroupManager.GetAll().Last();
 
-            NumberFace[] facesArr = faces.ToArray();
-            faces.Clear();
+            // Act
 
+            //...adding keys and values to some dictionary for future comparison
+            Dictionary<string, IEnumerable<Die>> expected = new()
+            {
+                { group1.Key, group1.Value },
+                { group2.Key, group2.Value }
+            };
 
-            /*            facesArr[0] = new NumberFace(2);
-                        facesArr[1] = new NumberFace(3);
-                        facesArr[2] = new NumberFace(7);*/
-            faces.Add(new NumberFace(3));
-            faces.Add(new NumberFace(5));
-            faces.Add(new NumberFace(6));
+            //...storing the results of DiceGroupManager.Add() in variables 
+            KeyValuePair<string, IEnumerable<Die>> resultFromAdd1 = dgm.Add(group1);
+            KeyValuePair<string, IEnumerable<Die>> resultFromAdd2 = dgm.Add(group2);
 
-            NumberFace[] facesArr1 = faces.ToArray();
+            //...using those variables to fill a second dictionary for comparison
+            Dictionary<string, IEnumerable<Die>> actual = new()
+            {
+                { resultFromAdd1.Key, resultFromAdd1.Value },
+                { resultFromAdd2.Key, resultFromAdd2.Value }
+            };
 
-            /*facesArr1[0] = new NumberFace(3);
-            facesArr1[1] = new NumberFace(5);
-            facesArr1[2] = new NumberFace(6);
-*/
-            Collection<Die> collectDie = new();
-
-
-
-            Dictionary<string, IEnumerable<Die>> diceGroupsActuel = new();
-
-            NumberDie die = new NumberDie(facesArr[0], facesArr[1..]);
-            NumberDie die2 = new NumberDie(facesArr1[0], facesArr1[1..]);
-
-            collectDie.Add(die);
-            collectDie.Add(die2);
-
-
-            Collection<Die> ExpectedDie = new();
-            ExpectedDie.Add(new NumberDie(new NumberFace(2), new NumberFace(3), new NumberFace(7)));
-            ExpectedDie.Add(new NumberDie(new NumberFace(3), new NumberFace(5), new NumberFace(6)));
-
-
-            Dictionary<string, IEnumerable<Die>> diceGroupExpected = new();//to ask direct initialization why cannot
-            diceGroupExpected.Add("Monopoly", ExpectedDie);
-            diceGroupsActuel.Add("Monopoly", collectDie);
-
-            CollectionAssert.AreEqual(collectDie, ExpectedDie);
-
+            // Assert
+            Xunit.Assert.Equal(expected, actual);
         }
 
 
