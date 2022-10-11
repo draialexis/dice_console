@@ -52,6 +52,10 @@ You may not want to read tables in the debug window -- in which case, just downl
 
 Ta-da.
 
+#### Troubleshooting (VS vs .NET EF)
+
+**If Visual Studio's embedded terminal refuses to recognize `dotnet ef`, try to fully close and reopen Visual Studio**
+
 ## To contribute (workflow)
 
 We are using the feature branch workflow ([details here](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow), or see the summary below)
