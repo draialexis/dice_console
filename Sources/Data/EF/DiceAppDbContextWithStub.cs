@@ -8,6 +8,7 @@ namespace Data.EF
 {
     public class DiceAppDbContextWithStub : DiceAppDbContext
     {
+        // will be async
         public override Task<MasterOfCeremonies> LoadApp() { throw new NotImplementedException(); }
 
         public DiceAppDbContextWithStub() { }
@@ -21,7 +22,7 @@ namespace Data.EF
 
             modelBuilder.Entity<PlayerEntity>().HasData(
             new PlayerEntity { ID = Guid.NewGuid(), Name = "Alice" }, // some tests depend on this name
-            new PlayerEntity { ID = new("6e856818-92f1-4d7d-b35c-f9c6687ef8e1"), Name = "Bob" }, // some tests depend on this name
+            new PlayerEntity { ID = new("6e856818-92f1-4d7d-b35c-f9c6687ef8e1"), Name = "Bob" }, // some tests depend on this name and this ID
             new PlayerEntity { ID = Guid.NewGuid(), Name = "Clyde" }, // some tests depend on this name
             new PlayerEntity { ID = Guid.NewGuid(), Name = "Dahlia" } // some tests depend on this name
             );

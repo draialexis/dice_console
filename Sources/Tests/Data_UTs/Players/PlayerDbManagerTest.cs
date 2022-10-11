@@ -27,30 +27,6 @@ namespace Tests.Data_UTs.Players
                 .Options;
         }
 
-        [Theory]
-        [InlineData("Alice")]
-        [InlineData("Bob")]
-        [InlineData("Clyde")]
-        [InlineData("Dahlia")]
-        public async Task TestDbStubContainsAll(string name)
-        {
-            // Arrange
-
-            PlayerDbManager mgr;
-
-            // Act
-
-            using (DiceAppDbContextWithStub db = new(options))
-            {
-                db.Database.EnsureCreated();
-                mgr = new(db);
-
-                // Assert
-
-                Assert.True(await mgr.IsPresentByName(name));
-            }
-        }
-
         [Fact]
         public async Task TestConstructorWhenGivenContextThenConstructs()
         {
@@ -368,12 +344,12 @@ namespace Tests.Data_UTs.Players
 
         [Fact]
         public void TestRemoveWhenPreExistentThenRemoves()
-        {// should be async Task
+        {
             // Arrange
 
             PlayerDbManager mgr;
 
-            PlayerEntity toRemove = new() { ID = new("6e856818-92f1-4d7d-b35c-f9c6687ef8e1"), Name = "Bob" };
+            PlayerEntity toRemove = new() { ID = Guid.NewGuid(), Name = "Please!" };
 
 
             // Act
@@ -382,8 +358,8 @@ namespace Tests.Data_UTs.Players
             {
                 db.Database.EnsureCreated();
                 mgr = new(db);
-
-                // what's wrong with mgr.Remove(toRemove); ?
+                mgr.Add(toRemove); // calls SaveChangesAsync()
+                mgr.Remove(toRemove);
             }
 
             // Assert
@@ -393,8 +369,7 @@ namespace Tests.Data_UTs.Players
                 db.Database.EnsureCreated();
                 mgr = new(db);
 
-                // should check if toRemove is now absent
-                Assert.True(true);
+                Assert.DoesNotContain(toRemove, db.Players);
             }
         }
 
@@ -685,6 +660,9 @@ namespace Tests.Data_UTs.Players
 
             Guid otherId = Guid.NewGuid();
 
+            PlayerEntity presentEntity;
+            PlayerEntity absentEntity;
+
             // Act
 
             using (DiceAppDbContext db = new(options))
@@ -692,7 +670,10 @@ namespace Tests.Data_UTs.Players
                 db.Database.EnsureCreated();
                 mgr = new(db);
 
-                await mgr.Add(new() { ID = id, Name = "Victor" });
+                presentEntity = new() { ID = id, Name = "Victor" };
+                await mgr.Add(presentEntity);
+
+                absentEntity = new() { ID = otherId, Name = "Victor" };
             }
 
             // Assert
@@ -702,7 +683,7 @@ namespace Tests.Data_UTs.Players
                 db.Database.EnsureCreated();
                 mgr = new(db);
 
-                Assert.False(await mgr.IsPresentByID(otherId));
+                Assert.DoesNotContain(absentEntity, db.Players);
             }
         }
     }

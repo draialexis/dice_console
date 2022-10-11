@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Model;
-using Model.Players;
-using System.Runtime.Intrinsics.Arm;
 
 namespace Data.EF.Players
 {
@@ -114,10 +112,11 @@ namespace Data.EF.Players
         public void Remove(PlayerEntity toRemove)
         {
             CleanPlayerEntity(toRemove);
-            if (IsPresentByID(toRemove.ID).Result)
+            bool isPresent = IsPresentByID(toRemove.ID).Result;
+            if (isPresent)
             {
                 db.Players.Remove(toRemove);
-                db.SaveChangesAsync();
+                db.SaveChanges();
             }
         }
 

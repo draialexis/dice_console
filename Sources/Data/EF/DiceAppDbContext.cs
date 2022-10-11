@@ -6,6 +6,7 @@ namespace Data.EF
 {
     public class DiceAppDbContext : DbContext, ILoader
     {
+        // will be async!
         public virtual Task<MasterOfCeremonies> LoadApp() { throw new NotImplementedException(); }
 
         public DbSet<PlayerEntity> Players { get; set; }
