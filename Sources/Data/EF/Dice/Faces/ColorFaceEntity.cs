@@ -1,12 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
 
 namespace Data.EF.Dice.Faces
 {
     public class ColorFaceEntity
     {
+        public Guid ID { get; set; }
+
+        public string Value { get; set; }
+
+        public void SetValue(Color c)
+        {
+            Value = c.ToString();
+        }
     }
 }

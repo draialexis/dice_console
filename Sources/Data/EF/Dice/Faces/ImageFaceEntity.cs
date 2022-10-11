@@ -8,5 +8,7 @@ namespace Data.EF.Dice.Faces
 {
     public class ImageFaceEntity
     {
+        public Guid ID { get; set; }
+        public string Value { get; set; }
     }
 }
