@@ -343,7 +343,7 @@ namespace Tests.Data_UTs.Players
         }
 
         [Fact]
-        public void TestRemoveWhenPreExistentThenRemoves()
+        public async Task TestRemoveWhenPreExistentThenRemoves()
         {
             // Arrange
 
@@ -358,7 +358,7 @@ namespace Tests.Data_UTs.Players
             {
                 db.Database.EnsureCreated();
                 mgr = new(db);
-                mgr.Add(toRemove); // calls SaveChangesAsync()
+                await mgr.Add(toRemove); // calls SaveChangesAsync()
                 mgr.Remove(toRemove);
             }
 
@@ -367,7 +367,6 @@ namespace Tests.Data_UTs.Players
             using (DiceAppDbContextWithStub db = new(options))
             {
                 db.Database.EnsureCreated();
-                mgr = new(db);
 
                 Assert.DoesNotContain(toRemove, db.Players);
             }
