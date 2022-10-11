@@ -1,5 +1,6 @@
 ﻿using Model.Dice;
 using Model.Dice.Faces;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Tests.Model_UTs.Dice
@@ -8,20 +9,33 @@ namespace Tests.Model_UTs.Dice
     {
 
         [Fact]
-        public void TestGetRandomFace()
+        public void RndmFaceTest()
         {
-            // Arrange
-            int val1 = 1, val2 = 2;
-            NumberDie die = new(new NumberFace(val1), new NumberFace(val2));
+            //Arrange
+            List<NumberFace> listFaces = new() {
+                new NumberFace(1),
+                new NumberFace(2),
+                new NumberFace(3),
+                new NumberFace(4),
+                new NumberFace(5),
+            };
+            NumberDie die = new(
+                listFaces[1],
+                listFaces[2],
+                listFaces[3],
+                listFaces[4]
+                );
 
-            // Act
 
-            Face<int> thing = die.GetRandomFace();
+            //Act
+            NumberFace actual = (NumberFace)die.GetRandomFace();
 
-            // Assert
 
-            Assert.IsType<NumberFace>(thing);
-            Assert.True(thing.Value == val1 || thing.Value == val2);
+
+            //Assert
+            Assert.Contains(listFaces, face => face == actual);
+
+
         }
     }
 }
