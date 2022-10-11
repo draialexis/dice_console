@@ -4,6 +4,6 @@ namespace Data
 {
     public interface ILoader
     {
-        public MasterOfCeremonies LoadApp();
+        public Task<MasterOfCeremonies> LoadApp();
     }
 }

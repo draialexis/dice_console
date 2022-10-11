@@ -10,19 +10,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace App
 {
     internal static class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             // MODEL stuff
             ILoader loader = new Stub();
             MasterOfCeremonies masterOfCeremonies;
             try
             {
-                masterOfCeremonies = loader.LoadApp();
+                masterOfCeremonies = await loader.LoadApp();
             }
             catch (Exception ex)
             {
@@ -48,7 +49,7 @@ namespace App
                         try
                         {
                             // persist them  as models !
-                            masterOfCeremonies.GlobalPlayerManager.Add(entity.ToModel());
+                            await masterOfCeremonies.GlobalPlayerManager.Add(entity.ToModel());
                             Debug.WriteLine($"{entity.ID} -- {entity.Name}");
                         }
                         catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
@@ -81,38 +82,38 @@ namespace App
                         break;
 
                     case "l":
-                        string loadName = ChooseGame(masterOfCeremonies);
+                        string loadName = await ChooseGame(masterOfCeremonies);
                         if (masterOfCeremonies.GameManager.GetOneByName(loadName) != null)
                         {
-                            Play(masterOfCeremonies, loadName);
+                            await Play(masterOfCeremonies, loadName);
                         }
                         break;
 
                     case "n":
 
-                        if (!masterOfCeremonies.DiceGroupManager.GetAll().Any())
+                        if (!(await masterOfCeremonies.DiceGroupManager.GetAll()).Any())
                         {
                             Console.WriteLine("make at least one dice group first, then try again");
                             break;
                         }
                         Console.WriteLine("add dice to the game");
-                        IEnumerable<Die> newGameDice = PrepareDice(masterOfCeremonies);
+                        IEnumerable<Die> newGameDice = await PrepareDice(masterOfCeremonies);
 
                         string newGameName;
                         Console.WriteLine("give this new game a name\n>");
                         newGameName = Console.ReadLine();
 
                         Console.WriteLine("add players to the game");
-                        PlayerManager playerManager = PreparePlayers(masterOfCeremonies);
+                        PlayerManager playerManager = await PreparePlayers(masterOfCeremonies);
 
-                        masterOfCeremonies.StartNewGame(newGameName, playerManager, newGameDice);
-                        Play(masterOfCeremonies, newGameName);
+                        await masterOfCeremonies.StartNewGame(newGameName, playerManager, newGameDice);
+                        await Play(masterOfCeremonies, newGameName);
 
                         break;
 
                     case "d":
-                        string deleteName = ChooseGame(masterOfCeremonies);
-                        masterOfCeremonies.GameManager.Remove(masterOfCeremonies.GameManager.GetOneByName(deleteName));
+                        string deleteName = await ChooseGame(masterOfCeremonies);
+                        masterOfCeremonies.GameManager.Remove(await masterOfCeremonies.GameManager.GetOneByName(deleteName));
                         break;
 
                     case "c":
@@ -151,19 +152,19 @@ namespace App
                                 newGroupDice.Add(die);
                             }
                         }
-                        masterOfCeremonies.DiceGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(newGroupName, newGroupDice));
+                        await masterOfCeremonies.DiceGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(newGroupName, newGroupDice));
                         break;
 
                     case "p":
-                        ShowPlayers(masterOfCeremonies);
+                        await ShowPlayers(masterOfCeremonies);
                         break;
 
                     case "i":
-                        ShowDice(masterOfCeremonies);
+                        await ShowDice(masterOfCeremonies);
                         break;
 
                     case "y":
-                        PreparePlayers(masterOfCeremonies);
+                        await PreparePlayers(masterOfCeremonies);
                         break;
 
                     default:
@@ -178,7 +179,7 @@ namespace App
                 using (DiceAppDbContext db = new())
                 {
                     // get all the players from the app's memory
-                    IEnumerable<Player> models = masterOfCeremonies.GlobalPlayerManager.GetAll();
+                    IEnumerable<Player> models = await masterOfCeremonies.GlobalPlayerManager.GetAll();
 
                     // create a PlayerDbManager (and inject it with the DB)
                     PlayerDbManager playerDbManager = new(db);
@@ -190,7 +191,7 @@ namespace App
                         try // to persist them
                         { // as entities !
                             PlayerEntity entity = model.ToEntity();
-                            playerDbManager.Add(entity);
+                            await playerDbManager.Add(entity);
                             Debug.WriteLine($"{entity.ID} -- {entity.Name}");
                         }
                         // what if there's already a player with that name? Exception (see PlayerEntity's annotations)
@@ -201,12 +202,12 @@ namespace App
             catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Couldn't use the database"); }
         }
 
-        private static void Play(MasterOfCeremonies masterOfCeremonies, string name)
+        private static async Task Play(MasterOfCeremonies masterOfCeremonies, string name)
         {
             string menuChoicePlay = "";
             while (menuChoicePlay != "q")
             {
-                Game game = masterOfCeremonies.GameManager.GetOneByName(name);
+                Game game = await masterOfCeremonies.GameManager.GetOneByName(name);
                 Console.WriteLine($"{game.GetWhoPlaysNow()}'s turn\n" +
                     "q... quit\n" +
                     "h... show history\n" +
@@ -224,21 +225,21 @@ namespace App
                         }
                         break;
                     case "s":
-                        masterOfCeremonies.GameManager.Add(game);
+                        await masterOfCeremonies.GameManager.Add(game);
                         break;
                     default:
-                        MasterOfCeremonies.PlayGame(game);
+                        await MasterOfCeremonies.PlayGame(game);
                         Console.WriteLine(game.GetHistory().Last());
                         break;
                 }
             }
         }
 
-        private static string ChooseGame(MasterOfCeremonies masterOfCeremonies)
+        private static async Task<string> ChooseGame(MasterOfCeremonies masterOfCeremonies)
         {
             string name;
             Console.WriteLine("which of these games?\n(choose by name)\n>");
-            foreach (Game game in masterOfCeremonies.GameManager.GetAll())
+            foreach (Game game in await masterOfCeremonies.GameManager.GetAll())
             {
                 Console.WriteLine(game);
             }
@@ -246,18 +247,18 @@ namespace App
             return name;
         }
 
-        private static void ShowPlayers(MasterOfCeremonies masterOfCeremonies)
+        private static async Task ShowPlayers(MasterOfCeremonies masterOfCeremonies)
         {
             Console.WriteLine("Look at all them players!");
-            foreach (Player player in masterOfCeremonies.GlobalPlayerManager.GetAll())
+            foreach (Player player in await masterOfCeremonies.GlobalPlayerManager.GetAll())
             {
                 Console.WriteLine(player);
             }
         }
 
-        private static void ShowDice(MasterOfCeremonies masterOfCeremonies)
+        private static async Task ShowDice(MasterOfCeremonies masterOfCeremonies)
         {
-            foreach ((string name, IEnumerable<Die> dice) in masterOfCeremonies.DiceGroupManager.GetAll())
+            foreach ((string name, IEnumerable<Die> dice) in await masterOfCeremonies.DiceGroupManager.GetAll())
             {
                 Console.WriteLine($"{name} -- {dice}");
             }
@@ -357,11 +358,11 @@ namespace App
             }
         }
 
-        private static IEnumerable<Die> PrepareDice(MasterOfCeremonies masterOfCeremonies)
+        private async static Task<IEnumerable<Die>> PrepareDice(MasterOfCeremonies masterOfCeremonies)
         {
             List<Die> result = new();
             Console.WriteLine("all known dice or groups of dice:");
-            ShowDice(masterOfCeremonies);
+            await ShowDice(masterOfCeremonies);
             string menuChoiceDice = "";
             while (!(menuChoiceDice.Equals("ok") && result.Any()))
             {
@@ -369,7 +370,7 @@ namespace App
                 menuChoiceDice = Console.ReadLine();
                 if (!menuChoiceDice.Equals("ok"))
                 {
-                    IEnumerable<Die> chosenDice = masterOfCeremonies.DiceGroupManager.GetOneByName(menuChoiceDice).Value;
+                    IEnumerable<Die> chosenDice = (await masterOfCeremonies.DiceGroupManager.GetOneByName(menuChoiceDice)).Value;
                     foreach (Die die in chosenDice)
                     {
                         result.Add(die);
@@ -378,28 +379,28 @@ namespace App
             }
             return result.AsEnumerable();
         }
-        private static PlayerManager PreparePlayers(MasterOfCeremonies masterOfCeremonies)
+        private async static Task<PlayerManager> PreparePlayers(MasterOfCeremonies masterOfCeremonies)
         {
             PlayerManager result = new();
             Console.WriteLine("all known players:");
-            ShowPlayers(masterOfCeremonies);
+            await ShowPlayers(masterOfCeremonies);
             string menuChoicePlayers = "";
-            while (!(menuChoicePlayers.Equals("ok") && result.GetAll().Any()))
+            while (!(menuChoicePlayers.Equals("ok") && (await result.GetAll()).Any()))
             {
                 Console.WriteLine("write the name of a player you want to add (at least one), or 'ok' if you're finished");
                 menuChoicePlayers = Console.ReadLine();
                 if (!menuChoicePlayers.Equals("ok"))
                 {
                     Player player = new(menuChoicePlayers);
-                    if (!masterOfCeremonies.GlobalPlayerManager.GetAll().Contains(player))
+                    if (!(await masterOfCeremonies.GlobalPlayerManager.GetAll()).Contains(player))
                     {
                         // if the player didn't exist, now it does... this is temporary
-                        masterOfCeremonies.GlobalPlayerManager.Add(player);
+                        await masterOfCeremonies.GlobalPlayerManager.Add(player);
                     }
                     // almost no checks, this is temporary
                     try
                     {
-                        result.Add(player);
+                        await result.Add(player);
                     }
                     catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
 

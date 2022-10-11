@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Model;
-using Model.Players;
-using System.Runtime.Intrinsics.Arm;
 
 namespace Data.EF.Players
 {
@@ -45,7 +43,7 @@ namespace Data.EF.Players
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public PlayerEntity Add(PlayerEntity toAdd)
+        public Task<PlayerEntity> Add(PlayerEntity toAdd)
         {
             CleanPlayerEntity(toAdd);
 
@@ -54,14 +52,21 @@ namespace Data.EF.Players
                 throw new ArgumentException("this username is already taken", nameof(toAdd));
             }
 
-            EntityEntry ee = db.Players.Add(toAdd);
-            db.SaveChanges();
+            return InternalAdd(toAdd);
+        }
+
+        private async Task<PlayerEntity> InternalAdd(PlayerEntity toAdd)
+        {
+            EntityEntry ee = await db.Players.AddAsync(toAdd);
+            await db.SaveChangesAsync();
             return (PlayerEntity)ee.Entity;
         }
 
-        public IEnumerable<PlayerEntity> GetAll()
+        public async Task<IEnumerable<PlayerEntity>> GetAll()
         {
-            return db.Players.AsEnumerable();
+            List<PlayerEntity> players = new();
+            await Task.Run(() => players.AddRange(db.Players));
+            return players.AsEnumerable();
         }
 
         /// <summary>
@@ -72,25 +77,30 @@ namespace Data.EF.Players
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public PlayerEntity GetOneByName(string name)
+        public Task<PlayerEntity> GetOneByName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException("Name property should not be null or whitespace", nameof(name));
             }
             name = name.Trim();
-            return db.Players.Where(p => p.Name == name).First();
+            return InternalGetOneByName(name);
         }
 
 
-        public bool IsPresentByName(string name)
+        private async Task<PlayerEntity> InternalGetOneByName(string name)
+        {
+            return await db.Players.Where(p => p.Name == name).FirstAsync();
+        }
+
+        public async Task<bool> IsPresentByName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
                 return false;
             }
             name = name.Trim();
-            return db.Players.Where(p => p.Name == name).Any();
+            return await db.Players.Where(p => p.Name == name).FirstOrDefaultAsync() is not null;
         }
 
         /// <summary>
@@ -102,8 +112,8 @@ namespace Data.EF.Players
         public void Remove(PlayerEntity toRemove)
         {
             CleanPlayerEntity(toRemove);
-
-            if (IsPresentByID(toRemove.ID))
+            bool isPresent = IsPresentByID(toRemove.ID).Result;
+            if (isPresent)
             {
                 db.Players.Remove(toRemove);
                 db.SaveChanges();
@@ -118,7 +128,7 @@ namespace Data.EF.Players
         /// <returns>the updated entity</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public PlayerEntity Update(PlayerEntity before, PlayerEntity after)
+        public Task<PlayerEntity> Update(PlayerEntity before, PlayerEntity after)
         {
             PlayerEntity[] args = { before, after };
 
@@ -132,16 +142,14 @@ namespace Data.EF.Players
                 throw new ArgumentException("ID cannot be updated", nameof(after));
             }
 
-            string beforeName = before.Name;
+            return InternalUpdate(before, after);
 
-            before.Name = after.Name;
-            EntityEntry ee = db.Players.Update(before);
+        }
 
-            db.SaveChanges();
-
-            before.Name = beforeName;
-            return (PlayerEntity)ee.Entity;
-
+        private async Task<PlayerEntity> InternalUpdate(PlayerEntity before, PlayerEntity after)
+        {
+            Remove(before);
+            return await Add(after);
         }
 
         /// <summary>
@@ -151,14 +159,14 @@ namespace Data.EF.Players
         /// <param name="ID">the ID to look for</param>
         /// <returns>PlayerEntity with that ID</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public PlayerEntity GetOneByID(Guid ID)
+        public async Task<PlayerEntity> GetOneByID(Guid ID)
         {
-            return db.Players.First(p => p.ID == ID);
+            return await db.Players.FirstAsync(p => p.ID == ID);
         }
 
-        public bool IsPresentByID(Guid ID)
+        public async Task<bool> IsPresentByID(Guid ID)
         {
-            return db.Players.Where(p => p.ID == ID).Any();
+            return await db.Players.FirstOrDefaultAsync(p => p.ID == ID) is not null;
         }
     }
 }
