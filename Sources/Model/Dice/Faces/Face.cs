@@ -18,11 +18,5 @@
             Value = value;
             StringValue = value.ToString();
         }
-
-        protected Face(T value, string stringValue)
-        {
-            Value = value;
-            StringValue = stringValue;
-        }
     }
 }
