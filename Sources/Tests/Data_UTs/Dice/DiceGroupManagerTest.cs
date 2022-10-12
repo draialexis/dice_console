@@ -97,5 +97,23 @@ namespace Tests.Data_UTs.Dice
         }
 
 
+        [Fact]
+        public void TestAddIfAlreadyExistsThrowsException()
+        {
+            DiceGroupManager dgm = new();
+            
+            // Act
+            KeyValuePair<string, IEnumerable<Die>> toAdd = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7))});
+            dgm.Add(toAdd);
+
+            void action() => dgm.Add(toAdd);
+
+            // Assert
+            Xunit.Assert.Throws<ArgumentException>(action);
+
+        }
+
+
+
     }
 }
