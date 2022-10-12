@@ -85,18 +85,15 @@ namespace Tests.Data_UTs.Dice
             {
                 { "", new List<NumberDie>{ new NumberDie(d6Faces[0], d6Faces[1..]), new NumberDie(d6Faces[0], d6Faces[3..]) } }
             };
-
-            void action() => expected = new()
-            {
-                { "", new List<NumberDie>{ new NumberDie(d6Faces[0], d6Faces[1..]), new NumberDie(d6Faces[0], d6Faces[3..]) } }
-            };
+            Dictionary<string, IEnumerable<Die>> toAdd = new();
+/*            void action() => toAdd.Add("", new List<NumberDie>{ new NumberDie(d6Faces[0], d6Faces[1..]),
+                new NumberDie(d6Faces[0], d6Faces[3..])}); */
            // Xunit.Assert.Empty(expected.Keys);
             foreach (KeyValuePair<string, IEnumerable<Die>> entry in expected)
             {
                 Xunit.Assert.Empty(entry.Key);
                 // do something with entry.Value or entry.Key
             }
-
         }
 
 
