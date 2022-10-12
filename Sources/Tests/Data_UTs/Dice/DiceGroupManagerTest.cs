@@ -71,5 +71,34 @@ namespace Tests.Data_UTs.Dice
         }
 
 
+        [Fact]
+        public void TestAddIfNullThrowsException()
+        {
+            DiceGroupManager dgm = new();
+
+            KeyValuePair<string, IEnumerable<Die>> group1 = stubGameRunner.DiceGroupManager.GetAll().First();
+            KeyValuePair<string, IEnumerable<Die>> group2 = stubGameRunner.DiceGroupManager.GetAll().Last();
+            NumberFace[] d6Faces = new NumberFace[] { new(1), new(2), new(3), new(4), new(5), new(6) };
+
+
+            Dictionary<string, IEnumerable<Die>> expected = new()
+            {
+                { "", new List<NumberDie>{ new NumberDie(d6Faces[0], d6Faces[1..]), new NumberDie(d6Faces[0], d6Faces[3..]) } }
+            };
+
+            void action() => expected = new()
+            {
+                { "", new List<NumberDie>{ new NumberDie(d6Faces[0], d6Faces[1..]), new NumberDie(d6Faces[0], d6Faces[3..]) } }
+            };
+           // Xunit.Assert.Empty(expected.Keys);
+            foreach (KeyValuePair<string, IEnumerable<Die>> entry in expected)
+            {
+                Xunit.Assert.Empty(entry.Key);
+                // do something with entry.Value or entry.Key
+            }
+
+        }
+
+
     }
 }
