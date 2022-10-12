@@ -112,6 +112,20 @@ namespace Tests.Data_UTs.Dice
             Xunit.Assert.Throws<ArgumentException>(action);
 
         }
+        [Fact]
+        public void TestGetOneByIdThrowsException()
+        {
+            // Arrange
+            DiceGroupManager dgm = new();
+
+            // Act
+
+            void action() => dgm.GetOneByID(new("9657b6f0-9431-458e-a2bd-4bb0c7d4a6ed"));
+
+            // Assert
+            Xunit.Assert.Throws<NotImplementedException>(action);
+        }
+
 
 
 
