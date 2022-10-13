@@ -126,6 +126,21 @@ namespace Tests.Data_UTs.Dice
             Xunit.Assert.Throws<NotImplementedException>(action);
         }
 
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData(" ")]
+        public void TestGetOneByNameIfInvalidThrowsException(string name)
+        {
+            // Arrange
+            DiceGroupManager dgm = new();
+            KeyValuePair<string, IEnumerable<Die>> toAdd = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+            dgm.Add(toAdd);
+            void action() => dgm.GetOneByName(name);
+
+            // Assert
+            Xunit.Assert.Throws<ArgumentNullException>(action);
+        }
 
 
 
