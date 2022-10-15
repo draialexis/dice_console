@@ -105,7 +105,7 @@ namespace Model.Games
                 Player.ToString());
             foreach (Face face in this.diceNFaces.Values)
             {
-                sb.Append(" " + face.ToString());
+                sb.Append(" " + face.StringValue);
             }
 
             return sb.ToString();

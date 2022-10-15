@@ -12,7 +12,7 @@ namespace Data.EF.Dice.Faces
     {
         public static ColorFace ToModel(this ColorFaceEntity clrFaceEntity)
         {
-            ColorFace colorFace = new (Color.FromArgb(clrFaceEntity.A, clrFaceEntity.R, clrFaceEntity.G, clrFaceEntity.B));
+            ColorFace colorFace = new(Color.FromArgb(clrFaceEntity.A, clrFaceEntity.R, clrFaceEntity.G, clrFaceEntity.B));
             return colorFace;
         }
 
@@ -23,7 +23,7 @@ namespace Data.EF.Dice.Faces
 
         public static ColorFaceEntity ToEntity(this ColorFace model)
         {
-            return new ColorFaceEntity() { A=model.Value.A,R=model.Value.R,G=model.Value.G,B=model.Value.B };
+            return new ColorFaceEntity() { A = model.Value.A, R = model.Value.R, G = model.Value.G, B = model.Value.B };
         }
 
         public static IEnumerable<ColorFaceEntity> ToEntities(this IEnumerable<ColorFace> models)

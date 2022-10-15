@@ -17,13 +17,13 @@ namespace Data.EF.Dice
              * creating an array of faces model
              */
             NumberFace[] faces = new NumberFace[clrDieEntity.Faces.Count - 1];
-            List<NumberFace> clrFacesList = (List<NumberFace>)NumberFaceExtensions.ToModels(clrDieEntity.Faces);
+            List<NumberFace> clrFacesList = clrDieEntity.Faces.ToModels().ToList();
             clrFacesList.CopyTo(faces, 1);
 
             /*
              * creating the die
              */
-            NumberDie die = new(NumberFaceExtensions.ToModel(clrDieEntity.Faces.ElementAt(0)), faces);
+            NumberDie die = new(clrDieEntity.Faces.ElementAt(0).ToModel(), faces);
 
             return die;
         }

@@ -13,15 +13,16 @@ namespace Data.EF.Dice.Faces
         public byte R { get; set; }
         public byte G { get; set; }
         public byte B { get; set; }
+
         [ForeignKey("ColorDieFK")]
         public ColorDie ColorDie { get; set; }
 
         public void SetValue(Color c)
         {
-            A= c.A;
-            R= c.R;
-            G= c.G;
-            B= c.B;
+            A = c.A;
+            R = c.R;
+            G = c.G;
+            B = c.B;
         }
     }
 }
