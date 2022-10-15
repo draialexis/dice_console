@@ -23,7 +23,7 @@ namespace Data.EF.Dice.Faces
 
         public static ImageFaceEntity ToEntity(this ImageFace model)
         {
-            return new ImageFaceEntity() { Value = model.Value.ToString() };
+            return new ImageFaceEntity() { Value = model.StringValue };
         }
 
         public static IEnumerable<ImageFaceEntity> ToEntities(this IEnumerable<ImageFace> models)

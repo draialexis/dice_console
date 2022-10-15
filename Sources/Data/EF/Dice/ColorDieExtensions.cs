@@ -11,31 +11,31 @@ namespace Data.EF.Dice
             /*
              * creating an array of faces model
              */
-            ColorFace[] faces= new ColorFace[clrDieEntity.Faces.Count-1];
-            List<ColorFace> clrFacesList = (List<ColorFace>)ColorFaceExtensions.ToModels(clrDieEntity.Faces);
+            ColorFace[] faces = new ColorFace[clrDieEntity.Faces.Count - 1];
+            List<ColorFace> clrFacesList = clrDieEntity.Faces.ToModels().ToList();
             clrFacesList.CopyTo(faces, 1);
 
             /*
              * creating the die
              */
-            ColorDie die = new (ColorFaceExtensions.ToModel(clrDieEntity.Faces.ElementAt(0)), faces);
-            
+            ColorDie die = new(clrDieEntity.Faces.ElementAt(0).ToModel(), faces);
+
             return die;
         }
 
         public static IEnumerable<ColorDie> ToModels(this IEnumerable<ColorDieEntity> entities)
         {
-            return entities.Select(entity => ToModel(entity));
+            return entities.Select(entity => entity.ToModel());
         }
 
         public static ColorDieEntity ToEntity(this ColorDie model)
         {
             var entity = new ColorDieEntity();
-            foreach (var face in model.Faces) { entity.Faces.Add(ColorFaceExtensions.ToEntity((ColorFace)face)); }
+            foreach (var face in model.Faces) { entity.Faces.Add(((ColorFace)face).ToEntity()); }
             return entity;
         }
 
-        public static IEnumerable<ColorFaceEntity> ToEntities(this IEnumerable<ColorFace> models)
+        public static IEnumerable<ColorDieEntity> ToEntities(this IEnumerable<ColorDie> models)
         {
             return models.Select(model => model.ToEntity());
         }

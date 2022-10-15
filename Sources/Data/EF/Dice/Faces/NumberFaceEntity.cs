@@ -12,6 +12,7 @@ namespace Data.EF.Dice.Faces
     {
         public Guid Id { get; set; }
         public int Value { get; set; }
+
         [ForeignKey("NumDieFK")]
         public NumberDie NumberDie { get; set; }
     }

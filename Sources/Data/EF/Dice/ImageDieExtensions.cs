@@ -12,14 +12,14 @@ namespace Data.EF.Dice
              * creating an array of faces model
              */
             ImageFace[] faces = new ImageFace[clrDieEntity.Faces.Count - 1];
-            List<ImageFace> clrFacesList = (List<ImageFace>)ImageFaceExtensions.ToModels(clrDieEntity.Faces);
+            List<ImageFace> clrFacesList = clrDieEntity.Faces.ToModels().ToList();
             clrFacesList.CopyTo(faces, 1);
 
 
             /*
              * creating the die
              */
-            ImageDie die = new( ImageFaceExtensions.ToModel(clrDieEntity.Faces.ElementAt(0)), faces);
+            ImageDie die = new(clrDieEntity.Faces.ElementAt(0).ToModel(), faces);
 
             return die;
         }
@@ -32,7 +32,7 @@ namespace Data.EF.Dice
         public static ImageDieEntity ToEntity(this ImageDie model)
         {
             var entity = new ImageDieEntity();
-            foreach (var face in model.Faces) { entity.Faces.Add(ImageFaceExtensions.ToEntity((ImageFace)face)); }
+            foreach (var face in model.Faces) { entity.Faces.Add(((ImageFace)face).ToEntity()); }
             return entity;
         }
 
