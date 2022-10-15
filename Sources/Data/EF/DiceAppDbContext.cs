@@ -1,4 +1,7 @@
-﻿using Data.EF.Players;
+﻿using Data.EF.Dice;
+using Data.EF.Dice.Faces;
+using Data.EF.Games;
+using Data.EF.Players;
 using Microsoft.EntityFrameworkCore;
 using Model.Games;
 
