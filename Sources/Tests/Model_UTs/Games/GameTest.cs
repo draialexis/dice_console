@@ -7,24 +7,24 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Tests.Model_UTs.Games
 {
     public class GameTest
     {
-        private readonly MasterOfCeremonies stubMasterOfCeremonies = new Stub().LoadApp();
+        private readonly MasterOfCeremonies stubMasterOfCeremonies = new Stub().LoadApp()?.Result;
         private static readonly string GAME_NAME = "my game";
 
         private static readonly Player PLAYER_1 = new("Alice"), PLAYER_2 = new("Bob"), PLAYER_3 = new("Clyde");
         private readonly IEnumerable<Die> DICE_1, DICE_2;
         public GameTest()
         {
-            DICE_1 = stubMasterOfCeremonies.DiceGroupManager.GetAll().First().Value;
-            DICE_2 = stubMasterOfCeremonies.DiceGroupManager.GetAll().Last().Value;
+            IEnumerable<KeyValuePair<string, IEnumerable<Die>>> diceGroups = stubMasterOfCeremonies.DiceGroupManager.GetAll()?.Result;
+            DICE_1 = diceGroups.First().Value;
+            DICE_2 = diceGroups.Last().Value;
         }
-
-
 
         [Fact]
         public void TestNamePropertyGet()
@@ -78,10 +78,14 @@ namespace Tests.Model_UTs.Games
         }
 
         [Fact]
-        public void TestGetHistory()
+        public async void TestGetHistory()
         {
             // Arrange
-            Dictionary<Die, Face> diceNFaces = (Dictionary<Die, Face>)stubMasterOfCeremonies.GameManager.GetAll().First().GetHistory().First().DiceNFaces;
+            Dictionary<Die, Face> diceNFaces =
+                (Dictionary<Die, Face>)(await stubMasterOfCeremonies.GameManager.GetAll())
+                .First()
+                .GetHistory()
+                .First().DiceNFaces;
 
             Turn turn1 = Turn.CreateWithDefaultTime(PLAYER_1, diceNFaces);
             Turn turn2 = Turn.CreateWithDefaultTime(PLAYER_2, diceNFaces); // yeah they rolled the same
@@ -118,24 +122,24 @@ namespace Tests.Model_UTs.Games
         }
 
         [Fact]
-        public void TestPerformTurnDoesAddOneTurn()
+        public async Task TestPerformTurnDoesAddOneTurnAsync()
         {
             // Arrange
             Game game = new(name: GAME_NAME,
                 playerManager: new PlayerManager(),
                 dice: DICE_1);
 
-            game.PlayerManager.Add(PLAYER_1);
-            game.PlayerManager.Add(PLAYER_2);
+            await game.PlayerManager.Add(PLAYER_1);
+            await game.PlayerManager.Add(PLAYER_2);
 
             int n = 5;
 
             Player currentPlayer;
             for (int i = 0; i < n; i++)
             {
-                currentPlayer = game.GetWhoPlaysNow();
+                currentPlayer = await game.GetWhoPlaysNow();
                 game.PerformTurn(currentPlayer);
-                game.PrepareNextPlayer(currentPlayer);
+                await game.PrepareNextPlayer(currentPlayer);
             }
 
             Debug.WriteLine(game);
@@ -149,23 +153,23 @@ namespace Tests.Model_UTs.Games
         }
 
         [Fact]
-        public void TestGetWhoPlaysNowWhenValidThenCorrect()
+        public async Task TestGetWhoPlaysNowWhenValidThenCorrectAsync()
         {
             // Arrange
             Game game = new(name: GAME_NAME,
                 playerManager: new PlayerManager(),
                 dice: DICE_1);
 
-            game.PlayerManager.Add(PLAYER_1);
-            game.PlayerManager.Add(PLAYER_2);
+            await game.PlayerManager.Add(PLAYER_1);
+            await game.PlayerManager.Add(PLAYER_2);
 
             // Act
-            Player actual = game.GetWhoPlaysNow();
+            Player actual = await game.GetWhoPlaysNow();
             Player expected = PLAYER_1;
 
-            game.PrepareNextPlayer(actual);
+            await game.PrepareNextPlayer(actual);
 
-            Player actual2 = game.GetWhoPlaysNow();
+            Player actual2 = await game.GetWhoPlaysNow();
             Player expected2 = PLAYER_2;
 
             // Assert
@@ -183,10 +187,10 @@ namespace Tests.Model_UTs.Games
                 dice: DICE_1);
 
             // Act
-            void action() => game.GetWhoPlaysNow(); // on an empty collection of players
+            async Task actionAsync() => await game.GetWhoPlaysNow(); // on an empty collection of players
 
             // Assert
-            Assert.Throws<MemberAccessException>(action);
+            Assert.ThrowsAsync<MemberAccessException>(actionAsync);
         }
 
         [Fact]
@@ -197,10 +201,10 @@ namespace Tests.Model_UTs.Games
                 playerManager: new PlayerManager(),
                 dice: DICE_1);
             // Act
-            void action() => game.PrepareNextPlayer(PLAYER_1); // on an empty collection of players
+            async Task actionAsync() => await game.PrepareNextPlayer(PLAYER_1); // on an empty collection of players
 
             // Assert
-            Assert.Throws<MemberAccessException>(action);
+            Assert.ThrowsAsync<MemberAccessException>(actionAsync);
         }
 
         [Fact]
@@ -214,10 +218,10 @@ namespace Tests.Model_UTs.Games
             game.PlayerManager.Add(PLAYER_1);
 
             // Act
-            void action() => game.PrepareNextPlayer(null);
+            async Task actionAsync() => await game.PrepareNextPlayer(null);
 
             // Assert
-            Assert.Throws<ArgumentNullException>(action);
+            Assert.ThrowsAsync<ArgumentNullException>(actionAsync);
         }
 
         [Fact]
@@ -231,59 +235,59 @@ namespace Tests.Model_UTs.Games
             game.PlayerManager.Add(PLAYER_2);
 
             // Act
-            void action() => game.PrepareNextPlayer(PLAYER_3);
+            async Task actionAsync() => await game.PrepareNextPlayer(PLAYER_3);
 
             // Assert
-            Assert.Throws<ArgumentException>(action);
+            Assert.ThrowsAsync<ArgumentException>(actionAsync);
         }
 
         [Fact]
-        public void TestPrepareNextPlayerWhenValidThenCorrectWithSeveralPlayers()
+        public async Task TestPrepareNextPlayerWhenValidThenCorrectWithSeveralPlayersAsync()
         {
             // Arrange
             Game game = new(name: GAME_NAME,
                 playerManager: new PlayerManager(),
                 dice: DICE_2);
 
-            game.PlayerManager.Add(PLAYER_1);
-            game.PlayerManager.Add(PLAYER_2);
+            await game.PlayerManager.Add(PLAYER_1);
+            await game.PlayerManager.Add(PLAYER_2);
 
             // Act
             Player expected = PLAYER_2;
 
-            Assert.Equal(PLAYER_1, game.GetWhoPlaysNow());
-            game.PrepareNextPlayer(PLAYER_1);
+            Assert.Equal(PLAYER_1, await game.GetWhoPlaysNow());
+            await game.PrepareNextPlayer(PLAYER_1);
 
-            Player actual = game.GetWhoPlaysNow();
+            Player actual = await game.GetWhoPlaysNow();
 
             // Assert
             Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public void TestPrepareNextPlayerWhenValidThenCorrectWithOnePlayer()
+        public async Task TestPrepareNextPlayerWhenValidThenCorrectWithOnePlayerAsync()
         {
             // Arrange
             Game game = new(name: GAME_NAME,
                 playerManager: new PlayerManager(),
                 dice: DICE_1);
 
-            game.PlayerManager.Add(PLAYER_1);
+            await game.PlayerManager.Add(PLAYER_1);
 
             // Act
             Player expected = PLAYER_1;
 
-            Assert.Equal(PLAYER_1, game.GetWhoPlaysNow());
-            game.PrepareNextPlayer(PLAYER_1);
+            Assert.Equal(PLAYER_1, await game.GetWhoPlaysNow());
+            await game.PrepareNextPlayer(PLAYER_1);
 
-            Player actual = game.GetWhoPlaysNow();
+            Player actual = await game.GetWhoPlaysNow();
 
             // Assert
             Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public void TestAddPlayerToGame()
+        public async Task TestAddPlayerToGameAsync()
         {
             // Arrange
             Game game = new(name: GAME_NAME,
@@ -292,14 +296,14 @@ namespace Tests.Model_UTs.Games
 
             // Act
             Player expected = PLAYER_1;
-            Player actual = game.PlayerManager.Add(PLAYER_1);
+            Player actual = await game.PlayerManager.Add(PLAYER_1);
 
             // Assert
             Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public void TestGetPlayersFromGame()
+        public async Task TestGetPlayersFromGameAsync()
         {
             // Arrange
             Game game = new(name: GAME_NAME,
@@ -307,46 +311,46 @@ namespace Tests.Model_UTs.Games
                 dice: DICE_1);
 
             // Act
-            Assert.Empty(game.PlayerManager.GetAll());
-            game.PlayerManager.Add(PLAYER_1);
+            Assert.Empty(await game.PlayerManager.GetAll());
+            await game.PlayerManager.Add(PLAYER_1);
 
             // Assert
-            Assert.Single(game.PlayerManager.GetAll());
+            Assert.Single(await game.PlayerManager.GetAll());
         }
 
         [Fact]
-        public void TestUpdatePlayerInGame()
+        public async Task TestUpdatePlayerInGameAsync()
         {
             // Arrange
             Game game = new(name: GAME_NAME,
                 playerManager: new PlayerManager(),
                 dice: DICE_2);
 
-            game.PlayerManager.Add(PLAYER_1);
+            await game.PlayerManager.Add(PLAYER_1);
 
             // Act
             Player expected = PLAYER_2;
-            Player actual = game.PlayerManager.Update(PLAYER_1, PLAYER_2);
+            Player actual = await game.PlayerManager.Update(PLAYER_1, PLAYER_2);
 
             // Assert
             Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public void TestRemovePlayerFromGame()
+        public async Task TestRemovePlayerFromGameAsync()
         {
             // Arrange
             Game game = new(name: GAME_NAME,
                 playerManager: new PlayerManager(),
                 dice: DICE_1);
 
-            game.PlayerManager.Add(PLAYER_1);
-            game.PlayerManager.Add(PLAYER_2);
+            await game.PlayerManager.Add(PLAYER_1);
+            await game.PlayerManager.Add(PLAYER_2);
             game.PlayerManager.Remove(PLAYER_1);
 
             // Act
             IEnumerable<Player> expected = new List<Player>() { PLAYER_2 }.AsEnumerable();
-            IEnumerable<Player> actual = game.PlayerManager.GetAll();
+            IEnumerable<Player> actual = await game.PlayerManager.GetAll();
 
             // Assert
             Assert.Equal(expected, actual);

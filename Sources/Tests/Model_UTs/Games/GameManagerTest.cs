@@ -9,44 +9,45 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tests.Data_UTs.Games;
 using Xunit;
 
 namespace Tests.Model_UTs.Games
 {
     public class GameManagerTest
     {
-        private readonly MasterOfCeremonies stubGameRunner = new Stub().LoadApp();
+        private readonly MasterOfCeremonies stubGameRunner = new Stub().LoadApp()?.Result;
 
         [Fact]
-        public void TestConstructorReturnsEmptyEnumerable()
+        public async Task TestConstructorReturnsEmptyEnumerableAsync()
         {
             // Arrange
             GameManager gm = new();
             IEnumerable<Game> expected;
             IEnumerable<Game> actual;
 
-            // Act
+            // Act 
             expected = new Collection<Game>();
-            actual = gm.GetAll();
+            actual = await gm.GetAll();
 
             // Assert
             Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public void TestAddWhenGamesThenDoAddAndReturnGames()
+        public async Task TestAddWhenGamesThenDoAddAndReturnGamesAsync()
         {
             // Arrange
             GameManager gm = new();
-            Game game1 = stubGameRunner.GameManager.GetAll().First();
-            Game game2 = stubGameRunner.GameManager.GetAll().Last();
+            Game game1 = (await stubGameRunner.GameManager.GetAll()).First();
+            Game game2 = (await stubGameRunner.GameManager.GetAll()).Last();
 
             // Act
             IEnumerable<Game> expected = new List<Game>() { game1, game2 }.AsEnumerable();
             IEnumerable<Game> actual = new List<Game>()
             {
-                gm.Add(game1),
-                gm.Add(game2)
+                await gm.Add(game1),
+                await gm.Add(game2)
             };
 
             // Assert
@@ -54,17 +55,17 @@ namespace Tests.Model_UTs.Games
         }
 
         [Fact]
-        public void TestAddWhenNullThenThrowsException()
+        public async Task TestAddWhenNullThenThrowsException()
         {
             // Arrange
             GameManager gm = new();
 
             // Act
-            void action() => gm.Add(null);// Add() returns the added element if succesful
+            async Task actionAsync() => await gm.Add(null);// Add() returns the added element if succesful
 
             // Assert
-            Assert.Throws<ArgumentNullException>(action);
-            Assert.DoesNotContain(null, stubGameRunner.GameManager.GetAll());
+            await Assert.ThrowsAsync<ArgumentNullException>(actionAsync);
+            Assert.DoesNotContain(null, await stubGameRunner.GameManager.GetAll());
         }
 
         [Fact]
@@ -85,40 +86,40 @@ namespace Tests.Model_UTs.Games
         [InlineData("")]
         [InlineData(null)]
         [InlineData(" ")]
-        public void TestGetOneByNameWhenInvalidThenThrowsException(string name)
+        public async Task TestGetOneByNameWhenInvalidThenThrowsExceptionAsync(string name)
         {
             // Arrange
             GameManager gm = new();
 
             // Act
-            void action() => gm.GetOneByName(name);
+            async Task actionAsync() => await gm.GetOneByName(name);
 
             // Assert
-            Assert.Throws<ArgumentException>(action);
+            await Assert.ThrowsAsync<ArgumentException>(actionAsync);
         }
 
         [Fact]
-        public void TestGetOneByNameWhenValidButNotExistThenReturnNull()
+        public async Task TestGetOneByNameWhenValidButNotExistThenReturnNullAsync()
         {
             // Arrange
             GameManager gm = new();
 
             // Act
-            Game result = gm.GetOneByName("thereisbasicallynowaythatthisgamenamealreadyexists");
+            Game result = await gm.GetOneByName("thereisbasicallynowaythatthisgamenamealreadyexists");
 
             // Assert
             Assert.Null(result);
         }
 
         [Fact]
-        public void TestGetOneByNameWhenValidThenReturnGame()
+        public async Task TestGetOneByNameWhenValidThenReturnGameAsync()
         {
             // Arrange
             GameManager gm = new();
-            Game game = stubGameRunner.GameManager.GetAll().First();
+            Game game = (await stubGameRunner.GameManager.GetAll()).First();
 
             // Act
-            Game actual = gm.Add(game);
+            Game actual = await gm.Add(game);
             Game expected = game;
 
             // Assert
@@ -126,19 +127,19 @@ namespace Tests.Model_UTs.Games
         }
 
         [Fact]
-        public void TestWhenRemoveExistsThenSucceeds()
+        public async Task TestWhenRemoveExistsThenSucceeds()
         {
             // Arrange
             GameManager gm = new();
 
-            Game game = new("blargh", new PlayerManager(), stubGameRunner.GameManager.GetAll().First().Dice);
-            gm.Add(game);
+            Game game = new("blargh", new PlayerManager(), (await stubGameRunner.GameManager.GetAll()).First().Dice);
+            await gm.Add(game);
 
             // Act
             gm.Remove(game);
 
             // Assert
-            Assert.DoesNotContain(game, gm.GetAll());
+            Assert.DoesNotContain(game, await gm.GetAll());
         }
 
         [Fact]
@@ -155,46 +156,46 @@ namespace Tests.Model_UTs.Games
         }
 
         [Fact]
-        public void TestRemoveWhenGivenNonExistentThenFailsSilently()
+        public async Task TestRemoveWhenGivenNonExistentThenFailsSilentlyAsync()
         {
             // Arrange
             IManager<Game> gm = stubGameRunner.GameManager;
 
-            Game notGame = new("blargh", new PlayerManager(), stubGameRunner.GameManager.GetAll().First().Dice);
-            IEnumerable<Game> expected = stubGameRunner.GameManager.GetAll();
+            Game notGame = new("blargh", new PlayerManager(), (await stubGameRunner.GameManager.GetAll()).First().Dice);
+            IEnumerable<Game> expected = await stubGameRunner.GameManager.GetAll();
 
             // Act
             gm.Remove(notGame);
-            IEnumerable<Game> actual = gm.GetAll();
+            IEnumerable<Game> actual = await gm.GetAll();
 
             // Assert
             Assert.Equal(actual, expected);
         }
 
         [Fact]
-        public void TestUpdateWhenValidThenSucceeds()
+        public async Task TestUpdateWhenValidThenSucceeds()
         {
             // Arrange
             GameManager gm = new();
 
             string oldName = "blargh";
             string newName = "blargh2.0";
-            Game game = new(oldName, new PlayerManager(), stubGameRunner.GameManager.GetAll().First().Dice);
-            game.PlayerManager.Add(new("Alice"));
-            gm.Add(game);
+            Game game = new(oldName, new PlayerManager(), (await stubGameRunner.GameManager.GetAll()).First().Dice);
+            await game.PlayerManager.Add(new("Alice"));
+            await gm.Add(game);
 
-            Game oldGame = gm.GetAll().First();
+            Game oldGame = (await gm.GetAll()).First();
             Game newGame = new(newName, oldGame.PlayerManager, oldGame.Dice);
 
             // Act
-            int expectedSize = gm.GetAll().Count();
-            gm.Update(oldGame, newGame);
-            int actualSize = gm.GetAll().Count();
+            int expectedSize = (await gm.GetAll()).Count();
+            await gm.Update(oldGame, newGame);
+            int actualSize = (await gm.GetAll()).Count();
 
             // Assert
             Assert.NotEqual(oldName, newName);
-            Assert.DoesNotContain(oldGame, gm.GetAll());
-            Assert.Contains(newGame, gm.GetAll());
+            Assert.DoesNotContain(oldGame, await gm.GetAll());
+            Assert.Contains(newGame, await gm.GetAll());
             Assert.Equal(expectedSize, actualSize);
         }
 
@@ -202,57 +203,57 @@ namespace Tests.Model_UTs.Games
         [InlineData("")]
         [InlineData(" ")]
         [InlineData(null)]
-        public void TestUpdateWhenValidBeforeAndInvalidAfterThenDoesNotGo(string badName)
+        public async Task TestUpdateWhenValidBeforeAndInvalidAfterThenDoesNotGoAsync(string badName)
         {
             // Arrange
             IManager<Game> gm = stubGameRunner.GameManager;
 
-            int expectedSize = gm.GetAll().Count();
-            Game oldGame = gm.GetAll().First();
+            int expectedSize = (await gm.GetAll()).Count();
+            Game oldGame = (await gm.GetAll()).First();
 
             // Act
             void action() => gm.Update(oldGame, new(badName, oldGame.PlayerManager, oldGame.Dice));
-            int actualSize = gm.GetAll().Count();
+            int actualSize = (await gm.GetAll()).Count();
 
             // Assert
             Assert.Throws<ArgumentException>(action); // thrown by constructor
-            Assert.Contains(oldGame, gm.GetAll()); // still there
+            Assert.Contains(oldGame, await gm.GetAll()); // still there
             Assert.Equal(expectedSize, actualSize);
         }
 
         [Fact]
-        public void TestUpdateWhenValidBeforeAndNullAfterThenDoesNotGo()
+        public async Task TestUpdateWhenValidBeforeAndNullAfterThenDoesNotGoAsync()
         {
             // Arrange
             IManager<Game> gm = stubGameRunner.GameManager;
-            int expectedSize = gm.GetAll().Count();
-            Game oldGame = gm.GetAll().First();
+            int expectedSize = (await gm.GetAll()).Count();
+            Game oldGame = (await gm.GetAll()).First();
 
             // Act
-            void action() => gm.Update(oldGame, null);
-            int actualSize = gm.GetAll().Count();
+            async Task actionAsync() => await gm.Update(oldGame, null);
+            int actualSize = (await gm.GetAll()).Count();
 
             // Assert
-            Assert.Throws<ArgumentNullException>(action); // thrown by constructor
-            Assert.Contains(oldGame, gm.GetAll()); // still there
+            await Assert.ThrowsAsync<ArgumentNullException>(actionAsync); // thrown by constructor
+            Assert.Contains(oldGame, await gm.GetAll()); // still there
             Assert.True(expectedSize == actualSize);
         }
 
         [Fact]
-        public void TestUpdateDoesNotGoWithValidAfterAndNullBefore()
+        public async Task TestUpdateDoesNotGoWithValidAfterAndNullBefore()
         {
             // Arrange
             IManager<Game> gm = stubGameRunner.GameManager;
-            int expectedSize = gm.GetAll().Count();
-            Game oldGame = gm.GetAll().First();
+            int expectedSize = (await gm.GetAll()).Count();
+            Game oldGame = (await gm.GetAll()).First();
 
             // Act
-            void action() => gm.Update(null, new("newgamename", oldGame.PlayerManager, oldGame.Dice));
-            int actualSize = gm.GetAll().Count();
+            async Task actionAsync() => await gm.Update(null, new("newgamename", oldGame.PlayerManager, oldGame.Dice));
+            int actualSize = (await gm.GetAll()).Count();
 
             // Assert
-            Assert.Throws<ArgumentNullException>(action); // thrown by constructor
-            Assert.Contains(oldGame, gm.GetAll()); // still there
+            await Assert.ThrowsAsync<ArgumentNullException>(actionAsync); // thrown by constructor
+            Assert.Contains(oldGame, await gm.GetAll()); // still there
             Assert.True(expectedSize == actualSize);
         }
 
@@ -260,20 +261,20 @@ namespace Tests.Model_UTs.Games
         [InlineData("")]
         [InlineData(" ")]
         [InlineData(null)]
-        public void TestUpdateWhenInvalidBeforeAndValidAfterThenDoesNotGo(string badName)
+        public async Task TestUpdateWhenInvalidBeforeAndValidAfterThenDoesNotGoAsync(string badName)
         {
             // Arrange
             IManager<Game> gm = stubGameRunner.GameManager;
-            int expectedSize = gm.GetAll().Count();
-            Game oldGame = gm.GetAll().First();
+            int expectedSize = (await gm.GetAll()).Count();
+            Game oldGame = (await gm.GetAll()).First();
 
             // Act
             void action() => gm.Update(new(badName, oldGame.PlayerManager, oldGame.Dice), new("valid", oldGame.PlayerManager, oldGame.Dice));
-            int actualSize = gm.GetAll().Count();
+            int actualSize = (await gm.GetAll()).Count();
 
             // Assert
             Assert.Throws<ArgumentException>(action); // thrown by constructor
-            Assert.Contains(oldGame, gm.GetAll()); // still there
+            Assert.Contains(oldGame, await gm.GetAll()); // still there
             Assert.True(expectedSize == actualSize);
         }
 

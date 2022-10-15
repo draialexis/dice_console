@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Model.Dice
 {
@@ -8,7 +9,7 @@ namespace Model.Dice
     {
         private readonly Dictionary<string, IEnumerable<Die>> diceGroups = new();
 
-        public KeyValuePair<string, IEnumerable<Die>> Add(KeyValuePair<string, IEnumerable<Die>> toAdd)
+        public Task<KeyValuePair<string, IEnumerable<Die>>> Add(KeyValuePair<string, IEnumerable<Die>> toAdd)
         {
             if (string.IsNullOrWhiteSpace(toAdd.Key))
             {
@@ -20,20 +21,20 @@ namespace Model.Dice
                 throw new ArgumentException("this username is already taken", nameof(toAdd));
             }
             diceGroups.Add(toAdd.Key.Trim(), toAdd.Value);
-            return toAdd;
+            return Task.FromResult(toAdd);
         }
 
-        public IEnumerable<KeyValuePair<string, IEnumerable<Die>>> GetAll()
+        public Task<IEnumerable<KeyValuePair<string, IEnumerable<Die>>>> GetAll()
         {
-            return diceGroups.AsEnumerable();
+            return Task.FromResult(diceGroups.AsEnumerable());
         }
 
-        public KeyValuePair<string, IEnumerable<Die>> GetOneByID(Guid ID)
+        public Task<KeyValuePair<string, IEnumerable<Die>>> GetOneByID(Guid ID)
         {
             throw new NotImplementedException();
         }
 
-        public KeyValuePair<string, IEnumerable<Die>> GetOneByName(string name)
+        public Task<KeyValuePair<string, IEnumerable<Die>>> GetOneByName(string name)
         {
             // les groupes de dés nommés :
             // ils sont case-sensistive, mais "mon jeu" == "mon jeu " == "  mon jeu"
@@ -41,10 +42,7 @@ namespace Model.Dice
             {
                 throw new ArgumentNullException(nameof(name), "param should not be null or empty");
             }
-            else
-            {
-                return new KeyValuePair<string, IEnumerable<Die>>(name, diceGroups[name]);
-            }
+            return Task.FromResult(new KeyValuePair<string, IEnumerable<Die>>(name, diceGroups[name]));
         }
 
         public void Remove(KeyValuePair<string, IEnumerable<Die>> toRemove)
@@ -67,7 +65,7 @@ namespace Model.Dice
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public KeyValuePair<string, IEnumerable<Die>> Update(KeyValuePair<string, IEnumerable<Die>> before, KeyValuePair<string, IEnumerable<Die>> after)
+        public Task<KeyValuePair<string, IEnumerable<Die>>> Update(KeyValuePair<string, IEnumerable<Die>> before, KeyValuePair<string, IEnumerable<Die>> after)
         {
             // pas autorisé de changer les dés, juste le nom
             if (!before.Value.Equals(after.Value))
@@ -79,8 +77,8 @@ namespace Model.Dice
                 throw new ArgumentNullException(nameof(before), "dice group name should not be null or empty");
             }
             diceGroups.Remove(before.Key);
-            diceGroups.Add(after.Key, after.Value);
-            return after;
+            Add(after);
+            return Task.FromResult(after);
 
         }
     }
