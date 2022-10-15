@@ -33,14 +33,14 @@ namespace Data.EF.Dice
             return entities.Select(entity => ToModel(entity));
         }
 
-        public static ColorDieEntity ToEntity(this ColorDie model)
+        public static NumberDieEntity ToEntity(this NumberDie model)
         {
-            var entity = new ColorDieEntity();
-            foreach (var face in model.Faces) { entity.Faces.Add(ColorFaceExtensions.ToEntity((ColorFace)face)); }
+            var entity = new NumberDieEntity();
+            foreach (var face in model.Faces) { entity.Faces.Add(((NumberFace)face).ToEntity()); }
             return entity;
         }
 
-        public static IEnumerable<ColorFaceEntity> ToEntities(this IEnumerable<ColorFace> models)
+        public static IEnumerable<NumberDieEntity> ToEntities(this IEnumerable<NumberDie> models)
         {
             return models.Select(model => model.ToEntity());
         }

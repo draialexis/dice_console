@@ -35,7 +35,7 @@ namespace Data.EF.Dice
             return entity;
         }
 
-        public static IEnumerable<ColorFaceEntity> ToEntities(this IEnumerable<ColorFace> models)
+        public static IEnumerable<ColorDieEntity> ToEntities(this IEnumerable<ColorDie> models)
         {
             return models.Select(model => model.ToEntity());
         }
