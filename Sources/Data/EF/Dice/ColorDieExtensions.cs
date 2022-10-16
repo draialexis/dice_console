@@ -6,19 +6,17 @@ namespace Data.EF.Dice
 {
     public static class ColorDieExtensions
     {
-        public static ColorDie ToModel(this ColorDieEntity clrDieEntity)
+        public static ColorDie ToModel(this ColorDieEntity dieEntity)
         {
             /*
              * creating an array of faces model
              */
-            ColorFace[] faces = new ColorFace[clrDieEntity.Faces.Count - 1];
-            List<ColorFace> clrFacesList = clrDieEntity.Faces.ToModels().ToList();
-            clrFacesList.CopyTo(faces, 1);
+            ColorFace[] faces = dieEntity.Faces.ToModels().ToArray();
 
             /*
              * creating the die
              */
-            ColorDie die = new(clrDieEntity.Faces.ElementAt(0).ToModel(), faces);
+            ColorDie die = new(faces[0], faces[1..]);
 
             return die;
         }

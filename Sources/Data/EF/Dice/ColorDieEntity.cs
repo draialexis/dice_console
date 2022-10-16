@@ -4,6 +4,6 @@ namespace Data.EF.Dice
 {
     public class ColorDieEntity : DieEntity
     {
-        public new ICollection<ColorFaceEntity> Faces { get; set; }
+        public new ICollection<ColorFaceEntity> Faces { get; set; } = new List<ColorFaceEntity>();
     }
 }
