@@ -40,7 +40,9 @@ namespace App
                     // Later, we'll use the DiceAppDbContext to get a GameDbRunner
 
                     // get all the players from the DB
-                    IEnumerable<PlayerEntity> entities = db.Players;
+                    PlayerDbManager playerDbManager = new(db);
+                    IEnumerable<PlayerEntity> entities = await playerDbManager.GetAll();
+
 
                     Debug.WriteLine("Loading players");
 

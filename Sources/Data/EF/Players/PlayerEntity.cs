@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Data.EF.Games;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data.EF.Players
 {
@@ -8,6 +9,8 @@ namespace Data.EF.Players
         public Guid ID { get; set; }
 
         public string Name { get; set; }
+
+        public ICollection<TurnEntity> Turns { get; set; }
 
         public override bool Equals(object obj)
         {

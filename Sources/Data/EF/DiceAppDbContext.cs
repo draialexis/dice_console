@@ -12,7 +12,7 @@ namespace Data.EF
         // will be async!
         public virtual Task<MasterOfCeremonies> LoadApp() { throw new NotImplementedException(); }
 
-        public DbSet<PlayerEntity> Players { get; set; }
+        public DbSet<PlayerEntity> PlayerEntity { get; set; }
         public DbSet<NumberDieEntity> NumberDice { get; set; }
         public DbSet<NumberFaceEntity> NumberFaces { get; set; }
         public DbSet<ImageDieEntity> ImageDice { get; set; }
