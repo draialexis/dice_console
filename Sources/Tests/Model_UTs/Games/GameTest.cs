@@ -142,8 +142,6 @@ namespace Tests.Model_UTs.Games
                 await game.PrepareNextPlayer(currentPlayer);
             }
 
-            Debug.WriteLine(game);
-
             // Act
             int actual = game.GetHistory().Count();
             int expected = n;
