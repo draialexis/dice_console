@@ -45,10 +45,7 @@ namespace Data.EF.Games
             return Turn.CreateWithSpecifiedTime(when: entity.When, player: entity.PlayerEntity.ToModel(), diceNFaces: DiceNFaces);
         }
 
-        public static IEnumerable<Turn> ToModels(this IEnumerable<TurnEntity> entities)
-        {
-            return entities.Select(entity => entity.ToModel());
-        }
+        public static IEnumerable<Turn> ToModels(this IEnumerable<TurnEntity> entities) => entities.Select(entity => entity.ToModel());
 
         public static TurnEntity ToEntity(this Turn model)
         {
@@ -66,9 +63,6 @@ namespace Data.EF.Games
             return new TurnEntity() { When = model.When, PlayerEntity = model.Player.ToEntity(), Dice = DiceEntities, Faces = FaceEntities };
         }
 
-        public static IEnumerable<TurnEntity> ToEntities(this IEnumerable<Turn> models)
-        {
-            return models.Select(model => model.ToEntity());
-        }
+        public static IEnumerable<TurnEntity> ToEntities(this IEnumerable<Turn> models) => models.Select(model => model.ToEntity());
     }
 }

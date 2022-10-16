@@ -21,10 +21,7 @@ namespace Data.EF.Dice
             return die;
         }
 
-        public static IEnumerable<NumberDie> ToModels(this IEnumerable<NumberDieEntity> entities)
-        {
-            return entities.Select(entity => ToModel(entity));
-        }
+        public static IEnumerable<NumberDie> ToModels(this IEnumerable<NumberDieEntity> entities) => entities.Select(entity => ToModel(entity));
 
         public static NumberDieEntity ToEntity(this NumberDie model)
         {
@@ -33,9 +30,6 @@ namespace Data.EF.Dice
             return entity;
         }
 
-        public static IEnumerable<NumberDieEntity> ToEntities(this IEnumerable<NumberDie> models)
-        {
-            return models.Select(model => model.ToEntity());
-        }
+        public static IEnumerable<NumberDieEntity> ToEntities(this IEnumerable<NumberDie> models) => models.Select(model => model.ToEntity());
     }
 }
