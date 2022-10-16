@@ -15,7 +15,7 @@ namespace Data.EF.Dice.Faces
         public byte B { get; set; }
 
         [ForeignKey("ColorDieFK")]
-        public ColorDie ColorDie { get; set; }
+        public ColorDieEntity ColorDieEntity { get; set; }
 
         public void SetValue(Color c)
         {

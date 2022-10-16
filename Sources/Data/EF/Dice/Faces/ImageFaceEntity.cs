@@ -14,6 +14,6 @@ namespace Data.EF.Dice.Faces
         public string Value { get; set; }
 
         [ForeignKey("ImgDieFK")]
-        public ImageDie ImageDie { get; set; }
+        public ImageDieEntity ImageDieEntity { get; set; }
     }
 }
