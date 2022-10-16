@@ -368,7 +368,7 @@ namespace Tests.Data_UTs.Players
             {
                 db.Database.EnsureCreated();
 
-                Assert.DoesNotContain(toRemove, db.Players);
+                Assert.DoesNotContain(toRemove, db.PlayerEntity);
             }
         }
 
@@ -656,11 +656,9 @@ namespace Tests.Data_UTs.Players
 
             PlayerDbManager mgr;
             Guid id = Guid.NewGuid();
-
-            Guid otherId = Guid.NewGuid();
+            Guid otherId;
 
             PlayerEntity presentEntity;
-            PlayerEntity absentEntity;
 
             // Act
 
@@ -672,7 +670,8 @@ namespace Tests.Data_UTs.Players
                 presentEntity = new() { ID = id, Name = "Victor" };
                 await mgr.Add(presentEntity);
 
-                absentEntity = new() { ID = otherId, Name = "Victor" };
+                otherId = Guid.NewGuid();
+                // not added
             }
 
             // Assert
@@ -682,7 +681,7 @@ namespace Tests.Data_UTs.Players
                 db.Database.EnsureCreated();
                 mgr = new(db);
 
-                Assert.DoesNotContain(absentEntity, db.Players);
+                Assert.False(await mgr.IsPresentByID(otherId));
             }
         }
     }

@@ -6,27 +6,22 @@ namespace Data.EF.Dice
 {
     public static class ColorDieExtensions
     {
-        public static ColorDie ToModel(this ColorDieEntity clrDieEntity)
+        public static ColorDie ToModel(this ColorDieEntity dieEntity)
         {
             /*
              * creating an array of faces model
              */
-            ColorFace[] faces = new ColorFace[clrDieEntity.Faces.Count - 1];
-            List<ColorFace> clrFacesList = clrDieEntity.Faces.ToModels().ToList();
-            clrFacesList.CopyTo(faces, 1);
+            ColorFace[] faces = dieEntity.Faces.ToModels().ToArray();
 
             /*
              * creating the die
              */
-            ColorDie die = new(clrDieEntity.Faces.ElementAt(0).ToModel(), faces);
+            ColorDie die = new(faces[0], faces[1..]);
 
             return die;
         }
 
-        public static IEnumerable<ColorDie> ToModels(this IEnumerable<ColorDieEntity> entities)
-        {
-            return entities.Select(entity => entity.ToModel());
-        }
+        public static IEnumerable<ColorDie> ToModels(this IEnumerable<ColorDieEntity> entities) => entities.Select(entity => entity.ToModel());
 
         public static ColorDieEntity ToEntity(this ColorDie model)
         {
@@ -35,10 +30,6 @@ namespace Data.EF.Dice
             return entity;
         }
 
-        public static IEnumerable<ColorDieEntity> ToEntities(this IEnumerable<ColorDie> models)
-        {
-            return models.Select(model => model.ToEntity());
-        }
-
+        public static IEnumerable<ColorDieEntity> ToEntities(this IEnumerable<ColorDie> models) => models.Select(model => model.ToEntity());
     }
 }

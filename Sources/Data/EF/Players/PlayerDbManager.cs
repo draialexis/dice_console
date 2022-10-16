@@ -47,7 +47,7 @@ namespace Data.EF.Players
         {
             CleanPlayerEntity(toAdd);
 
-            if (db.Players.Where(entity => entity.Name == toAdd.Name).Any())
+            if (db.PlayerEntity.Where(entity => entity.Name == toAdd.Name).Any())
             {
                 throw new ArgumentException("this username is already taken", nameof(toAdd));
             }
@@ -57,7 +57,7 @@ namespace Data.EF.Players
 
         private async Task<PlayerEntity> InternalAdd(PlayerEntity toAdd)
         {
-            EntityEntry ee = await db.Players.AddAsync(toAdd);
+            EntityEntry ee = await db.PlayerEntity.AddAsync(toAdd);
             await db.SaveChangesAsync();
             return (PlayerEntity)ee.Entity;
         }
@@ -65,7 +65,7 @@ namespace Data.EF.Players
         public async Task<IEnumerable<PlayerEntity>> GetAll()
         {
             List<PlayerEntity> players = new();
-            await Task.Run(() => players.AddRange(db.Players));
+            await Task.Run(() => players.AddRange(db.PlayerEntity));
             return players.AsEnumerable();
         }
 
@@ -90,7 +90,7 @@ namespace Data.EF.Players
 
         private async Task<PlayerEntity> InternalGetOneByName(string name)
         {
-            return await db.Players.Where(p => p.Name == name).FirstAsync();
+            return await db.PlayerEntity.Where(p => p.Name == name).FirstAsync();
         }
 
         public async Task<bool> IsPresentByName(string name)
@@ -100,7 +100,7 @@ namespace Data.EF.Players
                 return false;
             }
             name = name.Trim();
-            return await db.Players.Where(p => p.Name == name).FirstOrDefaultAsync() is not null;
+            return await db.PlayerEntity.Where(p => p.Name == name).FirstOrDefaultAsync() is not null;
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Data.EF.Players
             bool isPresent = IsPresentByID(toRemove.ID).Result;
             if (isPresent)
             {
-                db.Players.Remove(toRemove);
+                db.PlayerEntity.Remove(toRemove);
                 db.SaveChanges();
             }
         }
@@ -161,12 +161,12 @@ namespace Data.EF.Players
         /// <exception cref="InvalidOperationException"></exception>
         public async Task<PlayerEntity> GetOneByID(Guid ID)
         {
-            return await db.Players.FirstAsync(p => p.ID == ID);
+            return await db.PlayerEntity.FirstAsync(p => p.ID == ID);
         }
 
         public async Task<bool> IsPresentByID(Guid ID)
         {
-            return await db.Players.FirstOrDefaultAsync(p => p.ID == ID) is not null;
+            return await db.PlayerEntity.FirstOrDefaultAsync(p => p.ID == ID) is not null;
         }
     }
 }

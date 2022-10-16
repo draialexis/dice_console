@@ -41,7 +41,7 @@ namespace Tests.Data_UTs
 
                 // Assert
 
-                Assert.True(db.Players.Where(p => p.Name.Equals(name)).Any());
+                Assert.True(db.PlayerEntity.Where(p => p.Name.Equals(name)).Any());
             }
         }
 

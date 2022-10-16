@@ -1,6 +1,5 @@
 ﻿using Data.EF.Players;
 using System;
-using Tests.Model_UTs;
 using Xunit;
 
 namespace Tests.Data_UTs.Players

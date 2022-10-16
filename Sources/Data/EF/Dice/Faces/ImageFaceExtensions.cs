@@ -11,24 +11,12 @@ namespace Data.EF.Dice.Faces
 {
     public static class ImageFaceExtensions
     {
-        public static ImageFace ToModel(this ImageFaceEntity entity)
-        {
-            return new ImageFace(new Uri(entity.Value));
-        }
+        public static ImageFace ToModel(this ImageFaceEntity entity) => new(new Uri(entity.Value));
 
-        public static IEnumerable<ImageFace> ToModels(this IEnumerable<ImageFaceEntity> entities)
-        {
-            return entities.Select(entity => entity.ToModel());
-        }
+        public static IEnumerable<ImageFace> ToModels(this IEnumerable<ImageFaceEntity> entities) => entities.Select(entity => entity.ToModel());
 
-        public static ImageFaceEntity ToEntity(this ImageFace model)
-        {
-            return new ImageFaceEntity() { Value = model.StringValue };
-        }
+        public static ImageFaceEntity ToEntity(this ImageFace model) => new() { Value = model.StringValue };
 
-        public static IEnumerable<ImageFaceEntity> ToEntities(this IEnumerable<ImageFace> models)
-        {
-            return models.Select(model => model.ToEntity());
-        }
+        public static IEnumerable<ImageFaceEntity> ToEntities(this IEnumerable<ImageFace> models) => models.Select(model => model.ToEntity());
     }
 }
