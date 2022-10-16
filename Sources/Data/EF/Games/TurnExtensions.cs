@@ -67,7 +67,7 @@ namespace Data.EF.Games
 
             return Turn.CreateWithSpecifiedTime(
                 when: entity.When,
-                player: entity.Player.ToModel(),
+                player: entity.PlayerEntity.ToModel(),
                 diceNFaces: DiceNFaces
             );
         }
@@ -105,8 +105,8 @@ namespace Data.EF.Games
             return new TurnEntity()
             {
                 When = model.When,
-                Player = model.Player.ToEntity(),
-                //Dice = DiceEntities,
+                PlayerEntity = model.Player.ToEntity(),
+                Dice = DiceEntities,
                 Faces = FaceEntities
             };
         }
