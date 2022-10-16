@@ -10,27 +10,59 @@ namespace Data.EF.Games
     public static class TurnExtensions
     {
 
+        private static (List<Die>, List<Face>) ToModels(ICollection<DieEntity> diceEntities, ICollection<FaceEntity> faceEntities)
+        {
+            List<Die> dice = new();
+            List<Face> faces = new();
+
+            foreach (DieEntity dieEntity in diceEntities)
+            {
+                if (dieEntity.GetType() == typeof(NumberDieEntity))
+                {
+                    dice.Add((dieEntity as NumberDieEntity).ToModel());
+                }
+                if (dieEntity.GetType() == typeof(ColorDieEntity))
+                {
+                    dice.Add((dieEntity as ColorDieEntity).ToModel());
+                }
+                if (dieEntity.GetType() == typeof(ImageDieEntity))
+                {
+                    dice.Add((dieEntity as ImageDieEntity).ToModel());
+                }
+            }
+            foreach (FaceEntity faceEntity in faceEntities)
+            {
+                if (faceEntity.GetType() == typeof(NumberFaceEntity))
+                {
+                    faces.Add((faceEntity as NumberFaceEntity).ToModel());
+                }
+                if (faceEntity.GetType() == typeof(ColorFaceEntity))
+                {
+                    faces.Add((faceEntity as ColorFaceEntity).ToModel());
+                }
+                if (faceEntity.GetType() == typeof(ImageFaceEntity))
+                {
+                    faces.Add((faceEntity as ImageFaceEntity).ToModel());
+                }
+            }
+
+            return (dice, faces);
+        }
+
         public static Turn ToModel(this TurnEntity entity)
         {
 
             Dictionary<Die, Face> DiceNFaces = new();
 
-            DiceNFaces = Utils.Enumerables.FeedListsToDict(
-                DiceNFaces,
-                entity.ColorDice.ToModels() as List<Die>,
-                entity.ColorFaces.ToModels() as List<Face>
-                );
+            List<Die> keysList;
+            List<Face> valuesList;
+
+            (keysList, valuesList) = ToModels(entity.Dice, entity.Faces);
 
             DiceNFaces = Utils.Enumerables.FeedListsToDict(
                 DiceNFaces,
-                entity.NumberDice.ToModels() as List<Die>,
-                entity.NumberFaces.ToModels() as List<Face>
-                );
-
-            DiceNFaces = Utils.Enumerables.FeedListsToDict(
-                DiceNFaces,
-                entity.ImageDice.ToModels() as List<Die>,
-                entity.ImageFaces.ToModels() as List<Face>
+                keysList,
+                valuesList
                 );
 
             return Turn.CreateWithSpecifiedTime(
@@ -48,29 +80,25 @@ namespace Data.EF.Games
         public static TurnEntity ToEntity(this Turn model)
         {
 
-            List<NumberDieEntity> NumberDiceEntities = new();
-            List<ColorDieEntity> ColorDiceEntities = new();
-            List<ImageDieEntity> ImageDiceEntities = new();
-            List<NumberFaceEntity> NumberFaceEntities = new();
-            List<ColorFaceEntity> ColorFaceEntities = new();
-            List<ImageFaceEntity> ImageFaceEntities = new();
+            List<DieEntity> DiceEntities = new();
+            List<FaceEntity> FaceEntities = new();
 
             foreach (KeyValuePair<Die, Face> kvp in model.DiceNFaces)
             {
                 if (kvp.Key.GetType() == typeof(NumberDie))
                 {
-                    NumberDiceEntities.Add((kvp.Key as NumberDie).ToEntity());
-                    NumberFaceEntities.Add((kvp.Value as NumberFace).ToEntity());
+                    DiceEntities.Add((kvp.Key as NumberDie).ToEntity());
+                    FaceEntities.Add((kvp.Value as NumberFace).ToEntity());
                 }
                 if (kvp.Key.GetType() == typeof(ImageDie))
                 {
-                    ImageDiceEntities.Add((kvp.Key as ImageDie).ToEntity());
-                    ImageFaceEntities.Add((kvp.Value as ImageFace).ToEntity());
+                    DiceEntities.Add((kvp.Key as ImageDie).ToEntity());
+                    FaceEntities.Add((kvp.Value as ImageFace).ToEntity());
                 }
                 if (kvp.Key.GetType() == typeof(ColorDie))
                 {
-                    ColorDiceEntities.Add((kvp.Key as ColorDie).ToEntity());
-                    ColorFaceEntities.Add((kvp.Value as ColorFace).ToEntity());
+                    DiceEntities.Add((kvp.Key as ColorDie).ToEntity());
+                    FaceEntities.Add((kvp.Value as ColorFace).ToEntity());
                 }
             }
 
@@ -78,12 +106,8 @@ namespace Data.EF.Games
             {
                 When = model.When,
                 Player = model.Player.ToEntity(),
-                NumberDice = NumberDiceEntities,
-                NumberFaces = NumberFaceEntities,
-                ColorDice = ColorDiceEntities,
-                ColorFaces = ColorFaceEntities,
-                ImageDice = ImageDiceEntities,
-                ImageFaces = ImageFaceEntities
+                //Dice = DiceEntities,
+                Faces = FaceEntities
             };
         }
 
