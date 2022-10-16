@@ -5,6 +5,7 @@ using Data.EF.Joins;
 using Data.EF.Players;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Xunit;
 
 namespace Tests.Data_UTs.Games
@@ -18,7 +19,7 @@ namespace Tests.Data_UTs.Games
 
         private readonly DieEntity clrDie;
         private readonly FaceEntity clrFace1 = new ColorFaceEntity() { ID = Guid.NewGuid(), A = 255, R = 255, G = 255, B = 255 };
-        private readonly FaceEntity clrFace2 = new ColorFaceEntity() { ID = Guid.NewGuid(), A = 255, R = 0, G = 0, B = 0 };
+        private readonly FaceEntity clrFace2 = new ColorFaceEntity() { ID = Guid.NewGuid() };
 
         private readonly DieEntity imgDie;
         private readonly FaceEntity imgFace1 = new ImageFaceEntity() { ID = Guid.NewGuid(), Value = "https://a" };
@@ -43,8 +44,18 @@ namespace Tests.Data_UTs.Games
         public TurnEntityTest()
         {
             numDie = new NumberDieEntity() { ID = Guid.NewGuid(), Faces = new List<NumberFaceEntity>() { numFace1 as NumberFaceEntity, numFace2 as NumberFaceEntity } };
+            (numFace1 as NumberFaceEntity).NumberDieEntity = (NumberDieEntity)numDie;
+            (numFace2 as NumberFaceEntity).NumberDieEntity = (NumberDieEntity)numDie;
+
+            (clrFace2 as ColorFaceEntity).SetValue(Color.FromName("blue"));
+
             clrDie = new ColorDieEntity() { ID = Guid.NewGuid(), Faces = new List<ColorFaceEntity>() { clrFace1 as ColorFaceEntity, clrFace2 as ColorFaceEntity } };
+            (clrFace1 as ColorFaceEntity).ColorDieEntity = (ColorDieEntity)clrDie;
+            (clrFace2 as ColorFaceEntity).ColorDieEntity = (ColorDieEntity)clrDie;
+
             imgDie = new ImageDieEntity() { ID = Guid.NewGuid(), Faces = new List<ImageFaceEntity>() { imgFace1 as ImageFaceEntity, imgFace2 as ImageFaceEntity } };
+            (imgFace1 as ImageFaceEntity).ImageDieEntity = (ImageDieEntity)imgDie;
+            (imgFace2 as ImageFaceEntity).ImageDieEntity = (ImageDieEntity)imgDie;
 
             turn1 = new()
             {
