@@ -13,6 +13,12 @@ namespace Data.EF
         public virtual Task<MasterOfCeremonies> LoadApp() { throw new NotImplementedException(); }
 
         public DbSet<PlayerEntity> Players { get; set; }
+        public DbSet<NumberDieEntity> NumberDice { get; set; }
+        public DbSet<NumberFaceEntity> NumberFaces { get; set; }
+        public DbSet<ImageDieEntity> ImageDice { get; set; }
+        public DbSet<ImageFaceEntity> ImageFaces { get; set; }
+        public DbSet<ColorDieEntity> ColorDice { get; set; }
+        public DbSet<ColorFaceEntity> ColorFaces { get; set; }
 
         public DiceAppDbContext() { }
 
