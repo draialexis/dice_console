@@ -1,20 +1,15 @@
-﻿using Model.Dice;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace Data.EF.Dice.Faces
 {
-    public class ColorFaceEntity
+    public class ColorFaceEntity : FaceEntity
     {
-        public Guid ID { get; set; }
-
         public byte A { get; set; }
         public byte R { get; set; }
         public byte G { get; set; }
         public byte B { get; set; }
 
-        [ForeignKey("ColorDieFK")]
+        public Guid ColorDieEntityID { get; set; }
         public ColorDieEntity ColorDieEntity { get; set; }
 
         public void SetValue(Color c)

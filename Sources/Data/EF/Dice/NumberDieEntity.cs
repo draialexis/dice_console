@@ -1,16 +1,9 @@
 ﻿using Data.EF.Dice.Faces;
-using Model.Dice.Faces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.EF.Dice
 {
-    public class NumberDieEntity
+    public class NumberDieEntity : DieEntity
     {
-        public Guid Id { get; set; }
-        public ICollection<NumberFaceEntity> Faces { get; set; }
+        public new ICollection<NumberFaceEntity> Faces { get; set; }
     }
 }

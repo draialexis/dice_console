@@ -1,19 +1,9 @@
-﻿using Model.Dice;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Data.EF.Dice.Faces
+﻿namespace Data.EF.Dice.Faces
 {
-    public class NumberFaceEntity
+    public class NumberFaceEntity : FaceEntity
     {
-        public Guid Id { get; set; }
         public int Value { get; set; }
-
-        [ForeignKey("NumDieFK")]
+        public Guid NumberDieEntityID { get; set; }
         public NumberDieEntity NumberDieEntity { get; set; }
     }
 }
