@@ -6,13 +6,17 @@ namespace Data.EF.Players
 {
     public sealed class PlayerDbManager : IManager<PlayerEntity>
     {
+        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         private readonly DiceAppDbContext db;
 
         public PlayerDbManager(DiceAppDbContext db)
         {
             if (db is null)
             {
-                throw new ArgumentNullException(nameof(db), "param should not be null");
+                ArgumentNullException ex = new(nameof(db), "param should not be null");
+                logger.Error(ex, "attempted to construct PlayerDbManager with a null context");
+                throw ex;
             }
             this.db = db;
         }
@@ -27,11 +31,15 @@ namespace Data.EF.Players
         {
             if (entity is null)
             {
-                throw new ArgumentNullException(nameof(entity), "param should not be null");
+                ArgumentNullException ex = new(nameof(entity), "param should not be null");
+                logger.Warn(ex);
+                throw ex;
             }
             if (string.IsNullOrWhiteSpace(entity.Name))
             {
-                throw new ArgumentException("Name property should not be null or whitespace", nameof(entity));
+                ArgumentException ex = new("Name property should not be null or whitespace", nameof(entity));
+                logger.Warn(ex);
+                throw ex;
             }
             entity.Name = entity.Name.Trim();
         }
@@ -49,7 +57,9 @@ namespace Data.EF.Players
 
             if (db.PlayerEntity.Where(entity => entity.Name == toAdd.Name).Any())
             {
-                throw new ArgumentException("this username is already taken", nameof(toAdd));
+                ArgumentException ex = new("this username is already taken", nameof(toAdd));
+                logger.Warn(ex);
+                throw ex;
             }
 
             return InternalAdd(toAdd);
@@ -59,6 +69,7 @@ namespace Data.EF.Players
         {
             EntityEntry ee = await db.PlayerEntity.AddAsync(toAdd);
             await db.SaveChangesAsync();
+            logger.Info("Added {0}", ee.Entity.ToString());
             return (PlayerEntity)ee.Entity;
         }
 
@@ -116,6 +127,7 @@ namespace Data.EF.Players
             if (isPresent)
             {
                 db.PlayerEntity.Remove(toRemove);
+                logger.Info("Removed {0}", toRemove.ToString());
                 db.SaveChanges();
             }
         }
@@ -139,11 +151,12 @@ namespace Data.EF.Players
 
             if (before.ID != after.ID)
             {
-                throw new ArgumentException("ID cannot be updated", nameof(after));
+                ArgumentException ex = new("ID cannot be updated", nameof(after));
+                logger.Warn(ex);
+                throw ex;
             }
 
             return InternalUpdate(before, after);
-
         }
 
         private async Task<PlayerEntity> InternalUpdate(PlayerEntity before, PlayerEntity after)

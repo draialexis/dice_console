@@ -10,12 +10,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
+using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace App
 {
     internal static class Program
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         static async Task Main(string[] args)
         {
             // MODEL stuff
@@ -27,8 +32,7 @@ namespace App
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                logger.Warn(ex);
                 masterOfCeremonies = new(new PlayerManager(), new DiceGroupManager(), null);
             }
 
@@ -43,22 +47,18 @@ namespace App
                     PlayerDbManager playerDbManager = new(db);
                     IEnumerable<PlayerEntity> entities = await playerDbManager.GetAll();
 
-
-                    Debug.WriteLine("Loading players");
-
                     foreach (PlayerEntity entity in entities)
                     {
                         try
                         {
                             // persist them  as models !
                             await masterOfCeremonies.GlobalPlayerManager.Add(entity.ToModel());
-                            Debug.WriteLine($"{entity.ID} -- {entity.Name}");
                         }
-                        catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
+                        catch (Exception ex) { Console.WriteLine($"{ex.Message}\n... Never mind"); }
                     }
                 }
             }
-            catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Couldn't use the database"); }
+            catch (Exception ex) { Console.WriteLine($"{ex.Message}\n... Couldn't use the database"); }
 
             string menuChoice = "nothing";
 
@@ -186,22 +186,21 @@ namespace App
                     // create a PlayerDbManager (and inject it with the DB)
                     PlayerDbManager playerDbManager = new(db);
 
-                    Debug.WriteLine("Saving players");
-
                     foreach (Player model in models)
                     {
                         try // to persist them
                         { // as entities !
                             PlayerEntity entity = model.ToEntity();
                             await playerDbManager.Add(entity);
-                            Debug.WriteLine($"{entity.ID} -- {entity.Name}");
                         }
                         // what if there's already a player with that name? Exception (see PlayerEntity's annotations)
-                        catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
+                        catch (ArgumentException ex) { Console.WriteLine($"{ex.Message}\n... Never mind"); }
                     }
                 }
+                // flushing and closing NLog before quitting completely
+                NLog.LogManager.Shutdown();
             }
-            catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Couldn't use the database"); }
+            catch (Exception ex) { Console.WriteLine($"{ex.Message}\n... Couldn't use the database"); }
         }
 
         private static async Task Play(MasterOfCeremonies masterOfCeremonies, string name)
@@ -210,7 +209,7 @@ namespace App
             while (menuChoicePlay != "q")
             {
                 Game game = await masterOfCeremonies.GameManager.GetOneByName(name);
-                Console.WriteLine($"{game.GetWhoPlaysNow()}'s turn\n" +
+                Console.WriteLine($"{PlayerToString(await game.GetWhoPlaysNow())}'s turn\n" +
                     "q... quit\n" +
                     "h... show history\n" +
                     "s... save\n" +
@@ -221,17 +220,14 @@ namespace App
                     case "q":
                         break;
                     case "h":
-                        foreach (Turn turn in game.GetHistory())
-                        {
-                            Console.WriteLine(turn);
-                        }
+                        foreach (Turn turn in game.GetHistory()) { Console.WriteLine(TurnToString(turn)); }
                         break;
                     case "s":
                         await masterOfCeremonies.GameManager.Add(game);
                         break;
                     default:
                         await MasterOfCeremonies.PlayGame(game);
-                        Console.WriteLine(game.GetHistory().Last());
+                        Console.WriteLine(TurnToString(game.GetHistory().Last()));
                         break;
                 }
             }
@@ -243,7 +239,7 @@ namespace App
             Console.WriteLine("which of these games?\n(choose by name)\n>");
             foreach (Game game in await masterOfCeremonies.GameManager.GetAll())
             {
-                Console.WriteLine(game);
+                Console.WriteLine(GameToString(game));
             }
             name = Console.ReadLine();
             return name;
@@ -254,7 +250,7 @@ namespace App
             Console.WriteLine("Look at all them players!");
             foreach (Player player in await masterOfCeremonies.GlobalPlayerManager.GetAll())
             {
-                Console.WriteLine(player);
+                Console.WriteLine(PlayerToString(player));
             }
         }
 
@@ -262,7 +258,7 @@ namespace App
         {
             foreach ((string name, IEnumerable<Die> dice) in await masterOfCeremonies.DiceGroupManager.GetAll())
             {
-                Console.WriteLine($"{name} -- {dice}");
+                Console.WriteLine($"{name} -- {dice}"); // maybe code a quick and dirty DieToString()
             }
         }
 
@@ -335,11 +331,13 @@ namespace App
                     catch (ArgumentNullException ex)
                     {
                         Console.WriteLine(ex.Message);
+                        logger.Warn(ex);
                     }
                     catch (UriFormatException ex)
                     {
                         Console.WriteLine("that URI was not valid");
                         Console.WriteLine(ex.Message);
+                        logger.Warn(ex);
                     }
                 }
             }
@@ -356,7 +354,7 @@ namespace App
             if (menuChoice.Equals("ok") && count == 0)
             {
                 Console.WriteLine("create at least one valid face");
-                menuChoice = ""; // persiste en dehors du scope de cette fonction
+                menuChoice = ""; // persists outside the scope of this function
             }
         }
 
@@ -396,7 +394,7 @@ namespace App
                     Player player = new(menuChoicePlayers);
                     if (!(await masterOfCeremonies.GlobalPlayerManager.GetAll()).Contains(player))
                     {
-                        // if the player didn't exist, now it does... this is temporary
+                        // if the player didn't exist, now it does... 
                         await masterOfCeremonies.GlobalPlayerManager.Add(player);
                     }
                     // almost no checks, this is temporary
@@ -404,12 +402,57 @@ namespace App
                     {
                         await result.Add(player);
                     }
-                    catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
+                    catch (ArgumentException ex) { Console.WriteLine($"{ex.Message}\n... Never mind"); }
 
                 }
             }
 
             return result;
+        }
+        private static string TurnToString(Turn turn)
+        {
+            string[] datetime = turn.When.ToString("s", System.Globalization.CultureInfo.InvariantCulture).Split("T");
+            string date = datetime[0];
+            string time = datetime[1];
+
+            StringBuilder sb = new();
+
+            sb.AppendFormat("{0} {1} -- {2} rolled:",
+                date,
+                time,
+                PlayerToString(turn.Player));
+            foreach (KeyValuePair<Die, Face> kvp in turn.DiceNFaces)
+            {
+                sb.Append(" " + kvp.Value.StringValue);
+            }
+
+            return sb.ToString();
+        }
+
+        private async static Task<string> GameToString(Game game)
+        {
+            StringBuilder sb = new();
+            sb.Append($"Game: {game.Name}");
+
+            sb.Append("\nPlayers:");
+            foreach (Player player in game.PlayerManager.GetAll()?.Result)
+            {
+                sb.Append($" {PlayerToString(player)}");
+            }
+
+            sb.Append($"\nNext: {PlayerToString(await game.GetWhoPlaysNow())}");
+
+            sb.Append("\nLog:\n");
+            foreach (Turn turn in game.GetHistory())
+            {
+                sb.Append($"\t{TurnToString(turn)}\n");
+            }
+            return sb.ToString();
+        }
+
+        private static string PlayerToString(Player player)
+        {
+            return player.Name;
         }
     }
 }

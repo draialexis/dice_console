@@ -87,30 +87,6 @@ namespace Model.Games
             return CreateWithSpecifiedTime(DateTime.UtcNow, player, diceNFaces);
         }
 
-        /// <summary>
-        /// represents a turn in string format
-        /// </summary>
-        /// <returns>a turn in string format</returns>
-        public override string ToString()
-        {
-            string[] datetime = When.ToString("s", System.Globalization.CultureInfo.InvariantCulture).Split("T");
-            string date = datetime[0];
-            string time = datetime[1];
-
-            StringBuilder sb = new();
-
-            sb.AppendFormat("{0} {1} -- {2} rolled:",
-                date,
-                time,
-                Player.ToString());
-            foreach (Face face in this.diceNFaces.Values)
-            {
-                sb.Append(" " + face.StringValue);
-            }
-
-            return sb.ToString();
-        }
-
         public bool Equals(Turn other)
         {
             return Player.Equals(other.Player)
