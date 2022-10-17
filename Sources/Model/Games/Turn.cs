@@ -89,10 +89,39 @@ namespace Model.Games
 
         public bool Equals(Turn other)
         {
-            return Player.Equals(other.Player)
+            if (other is null
+                ||
+                !(Player.Equals(other.Player)
                 && When.Equals(other.When)
-                && DiceNFaces.SequenceEqual(other.DiceNFaces);
+                && DiceNFaces.Count() == other.DiceNFaces.Count()))
+            {
+                return false;
+            }
 
+            for (int i = 0; i < DiceNFaces.Count(); i++)
+            {
+                if (DiceNFaces.ElementAt(i).Key.Faces.Count()
+                    != other.DiceNFaces.ElementAt(i).Key.Faces.Count())
+                {
+                    return false;
+                }
+
+                if (!other.DiceNFaces.ElementAt(i).Value.StringValue
+                    .Equals(DiceNFaces.ElementAt(i).Value.StringValue))
+                {
+                    return false;
+                }
+
+                for (int j = 0; j < DiceNFaces.ElementAt(i).Key.Faces.Count(); j++)
+                {
+                    if (!other.DiceNFaces.ElementAt(i).Key.Faces.ElementAt(j).StringValue
+                        .Equals(DiceNFaces.ElementAt(i).Key.Faces.ElementAt(j).StringValue))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         public override bool Equals(object obj)
@@ -106,7 +135,16 @@ namespace Model.Games
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Player, When, DiceNFaces);
+            int hash = Player.GetHashCode() + When.GetHashCode();
+            foreach (KeyValuePair<Die, Face> kvp in DiceNFaces)
+            {
+                hash = hash * 31 + kvp.Value.StringValue.GetHashCode();
+                foreach (Face face in kvp.Key.Faces)
+                {
+                    hash = hash * 19 + face.StringValue.GetHashCode();
+                }
+            }
+            return hash;
         }
     }
 }
