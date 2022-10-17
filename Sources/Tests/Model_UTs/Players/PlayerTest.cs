@@ -66,20 +66,6 @@ namespace Tests.Model_UTs.Players
         }
 
         [Fact]
-        public void TestToStringCorrectName()
-        {
-            // Arrange
-            string expected = "Bob";
-            Player player = new(expected);
-
-            // Act
-            string actual = player.ToString();
-
-            // Assert
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
         public void TestEqualsFalseIfNotPlayer()
         {
             // Arrange

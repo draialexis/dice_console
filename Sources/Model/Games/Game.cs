@@ -169,31 +169,5 @@ namespace Model.Games
             }
             return faces;
         }
-
-        /// <summary>
-        /// represents a Game in string format
-        /// </summary>
-        /// <returns>a Game in string format</returns>
-        public override string ToString()
-        {
-            StringBuilder sb = new();
-            sb.Append($"Game: {Name}");
-
-            sb.Append("\nPlayers:");
-            foreach (Player player in PlayerManager.GetAll()?.Result)
-            {
-                sb.Append($" {player.ToString()}");
-            }
-
-            sb.Append($"\nNext: {GetWhoPlaysNow()}");
-
-            sb.Append("\nLog:\n");
-            foreach (Turn turn in this.turns)
-            {
-                sb.Append($"\t{turn.ToString()}\n");
-            }
-
-            return sb.ToString();
-        }
     }
 }
