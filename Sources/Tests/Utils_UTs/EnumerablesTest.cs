@@ -71,5 +71,51 @@ namespace Tests.Utils_UTs
 
             Assert.Equal(expected, actual);
         }
+
+        public static IEnumerable<object[]> EmptyList()
+        {
+            yield return new object[] { new List<string>() };
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [MemberData(nameof(EmptyList))]
+        public void TestGetDictFromListsWhenKeysNullOrEmptyThenNew(List<string> strings)
+        {
+            // Arrange
+            int int1 = 5;
+            int int2 = 12;
+
+            Dictionary<string, int> expected = new();
+
+            List<int> ints = new() { int1, int2 };
+
+            // Act
+            Dictionary<string, int> actual = Enumerables.GetDictFromLists(strings, ints);
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+
+        [Theory]
+        [InlineData(null)]
+        [MemberData(nameof(EmptyList))]
+        public void TestGetDictFromListsWhenValuesNullOrEmptyThenNew(List<string> stringsB)
+        {
+            // Arrange
+            string str1 = "blah";
+            string str2 = "blahblah";
+
+            Dictionary<string, string> expected = new();
+
+            List<string> strings = new() { str1, str2 };
+
+            // Act
+            Dictionary<string, string> actual = Enumerables.GetDictFromLists(strings, stringsB);
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
     }
 }

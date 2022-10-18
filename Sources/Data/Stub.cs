@@ -10,13 +10,13 @@ namespace Data
     {
         public async Task<MasterOfCeremonies> LoadApp()
         {
-            MasterOfCeremonies gr = new(new PlayerManager(), new DiceGroupManager(), new GameManager());
+            MasterOfCeremonies mc = new(new PlayerManager(), new DiceGroupManager(), new GameManager());
 
             Player player1 = new("Alice(Old Stub)"), player2 = new("Bob(Old Stub)"), player3 = new("Clyde(Old Stub)");
 
-            await gr.GlobalPlayerManager.Add(player1);
-            await gr.GlobalPlayerManager.Add(player2);
-            await gr.GlobalPlayerManager.Add(player3);
+            await mc.GlobalPlayerManager.Add(player1);
+            await mc.GlobalPlayerManager.Add(player2);
+            await mc.GlobalPlayerManager.Add(player3);
 
 
             List<Die> monopolyDice = new();
@@ -63,26 +63,26 @@ namespace Data
 
             dndDice.Add(new NumberDie(d20Faces[0], d20Faces[1..]));
 
-            await gr.DiceGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(dndName, dndDice.AsEnumerable()));
-            await gr.DiceGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(monopolyName, monopolyDice.AsEnumerable()));
+            await mc.DiceGroupManager.Add(new DiceGroup(dndName, dndDice));
+            await mc.DiceGroupManager.Add(new DiceGroup(monopolyName, monopolyDice));
 
             string game1 = "Forgotten Realms", game2 = "4e", game3 = "The Coopers";
 
-            await gr.GameManager.Add(new(game1, new PlayerManager(), dndDice.AsEnumerable()));
-            await gr.GameManager.Add(new(game2, new PlayerManager(), dndDice.AsEnumerable()));
-            await gr.GameManager.Add(new(game3, new PlayerManager(), monopolyDice.AsEnumerable()));
+            await mc.GameManager.Add(new(game1, new PlayerManager(), dndDice.AsEnumerable()));
+            await mc.GameManager.Add(new(game2, new PlayerManager(), dndDice.AsEnumerable()));
+            await mc.GameManager.Add(new(game3, new PlayerManager(), monopolyDice.AsEnumerable()));
 
-            await (await gr.GameManager.GetOneByName(game1)).PlayerManager.Add(player1);
-            await (await gr.GameManager.GetOneByName(game1)).PlayerManager.Add(player2);
+            await (await mc.GameManager.GetOneByName(game1)).PlayerManager.Add(player1);
+            await (await mc.GameManager.GetOneByName(game1)).PlayerManager.Add(player2);
 
-            await (await gr.GameManager.GetOneByName(game2)).PlayerManager.Add(player1);
-            await (await gr.GameManager.GetOneByName(game2)).PlayerManager.Add(player2);
-            await (await gr.GameManager.GetOneByName(game2)).PlayerManager.Add(player3);
+            await (await mc.GameManager.GetOneByName(game2)).PlayerManager.Add(player1);
+            await (await mc.GameManager.GetOneByName(game2)).PlayerManager.Add(player2);
+            await (await mc.GameManager.GetOneByName(game2)).PlayerManager.Add(player3);
 
-            await (await gr.GameManager.GetOneByName(game3)).PlayerManager.Add(player1);
-            await (await gr.GameManager.GetOneByName(game3)).PlayerManager.Add(player3);
+            await (await mc.GameManager.GetOneByName(game3)).PlayerManager.Add(player1);
+            await (await mc.GameManager.GetOneByName(game3)).PlayerManager.Add(player3);
 
-            foreach (Game game in gr.GameManager.GetAll()?.Result)
+            foreach (Game game in mc.GameManager.GetAll()?.Result)
             {
                 for (int i = 0; i < 10; i++)
                 {
@@ -92,7 +92,7 @@ namespace Data
                 }
             }
 
-            return gr;
+            return mc;
         }
     }
 }

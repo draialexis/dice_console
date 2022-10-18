@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,18 +11,14 @@ namespace Model.Games
         /// <summary>
         /// the games managed by this instance
         /// </summary>
-        private readonly List<Game> games;
+        private readonly List<Game> games = new();
 
-        public GameManager()
-        {
-            games = new();
-        }
 
         /// <summary>
         /// gets an unmodifiable collection of the games
         /// </summary>
         /// <returns>unmodifiable collection of the games</returns>
-        public Task<IEnumerable<Game>> GetAll() => Task.FromResult(games.AsEnumerable());
+        public Task<ReadOnlyCollection<Game>> GetAll() => Task.FromResult(new ReadOnlyCollection<Game>(games));
 
         /// <summary>
         /// finds the game with that name and returns it

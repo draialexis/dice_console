@@ -90,7 +90,7 @@ namespace Tests.Data_UTs.Players
                 db.Database.EnsureCreated();
                 mgr = new(db);
                 Assert.Equal(expectedName, (await mgr.GetOneByName(expectedName)).Name);
-                Assert.Equal(expectedCount, (await mgr.GetAll()).Count());
+                Assert.Equal(expectedCount, (await mgr.GetAll()).Count);
             }
         }
 

@@ -7,13 +7,12 @@ using Model.Games;
 using Model.Players;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace App
 {
@@ -33,7 +32,7 @@ namespace App
             catch (Exception ex)
             {
                 logger.Warn(ex);
-                masterOfCeremonies = new(new PlayerManager(), new DiceGroupManager(), null);
+                masterOfCeremonies = new(new PlayerManager(), new DiceGroupManager(), new GameManager());
             }
 
             try
@@ -154,7 +153,7 @@ namespace App
                                 newGroupDice.Add(die);
                             }
                         }
-                        await masterOfCeremonies.DiceGroupManager.Add(new KeyValuePair<string, IEnumerable<Die>>(newGroupName, newGroupDice));
+                        await masterOfCeremonies.DiceGroupManager.Add(new DiceGroup(newGroupName, newGroupDice));
                         break;
 
                     case "p":
@@ -256,7 +255,7 @@ namespace App
 
         private static async Task ShowDice(MasterOfCeremonies masterOfCeremonies)
         {
-            foreach ((string name, IEnumerable<Die> dice) in await masterOfCeremonies.DiceGroupManager.GetAll())
+            foreach ((string name, ReadOnlyCollection<Die> dice) in await masterOfCeremonies.DiceGroupManager.GetAll())
             {
                 Console.WriteLine($"{name} -- {dice}"); // maybe code a quick and dirty DieToString()
             }
@@ -370,7 +369,7 @@ namespace App
                 menuChoiceDice = Console.ReadLine();
                 if (!menuChoiceDice.Equals("ok"))
                 {
-                    IEnumerable<Die> chosenDice = (await masterOfCeremonies.DiceGroupManager.GetOneByName(menuChoiceDice)).Value;
+                    IEnumerable<Die> chosenDice = (await masterOfCeremonies.DiceGroupManager.GetOneByName(menuChoiceDice)).Dice;
                     foreach (Die die in chosenDice)
                     {
                         result.Add(die);

@@ -22,9 +22,9 @@ namespace Tests.Model_UTs.Games
             Game game = (await masterOfCeremonies.GameManager.GetAll()).First();
 
             // Act
-            int turnsBefore = game.GetHistory().Count();
+            int turnsBefore = game.GetHistory().Count;
             await MasterOfCeremonies.PlayGame(game);
-            int turnsAfter = game.GetHistory().Count();
+            int turnsAfter = game.GetHistory().Count;
 
             // Assert
             Assert.Equal(turnsBefore + 1, turnsAfter);

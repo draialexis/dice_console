@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,12 +11,8 @@ namespace Model.Players
         /// <summary>
         /// a collection of the players that this manager is in charge of
         /// </summary>
-        private readonly List<Player> players;
+        private readonly List<Player> players = new();
 
-        public PlayerManager()
-        {
-            players = new();
-        }
         /// <summary>
         /// add a new player
         /// </summary>
@@ -60,7 +57,7 @@ namespace Model.Players
         /// so that the only way to modify the collection of players is to use this class's methods
         /// </summary>
         /// <returns>a readonly enumerable of all this manager's players</returns>
-        public Task<IEnumerable<Player>> GetAll() => Task.FromResult(players.AsEnumerable());
+        public Task<ReadOnlyCollection<Player>> GetAll() => Task.FromResult(new ReadOnlyCollection<Player>(players));
 
         /// <summary>
         /// update a player from <paramref name="before"/> to <paramref name="after"/>

@@ -3,8 +3,8 @@ using Model.Dice.Faces;
 using Model.Players;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace Model.Games
 {
@@ -28,7 +28,7 @@ namespace Model.Games
         /// <summary>
         /// the collection of Face that were rolled
         /// </summary>
-        public IEnumerable<KeyValuePair<Die, Face>> DiceNFaces => diceNFaces.AsEnumerable();
+        public ReadOnlyDictionary<Die, Face> DiceNFaces => new(diceNFaces);
         private readonly Dictionary<Die, Face> diceNFaces;
 
         /// <summary>
@@ -37,11 +37,28 @@ namespace Model.Games
         /// <param name="when">date and time of the turn</param>
         /// <param name="player">player who played the turn</param>
         /// <param name="faces">faces that were rolled</param>
-        private Turn(DateTime when, Player player, Dictionary<Die, Face> diceNFaces)
+        private Turn(DateTime when, Player player, IEnumerable<KeyValuePair<Die, Face>> diceNFaces)
         {
+            if (player is null)
+            {
+                throw new ArgumentNullException(nameof(player), "param should not be null");
+            }
+            if (diceNFaces is null)
+            {
+                throw new ArgumentNullException(nameof(diceNFaces), "param should not be null");
+            }
+            if (!diceNFaces.Any())
+            {
+                throw new ArgumentException("param should not be null", nameof(diceNFaces));
+            }
+            if (when.Kind != DateTimeKind.Utc)
+            {
+                when = when.ToUniversalTime();
+            }
+
             When = when;
             Player = player;
-            this.diceNFaces = diceNFaces;
+            this.diceNFaces = diceNFaces.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
         /// <summary>
@@ -54,25 +71,8 @@ namespace Model.Games
         /// <param name="player">player who played the turn</param>
         /// <param name="faces">faces that were rolled</param>
         /// <returns>a new Turn object</returns>
-        public static Turn CreateWithSpecifiedTime(DateTime when, Player player, Dictionary<Die, Face> diceNFaces)
+        public static Turn CreateWithSpecifiedTime(DateTime when, Player player, IEnumerable<KeyValuePair<Die, Face>> diceNFaces)
         {
-            if (player is null)
-            {
-                throw new ArgumentNullException(nameof(player), "param should not be null");
-            }
-            if (diceNFaces is null)
-            {
-                throw new ArgumentNullException(nameof(diceNFaces), "param should not be null");
-            }
-            if (diceNFaces.Count == 0)
-            {
-                throw new ArgumentException("param should not be null", nameof(diceNFaces));
-            }
-            if (when.Kind != DateTimeKind.Utc)
-            {
-                when = when.ToUniversalTime();
-            }
-
             return new Turn(when, player, diceNFaces);
         }
 
@@ -82,7 +82,7 @@ namespace Model.Games
         /// <param name="player">player who played the turn</param>
         /// <param name="faces">faces that were rolled</param>
         /// <returns>a new Turn object</returns>
-        public static Turn CreateWithDefaultTime(Player player, Dictionary<Die, Face> diceNFaces)
+        public static Turn CreateWithDefaultTime(Player player, IEnumerable<KeyValuePair<Die, Face>> diceNFaces)
         {
             return CreateWithSpecifiedTime(DateTime.UtcNow, player, diceNFaces);
         }
@@ -93,15 +93,16 @@ namespace Model.Games
                 ||
                 !(Player.Equals(other.Player)
                 && When.Equals(other.When)
-                && DiceNFaces.Count() == other.DiceNFaces.Count()))
+                && DiceNFaces.Count == other.DiceNFaces.Count))
             {
                 return false;
             }
 
-            for (int i = 0; i < DiceNFaces.Count(); i++)
+            // 🤮
+            for (int i = 0; i < DiceNFaces.Count; i++)
             {
-                if (DiceNFaces.ElementAt(i).Key.Faces.Count()
-                    != other.DiceNFaces.ElementAt(i).Key.Faces.Count())
+                if (DiceNFaces.ElementAt(i).Key.Faces.Count
+                    != other.DiceNFaces.ElementAt(i).Key.Faces.Count)
                 {
                     return false;
                 }
@@ -112,7 +113,7 @@ namespace Model.Games
                     return false;
                 }
 
-                for (int j = 0; j < DiceNFaces.ElementAt(i).Key.Faces.Count(); j++)
+                for (int j = 0; j < DiceNFaces.ElementAt(i).Key.Faces.Count; j++)
                 {
                     if (!other.DiceNFaces.ElementAt(i).Key.Faces.ElementAt(j).StringValue
                         .Equals(DiceNFaces.ElementAt(i).Key.Faces.ElementAt(j).StringValue))
@@ -135,16 +136,7 @@ namespace Model.Games
 
         public override int GetHashCode()
         {
-            int hash = Player.GetHashCode() + When.GetHashCode();
-            foreach (KeyValuePair<Die, Face> kvp in DiceNFaces)
-            {
-                hash = hash * 31 + kvp.Value.StringValue.GetHashCode();
-                foreach (Face face in kvp.Key.Faces)
-                {
-                    hash = hash * 19 + face.StringValue.GetHashCode();
-                }
-            }
-            return hash;
+            return When.GetHashCode();
         }
     }
 }

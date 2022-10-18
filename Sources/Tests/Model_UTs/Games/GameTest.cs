@@ -5,7 +5,6 @@ using Model.Games;
 using Model.Players;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -21,9 +20,9 @@ namespace Tests.Model_UTs.Games
         private readonly IEnumerable<Die> DICE_1, DICE_2;
         public GameTest()
         {
-            IEnumerable<KeyValuePair<string, IEnumerable<Die>>> diceGroups = stubMasterOfCeremonies.DiceGroupManager.GetAll()?.Result;
-            DICE_1 = diceGroups.First().Value;
-            DICE_2 = diceGroups.Last().Value;
+            IEnumerable<DiceGroup> diceGroups = stubMasterOfCeremonies.DiceGroupManager.GetAll()?.Result;
+            DICE_1 = diceGroups.First().Dice;
+            DICE_2 = diceGroups.Last().Dice;
         }
 
         [Fact]
@@ -81,8 +80,8 @@ namespace Tests.Model_UTs.Games
         public async Task TestGetHistory()
         {
             // Arrange
-            Dictionary<Die, Face> diceNFaces =
-                (Dictionary<Die, Face>)(await stubMasterOfCeremonies.GameManager.GetAll())
+            IEnumerable<KeyValuePair<Die, Face>> diceNFaces =
+                (await stubMasterOfCeremonies.GameManager.GetAll())
                 .First()
                 .GetHistory()
                 .First().DiceNFaces;
@@ -143,7 +142,7 @@ namespace Tests.Model_UTs.Games
             }
 
             // Act
-            int actual = game.GetHistory().Count();
+            int actual = game.GetHistory().Count;
             int expected = n;
 
             // Assert

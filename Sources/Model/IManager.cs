@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace Model
@@ -12,7 +12,7 @@ namespace Model
 
         public Task<T> GetOneByID(Guid ID);
 
-        public Task<IEnumerable<T>> GetAll();
+        public Task<ReadOnlyCollection<T>> GetAll();
 
         public Task<T> Update(T before, T after);
 
