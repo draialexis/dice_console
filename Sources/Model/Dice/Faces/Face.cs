@@ -3,12 +3,8 @@
     public abstract class Face
     {
         public string StringValue { get; protected set; }
-
-        public override string ToString()
-        {
-            return StringValue;
-        }
     }
+
     public abstract class Face<T> : Face
     {
         public T Value { get; protected set; }

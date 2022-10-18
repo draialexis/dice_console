@@ -54,7 +54,7 @@ namespace App
                             // persist them  as models !
                             await masterOfCeremonies.GlobalPlayerManager.Add(entity.ToModel());
                         }
-                        catch (Exception ex) { Console.WriteLine($"{ex.Message}\n... Never mind"); }
+                        catch (Exception ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
                     }
                 }
             }
@@ -194,7 +194,7 @@ namespace App
                             await playerDbManager.Add(entity);
                         }
                         // what if there's already a player with that name? Exception (see PlayerEntity's annotations)
-                        catch (ArgumentException ex) { Console.WriteLine($"{ex.Message}\n... Never mind"); }
+                        catch (ArgumentException ex) { Debug.WriteLine($"{ex.Message}\n... Never mind"); }
                     }
                 }
                 // flushing and closing NLog before quitting completely

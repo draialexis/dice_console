@@ -25,6 +25,12 @@ namespace Tests.Data_UTs.Games
         private readonly FaceEntity imgFace1 = new ImageFaceEntity() { ID = Guid.NewGuid(), Value = "https://a" };
         private readonly FaceEntity imgFace2 = new ImageFaceEntity() { ID = Guid.NewGuid(), Value = "https://b" };
 
+        private readonly PlayerEntity player1 = new() { ID = Guid.NewGuid(), Name = "Marvin" };
+        private readonly PlayerEntity player2 = new() { ID = Guid.NewGuid(), Name = "Barbara" };
+
+        private readonly DateTime datetime1 = new(2020, 6, 15, 12, 15, 3, DateTimeKind.Utc);
+        private readonly DateTime datetime2 = new(2016, 12, 13, 14, 15, 16, DateTimeKind.Utc);
+
         private readonly DieTurn dieTurn1;
         private readonly DieTurn dieTurn2;
         private readonly DieTurn dieTurn3;
@@ -146,14 +152,6 @@ namespace Tests.Data_UTs.Games
 
             };
         }
-
-
-
-        private readonly PlayerEntity player1 = new() { ID = Guid.NewGuid(), Name = "Marvin" };
-        private readonly PlayerEntity player2 = new() { ID = Guid.NewGuid(), Name = "Barbara" };
-
-        private readonly DateTime datetime1 = new(2020, 6, 15, 12, 15, 3, DateTimeKind.Utc);
-        private readonly DateTime datetime2 = new(2016, 12, 13, 14, 15, 16, DateTimeKind.Utc);
 
         [Fact]
         public void TestGetSetID()

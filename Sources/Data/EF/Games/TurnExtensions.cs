@@ -10,7 +10,7 @@ namespace Data.EF.Games
     public static class TurnExtensions
     {
 
-        private static (List<Die>, List<Face>) ToModels(ICollection<DieEntity> diceEntities, ICollection<FaceEntity> faceEntities)
+        private static (List<Die>, List<Face>) ToModelsByTypes(ICollection<DieEntity> diceEntities, ICollection<FaceEntity> faceEntities)
         {
             List<Die> dice = new();
             List<Face> faces = new();
@@ -38,7 +38,7 @@ namespace Data.EF.Games
             List<Die> keysList;
             List<Face> valuesList;
 
-            (keysList, valuesList) = ToModels(entity.Dice, entity.Faces);
+            (keysList, valuesList) = ToModelsByTypes(entity.Dice, entity.Faces);
 
             DiceNFaces = Utils.Enumerables.FeedListsToDict(DiceNFaces, keysList, valuesList);
 

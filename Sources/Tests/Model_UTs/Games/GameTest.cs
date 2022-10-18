@@ -78,7 +78,7 @@ namespace Tests.Model_UTs.Games
         }
 
         [Fact]
-        public async void TestGetHistory()
+        public async Task TestGetHistory()
         {
             // Arrange
             Dictionary<Die, Face> diceNFaces =
@@ -87,8 +87,8 @@ namespace Tests.Model_UTs.Games
                 .GetHistory()
                 .First().DiceNFaces;
 
-            Turn turn1 = Turn.CreateWithDefaultTime(PLAYER_1, diceNFaces);
-            Turn turn2 = Turn.CreateWithDefaultTime(PLAYER_2, diceNFaces); // yeah they rolled the same
+            Turn turn1 = Turn.CreateWithSpecifiedTime(new(1, 2, 3), PLAYER_1, diceNFaces);
+            Turn turn2 = Turn.CreateWithSpecifiedTime(new(1, 2, 3), PLAYER_2, diceNFaces); // yeah they rolled the same
 
             IEnumerable<Turn> expected = new List<Turn>() { turn1, turn2 };
 
