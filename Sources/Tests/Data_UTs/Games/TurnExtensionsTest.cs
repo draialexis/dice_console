@@ -14,12 +14,15 @@ using System.Drawing;
 using Model.Games;
 using Newtonsoft.Json.Linq;
 using Model.Dice.Faces;
+using System.Diagnostics;
 
 namespace Tests.Data_UTs.Games
 {
     public class TurnExtensionsTest
     {
-        private readonly DateTime datetime = new(2013, 2, 1, 1, 19, 4, DateTimeKind.Utc);
+        private readonly DateTime datetime1 = new(2013, 2, 1, 1, 19, 4, DateTimeKind.Utc);
+        private readonly DateTime datetime2 = new(2014, 8, 1, 23, 12, 4, DateTimeKind.Utc);
+
         private readonly PlayerEntity playerEntity = new() { Name = "Paula" };
 
         private readonly DieEntity numDieEntity;
@@ -56,7 +59,7 @@ namespace Tests.Data_UTs.Games
 
             TurnEntity entity = new()
             {
-                When = datetime,
+                When = datetime1,
                 PlayerEntity = playerEntity,
                 Dice = new List<DieEntity>
                 {
@@ -73,7 +76,7 @@ namespace Tests.Data_UTs.Games
             };
 
             Turn expected = Turn.CreateWithSpecifiedTime(
-                datetime,
+                datetime1,
                 playerEntity.ToModel(),
                 new()
                 {
@@ -90,12 +93,81 @@ namespace Tests.Data_UTs.Games
         }
 
         [Fact]
+        public void TestToModels()
+        {
+            // Arrange
+
+            TurnEntity[] entities = new TurnEntity[]
+            {
+                new TurnEntity()
+                {
+                    When = datetime1,
+                    PlayerEntity = new PlayerEntity() {Name = "Aardvark"},
+                    Dice = new List<DieEntity>
+                    {
+                        numDieEntity,
+                        clrDieEntity
+
+                    },
+                    Faces = new List<FaceEntity>
+                    {
+                        numFace2Entity,
+                        clrFace2Entity
+                    }
+                },
+
+                new TurnEntity()
+                {
+                    When = datetime2,
+                    PlayerEntity = new PlayerEntity() {Name = "Chloe"},
+                    Dice = new List<DieEntity>
+                    {
+                        clrDieEntity,
+                        imgDieEntity
+                    },
+                    Faces = new List<FaceEntity>
+                    {
+                        clrFace1Entity,
+                        imgFace1Entity
+                    }
+                }
+            };
+
+            IEnumerable<Turn> expected = new Turn[]
+            {
+                Turn.CreateWithSpecifiedTime(
+                datetime1,
+                new("Aardvark"),
+                new()
+                {
+                    {(numDieEntity as NumberDieEntity).ToModel(), (numFace2Entity as NumberFaceEntity).ToModel() },
+                    {(clrDieEntity as ColorDieEntity).ToModel(), (clrFace2Entity as ColorFaceEntity).ToModel() },
+                }),
+
+                Turn.CreateWithSpecifiedTime(
+                datetime2,
+                new("Chloe"),
+                new()
+                {
+                    {(clrDieEntity as ColorDieEntity).ToModel(), (clrFace1Entity as ColorFaceEntity).ToModel() },
+                    {(imgDieEntity as ImageDieEntity).ToModel(), (imgFace1Entity as ImageFaceEntity).ToModel() }
+                })
+            }.AsEnumerable();
+
+            // Act
+            IEnumerable<Turn> actual = entities.ToModels();
+
+            // Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
         public void TestToEntity()
         {
             // Arrange
 
             Turn model = Turn.CreateWithSpecifiedTime(
-                datetime,
+                datetime1,
                 playerEntity.ToModel(),
                 new()
                 {
@@ -106,7 +178,7 @@ namespace Tests.Data_UTs.Games
 
             TurnEntity expected = new()
             {
-                When = datetime,
+                When = datetime1,
                 PlayerEntity = playerEntity,
                 Dice = new List<DieEntity>
                 {
@@ -127,6 +199,75 @@ namespace Tests.Data_UTs.Games
 
             // Assert
             Assert.True(expected.Equals(actual));
+        }
+
+        [Fact]
+        public void TestToEntities()
+        {
+            // Arrange
+
+            Turn[] models = new Turn[]
+            {
+                Turn.CreateWithSpecifiedTime(
+                datetime2,
+                new("Mimi"),
+                new()
+                {
+                    {(numDieEntity as NumberDieEntity).ToModel(), (numFace2Entity as NumberFaceEntity).ToModel() },
+                    {(clrDieEntity as ColorDieEntity).ToModel(), (clrFace2Entity as ColorFaceEntity).ToModel() },
+                }),
+
+                Turn.CreateWithSpecifiedTime(
+                datetime1,
+                new("blaaargh"),
+                new()
+                {
+                    {(clrDieEntity as ColorDieEntity).ToModel(), (clrFace1Entity as ColorFaceEntity).ToModel() },
+                    {(imgDieEntity as ImageDieEntity).ToModel(), (imgFace1Entity as ImageFaceEntity).ToModel() }
+                })
+            };
+
+            IEnumerable<TurnEntity> expected = new TurnEntity[]
+            {
+                new TurnEntity()
+                {
+                    When = datetime2,
+                    PlayerEntity = new PlayerEntity() {Name = "Mimi"},
+                    Dice = new List<DieEntity>
+                    {
+                        numDieEntity,
+                        clrDieEntity
+
+                    },
+                    Faces = new List<FaceEntity>
+                    {
+                        numFace2Entity,
+                        clrFace2Entity
+                    }
+                },
+
+                new TurnEntity()
+                {
+                    When = datetime1,
+                    PlayerEntity = new PlayerEntity() {Name = "blaaargh"},
+                    Dice = new List<DieEntity>
+                    {
+                        clrDieEntity,
+                        imgDieEntity
+                    },
+                    Faces = new List<FaceEntity>
+                    {
+                        clrFace1Entity,
+                        imgFace1Entity
+                    }
+                }
+            }.AsEnumerable();
+
+            // Act
+            IEnumerable<TurnEntity> actual = models.ToEntities();
+
+            // Assert
+            Assert.Equal(expected, actual);
         }
     }
 }
