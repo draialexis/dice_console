@@ -3,8 +3,8 @@ using Model.Dice.Faces;
 using Model.Players;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Model.Games
@@ -35,18 +35,18 @@ namespace Model.Games
         /// <summary>
         /// references the position in list of the current player, for a given game.
         /// </summary>
-        private int nextIndex;
+        private int nextIndex = 0;
 
         /// <summary>
         /// the turns that have been done so far
         /// </summary>
-        private readonly List<Turn> turns;
+        private readonly List<Turn> turns = new();
 
         /// </summary>
         /// get a READ ONLY enumerable of all turns belonging to this game
         /// </summary>
         /// <returns>a readonly enumerable of all this game's turns</returns>
-        public IEnumerable<Turn> GetHistory() => turns.AsEnumerable();
+        public ReadOnlyCollection<Turn> GetHistory() => new(turns);
 
         /// <summary>
         /// the game's player manager, doing CRUD on players and switching whose turn it is
@@ -56,8 +56,8 @@ namespace Model.Games
         /// <summary>
         /// the group of dice used for this game
         /// </summary>
-        public IEnumerable<Die> Dice => dice;
-        private readonly IEnumerable<Die> dice;
+        public ReadOnlyCollection<Die> Dice => new(dice);
+        private readonly List<Die> dice = new();
 
         /// <summary>
         /// constructs a Game with its own history of Turns. 
@@ -71,19 +71,19 @@ namespace Model.Games
         {
             Name = name;
             PlayerManager = playerManager;
-            this.turns = turns is null ? new List<Turn>() : turns.ToList();
-            this.dice = dice;
-            this.nextIndex = 0;
+            this.dice.AddRange(dice);
+            this.turns.AddRange(turns);
         }
 
         /// <summary>
         /// constructs a Game with no history of turns. 
+        /// 
         /// </summary>
         /// <param name="name">the name of the game 😎</param>
         /// <param name="playerManager">the game's player manager, doing CRUD on players and switching whose turn it is</param>
         /// <param name="favGroup">the group of dice used for this game</param>
         public Game(string name, IManager<Player> playerManager, IEnumerable<Die> dice)
-            : this(name, playerManager, dice, null)
+            : this(name, playerManager, dice, new List<Turn>())
         { }
 
         /// <summary>
@@ -144,16 +144,8 @@ namespace Model.Games
             {
                 throw new ArgumentException("param could not be found in this collection\n did you forget to add it?", nameof(current));
             }
-            if (players.Last() == current)
-            {
-                // if we've reached the last player, we need the index to loop back around
-                nextIndex = 0;
-            }
-            else
-            {
-                // else we can just move up by one from the current index
-                nextIndex++;
-            }
+
+            nextIndex = (nextIndex + 1) % players.Count();
         }
 
         /// <summary>

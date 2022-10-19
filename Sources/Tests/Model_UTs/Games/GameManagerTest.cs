@@ -188,9 +188,9 @@ namespace Tests.Model_UTs.Games
             Game newGame = new(newName, oldGame.PlayerManager, oldGame.Dice);
 
             // Act
-            int expectedSize = (await gm.GetAll()).Count();
+            int expectedSize = (await gm.GetAll()).Count;
             await gm.Update(oldGame, newGame);
-            int actualSize = (await gm.GetAll()).Count();
+            int actualSize = (await gm.GetAll()).Count;
 
             // Assert
             Assert.NotEqual(oldName, newName);
@@ -208,12 +208,12 @@ namespace Tests.Model_UTs.Games
             // Arrange
             IManager<Game> gm = stubGameRunner.GameManager;
 
-            int expectedSize = (await gm.GetAll()).Count();
+            int expectedSize = (await gm.GetAll()).Count;
             Game oldGame = (await gm.GetAll()).First();
 
             // Act
             void action() => gm.Update(oldGame, new(badName, oldGame.PlayerManager, oldGame.Dice));
-            int actualSize = (await gm.GetAll()).Count();
+            int actualSize = (await gm.GetAll()).Count;
 
             // Assert
             Assert.Throws<ArgumentException>(action); // thrown by constructor
@@ -226,12 +226,12 @@ namespace Tests.Model_UTs.Games
         {
             // Arrange
             IManager<Game> gm = stubGameRunner.GameManager;
-            int expectedSize = (await gm.GetAll()).Count();
+            int expectedSize = (await gm.GetAll()).Count;
             Game oldGame = (await gm.GetAll()).First();
 
             // Act
             async Task actionAsync() => await gm.Update(oldGame, null);
-            int actualSize = (await gm.GetAll()).Count();
+            int actualSize = (await gm.GetAll()).Count;
 
             // Assert
             await Assert.ThrowsAsync<ArgumentNullException>(actionAsync); // thrown by constructor
@@ -244,12 +244,12 @@ namespace Tests.Model_UTs.Games
         {
             // Arrange
             IManager<Game> gm = stubGameRunner.GameManager;
-            int expectedSize = (await gm.GetAll()).Count();
+            int expectedSize = (await gm.GetAll()).Count;
             Game oldGame = (await gm.GetAll()).First();
 
             // Act
             async Task actionAsync() => await gm.Update(null, new("newgamename", oldGame.PlayerManager, oldGame.Dice));
-            int actualSize = (await gm.GetAll()).Count();
+            int actualSize = (await gm.GetAll()).Count;
 
             // Assert
             await Assert.ThrowsAsync<ArgumentNullException>(actionAsync); // thrown by constructor
@@ -265,12 +265,12 @@ namespace Tests.Model_UTs.Games
         {
             // Arrange
             IManager<Game> gm = stubGameRunner.GameManager;
-            int expectedSize = (await gm.GetAll()).Count();
+            int expectedSize = (await gm.GetAll()).Count;
             Game oldGame = (await gm.GetAll()).First();
 
             // Act
             void action() => gm.Update(new(badName, oldGame.PlayerManager, oldGame.Dice), new("valid", oldGame.PlayerManager, oldGame.Dice));
-            int actualSize = (await gm.GetAll()).Count();
+            int actualSize = (await gm.GetAll()).Count;
 
             // Assert
             Assert.Throws<ArgumentException>(action); // thrown by constructor

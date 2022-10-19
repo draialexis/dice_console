@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Model;
+using System.Collections.ObjectModel;
 
 namespace Data.EF.Players
 {
@@ -73,11 +74,11 @@ namespace Data.EF.Players
             return (PlayerEntity)ee.Entity;
         }
 
-        public async Task<IEnumerable<PlayerEntity>> GetAll()
+        public async Task<ReadOnlyCollection<PlayerEntity>> GetAll()
         {
             List<PlayerEntity> players = new();
             await Task.Run(() => players.AddRange(db.PlayerEntity));
-            return players.AsEnumerable();
+            return new ReadOnlyCollection<PlayerEntity>(players);
         }
 
         /// <summary>

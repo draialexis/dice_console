@@ -78,7 +78,7 @@ namespace Tests.Data_UTs.Games
             Turn expected = Turn.CreateWithSpecifiedTime(
                 datetime1,
                 playerEntity.ToModel(),
-                new()
+                new Dictionary<Die, Face>()
                 {
                     {(numDieEntity as NumberDieEntity).ToModel(), (numFace1Entity as NumberFaceEntity).ToModel() },
                     {(clrDieEntity as ColorDieEntity).ToModel(), (clrFace2Entity as ColorFaceEntity).ToModel() },
@@ -138,7 +138,7 @@ namespace Tests.Data_UTs.Games
                 Turn.CreateWithSpecifiedTime(
                 datetime1,
                 new("Aardvark"),
-                new()
+                new Dictionary<Die, Face>()
                 {
                     {(numDieEntity as NumberDieEntity).ToModel(), (numFace2Entity as NumberFaceEntity).ToModel() },
                     {(clrDieEntity as ColorDieEntity).ToModel(), (clrFace2Entity as ColorFaceEntity).ToModel() },
@@ -147,7 +147,7 @@ namespace Tests.Data_UTs.Games
                 Turn.CreateWithSpecifiedTime(
                 datetime2,
                 new("Chloe"),
-                new()
+                new Dictionary<Die, Face>()
                 {
                     {(clrDieEntity as ColorDieEntity).ToModel(), (clrFace1Entity as ColorFaceEntity).ToModel() },
                     {(imgDieEntity as ImageDieEntity).ToModel(), (imgFace1Entity as ImageFaceEntity).ToModel() }
@@ -169,7 +169,8 @@ namespace Tests.Data_UTs.Games
             Turn model = Turn.CreateWithSpecifiedTime(
                 datetime1,
                 playerEntity.ToModel(),
-                new()
+
+                new Dictionary<Die, Face>()
                 {
                     {(numDieEntity as NumberDieEntity).ToModel(), (numFace2Entity as NumberFaceEntity).ToModel() },
                     {(clrDieEntity as ColorDieEntity).ToModel(), (clrFace2Entity as ColorFaceEntity).ToModel() },
@@ -211,7 +212,7 @@ namespace Tests.Data_UTs.Games
                 Turn.CreateWithSpecifiedTime(
                 datetime2,
                 new("Mimi"),
-                new()
+                new Dictionary<Die, Face>()
                 {
                     {(numDieEntity as NumberDieEntity).ToModel(), (numFace2Entity as NumberFaceEntity).ToModel() },
                     {(clrDieEntity as ColorDieEntity).ToModel(), (clrFace2Entity as ColorFaceEntity).ToModel() },
@@ -220,7 +221,7 @@ namespace Tests.Data_UTs.Games
                 Turn.CreateWithSpecifiedTime(
                 datetime1,
                 new("blaaargh"),
-                new()
+                new Dictionary<Die, Face>()
                 {
                     {(clrDieEntity as ColorDieEntity).ToModel(), (clrFace1Entity as ColorFaceEntity).ToModel() },
                     {(imgDieEntity as ImageDieEntity).ToModel(), (imgFace1Entity as ImageFaceEntity).ToModel() }

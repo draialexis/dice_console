@@ -1,13 +1,14 @@
 ﻿using Model.Dice.Faces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Model.Dice
 {
     public abstract class Die
     {
-        public IEnumerable<Face> Faces => faces;
+        public ReadOnlyCollection<Face> Faces => new(faces);
 
         protected static readonly Random rnd = new();
 
@@ -20,7 +21,7 @@ namespace Model.Dice
 
         public virtual Face GetRandomFace()
         {
-            int faceIndex = rnd.Next(0, Faces.Count());
+            int faceIndex = rnd.Next(0, Faces.Count);
             return Faces.ElementAt(faceIndex);
         }
     }

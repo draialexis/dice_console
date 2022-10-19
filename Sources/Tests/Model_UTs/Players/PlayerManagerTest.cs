@@ -204,7 +204,7 @@ namespace Tests.Model_UTs.Players
             // Assert
             Assert.DoesNotContain(oldPlayer, await playerManager.GetAll());
             Assert.Contains(newPlayer, await playerManager.GetAll());
-            Assert.True((await playerManager.GetAll()).Count() == 1);
+            Assert.True((await playerManager.GetAll()).Count == 1);
         }
 
         [Theory]
@@ -239,12 +239,12 @@ namespace Tests.Model_UTs.Players
             PlayerManager playerManager = new();
             Player oldPlayer = new("Ni!");
             await playerManager.Add(oldPlayer);
-            int size1 = (await playerManager.GetAll()).Count();
+            int size1 = (await playerManager.GetAll()).Count;
 
             // Act
             Assert.Contains(oldPlayer, await playerManager.GetAll());
             async Task actionAsync() => await playerManager.Update(oldPlayer, new Player(badName));// this is really testing the Player class...
-            int size2 = (await playerManager.GetAll()).Count();
+            int size2 = (await playerManager.GetAll()).Count;
 
             // Assert
             await Assert.ThrowsAsync<ArgumentException>(actionAsync); // thrown by Player constructor
@@ -259,12 +259,12 @@ namespace Tests.Model_UTs.Players
             PlayerManager playerManager = new();
             Player oldPlayer = new("Ni!");
             await playerManager.Add(oldPlayer);
-            int size1 = (await playerManager.GetAll()).Count();
+            int size1 = (await playerManager.GetAll()).Count;
 
             // Act
             Assert.Contains(oldPlayer, await playerManager.GetAll());
             async Task actionAsync() => await playerManager.Update(oldPlayer, null);
-            int size2 = (await playerManager.GetAll()).Count();
+            int size2 = (await playerManager.GetAll()).Count;
 
             // Assert
             await Assert.ThrowsAsync<ArgumentNullException>(actionAsync); // thrown by Update()
@@ -280,11 +280,11 @@ namespace Tests.Model_UTs.Players
             Player newPlayer = new("Kevin");
             Player oldPlayer = new("Ursula");
             await playerManager.Add(oldPlayer);
-            int size1 = (await playerManager.GetAll()).Count();
+            int size1 = (await playerManager.GetAll()).Count;
 
             // Act
             async Task actionAsync() => await playerManager.Update(null, newPlayer);
-            int size2 = (await playerManager.GetAll()).Count();
+            int size2 = (await playerManager.GetAll()).Count;
 
             // Assert
             await Assert.ThrowsAsync<ArgumentNullException>(actionAsync); // thrown by Update()
@@ -302,11 +302,11 @@ namespace Tests.Model_UTs.Players
             PlayerManager playerManager = new();
             Player oldPlayer = new("Ursula");
             await playerManager.Add(oldPlayer);
-            int size1 = (await playerManager.GetAll()).Count();
+            int size1 = (await playerManager.GetAll()).Count;
 
             // Act
             async Task actionAsync() => await playerManager.Update(new Player(name), new Player("Vicky"));
-            int size2 = (await playerManager.GetAll()).Count();
+            int size2 = (await playerManager.GetAll()).Count;
 
             // Assert
             await Assert.ThrowsAsync<ArgumentException>(actionAsync); // thrown by Player constructor

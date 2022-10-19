@@ -8,10 +8,10 @@ namespace Model.Games
     public class MasterOfCeremonies
     {
         public IManager<Player> GlobalPlayerManager { get; private set; }
-        public IManager<KeyValuePair<string, IEnumerable<Die>>> DiceGroupManager { get; private set; }
+        public IManager<DiceGroup> DiceGroupManager { get; private set; }
         public IManager<Game> GameManager { get; private set; }
 
-        public MasterOfCeremonies(IManager<Player> globalPlayerManager, IManager<KeyValuePair<string, IEnumerable<Die>>> globalDiceGroupManager, IManager<Game> gameManager)
+        public MasterOfCeremonies(IManager<Player> globalPlayerManager, IManager<DiceGroup> globalDiceGroupManager, IManager<Game> gameManager)
         {
             GlobalPlayerManager = globalPlayerManager;
             DiceGroupManager = globalDiceGroupManager;
