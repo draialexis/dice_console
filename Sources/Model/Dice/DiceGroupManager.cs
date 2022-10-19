@@ -69,7 +69,7 @@ namespace Model.Dice
         public Task<DiceGroup> Update(DiceGroup before, DiceGroup after)
         {
             // pas autorisé de changer les dés, juste le nom
-            if (!before.Dice.Equals(after.Dice))
+            if (!before.Dice.SequenceEqual(after.Dice))
             {
                 throw new ArgumentException("the group of dice cannot be updated, only the name", nameof(before));
             }
