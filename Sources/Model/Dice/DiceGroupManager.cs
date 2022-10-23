@@ -69,8 +69,8 @@ namespace Model.Dice
         /// <exception cref="ArgumentNullException"></exception>
         public KeyValuePair<string, IEnumerable<Die>> Update(KeyValuePair<string, IEnumerable<Die>> before, KeyValuePair<string, IEnumerable<Die>> after)
         {
-            // pas autorisé de changer les dés, juste le nom
-            if (!before.Value.Equals(after.Value))
+
+            if (!before.Value.ToList().Equals(after.Value.ToList()))
             {
                 throw new ArgumentException("the group of dice cannot be updated, only the name", nameof(before));
             }

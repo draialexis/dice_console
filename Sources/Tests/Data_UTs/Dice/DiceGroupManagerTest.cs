@@ -142,6 +142,60 @@ namespace Tests.Data_UTs.Dice
             Xunit.Assert.Throws<ArgumentNullException>(action);
         }
 
+        [Fact]
+        public void TestRemoveWorksIfExists()
+        {
+            // Arrange
+            DiceGroupManager dgm = new();
+            KeyValuePair<string, IEnumerable<Die>> toAdd = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+            dgm.Add(toAdd);
+            dgm.Remove(toAdd);
+
+           Xunit.Assert.DoesNotContain(toAdd, dgm.GetAll());
+        }
+
+        [Fact]
+        public void TestRemoveFailsSilentlyIfGivenNonExistent()
+        {
+            DiceGroupManager dgm = new();
+            KeyValuePair<string, IEnumerable<Die>> toAdd = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+            dgm.Add(toAdd);
+
+            KeyValuePair<string, IEnumerable<Die>> toAdd2 = new("Scrabble", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+
+            // Act
+            dgm.Remove(toAdd2);
+
+            // Assert
+            Xunit.Assert.DoesNotContain(toAdd2, dgm.GetAll());
+        }
+
+        [Fact]
+        public void TestUpdateWorksIfValid()
+        {
+            // Arrange
+            DiceGroupManager dgm = new();
+            KeyValuePair<string, IEnumerable<Die>> toAdd = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+            dgm.Add(toAdd);
+            KeyValuePair<string, IEnumerable<Die>> toAdd2 = new("Scrabble", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+            dgm.Update(toAdd, toAdd2);
+
+            Xunit.Assert.DoesNotContain(toAdd, dgm.GetAll());
+            Xunit.Assert.Contains(toAdd2, dgm.GetAll());
+            Xunit.Assert.True(dgm.GetAll().Count() == 1);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     }
