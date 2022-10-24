@@ -9,6 +9,9 @@ trigger:
 steps:
   - name: build
     image: mcr.microsoft.com/dotnet/sdk:6.0
+    volumes:
+      - name: docs
+        path: /docs
     commands:
       - cd Sources/
       - dotnet restore DiceApp.sln
