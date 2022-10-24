@@ -60,7 +60,7 @@ steps:
       - /entrypoint.sh
     when:
       branch:
-        - doxygen
+        - master
     depends_on: [ build ]
 
 volumes:
