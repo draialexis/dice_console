@@ -30,11 +30,6 @@ namespace Model.Players
             : this(player?.Name) // passes the player's name if player exists, else null
         { }
 
-        public override string ToString()
-        {
-            return Name;
-        }
-
         public bool Equals(Player other)
         {
             return other is not null && Name.ToUpper() == other.Name.ToUpper(); // equality is case insensitive

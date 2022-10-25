@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Data.EF.Games;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data.EF.Players
 {
@@ -8,6 +9,8 @@ namespace Data.EF.Players
         public Guid ID { get; set; }
 
         public string Name { get; set; }
+
+        public ICollection<TurnEntity> Turns { get; set; } = new List<TurnEntity>();
 
         public override bool Equals(object obj)
         {
@@ -20,7 +23,7 @@ namespace Data.EF.Players
 
         public bool Equals(PlayerEntity other)
         {
-            return other is not null && this.ID == other.ID && this.Name == other.Name;
+            return other is not null && this.ID.Equals(other.ID) && this.Name.Equals(other.Name);
         }
 
         public override int GetHashCode()

@@ -5,43 +5,55 @@ using Model.Players;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Tests.Model_UTs.Games
 {
     public class MasterOfCeremoniesTest
     {
-        private readonly MasterOfCeremonies stubMasterOfCeremonies = new Stub().LoadApp();
+        private readonly MasterOfCeremonies stubMasterOfCeremonies = new Stub().LoadApp()?.Result;
 
         [Fact]
-        public void TestPlayGameWhenPlayThenAddNewTurnToHistory()
+        public async Task TestPlayGameWhenPlayThenAddNewTurnToHistoryAsync()
         {
             // Arrange
             MasterOfCeremonies masterOfCeremonies = stubMasterOfCeremonies;
-            Game game = masterOfCeremonies.GameManager.GetAll().First();
+            Game game = (await masterOfCeremonies.GameManager.GetAll()).First();
 
             // Act
-            int turnsBefore = game.GetHistory().Count();
-            MasterOfCeremonies.PlayGame(game);
-            int turnsAfter = game.GetHistory().Count();
+            int turnsBefore = game.GetHistory().Count;
+            await MasterOfCeremonies.PlayGame(game);
+            int turnsAfter = game.GetHistory().Count;
 
             // Assert
             Assert.Equal(turnsBefore + 1, turnsAfter);
         }
 
         [Fact]
-        public void TestStartNewGame()
+        public async Task TestStartNewGame()
         {
             // Arrange
             MasterOfCeremonies masterOfCeremonies = stubMasterOfCeremonies;
             string name = "blargh";
 
             // Act
-            Assert.DoesNotContain(masterOfCeremonies.GameManager.GetOneByName(name), masterOfCeremonies.GameManager.GetAll());
-            masterOfCeremonies.StartNewGame(name, new PlayerManager(), stubMasterOfCeremonies.GameManager.GetAll().First().Dice);
+            Assert.DoesNotContain(
+                await masterOfCeremonies.GameManager.GetOneByName(name),
+                await masterOfCeremonies.GameManager.GetAll()
+                );
+
+            await masterOfCeremonies.StartNewGame(
+                name,
+                new PlayerManager(),
+                stubMasterOfCeremonies.GameManager.GetAll()?.Result.First().Dice
+                );
 
             // Assert
-            Assert.Contains(masterOfCeremonies.GameManager.GetOneByName(name), masterOfCeremonies.GameManager.GetAll());
+            Assert.Contains(
+                await masterOfCeremonies.GameManager.GetOneByName(name),
+                await masterOfCeremonies.GameManager.GetAll()
+                );
         }
     }
 }

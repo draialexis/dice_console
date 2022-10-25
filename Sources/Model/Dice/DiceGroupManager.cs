@@ -1,39 +1,41 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Model.Dice
 {
-    public class DiceGroupManager : IManager<KeyValuePair<string, IEnumerable<Die>>>
+    public class DiceGroupManager : IManager<DiceGroup>
     {
-        private readonly Dictionary<string, IEnumerable<Die>> diceGroups = new();
+        private readonly List<DiceGroup> diceGroups = new();
 
-        public KeyValuePair<string, IEnumerable<Die>> Add(KeyValuePair<string, IEnumerable<Die>> toAdd)
+        public Task<DiceGroup> Add(DiceGroup toAdd)
         {
-            if (string.IsNullOrWhiteSpace(toAdd.Key))
+            if (string.IsNullOrWhiteSpace(toAdd.Name))
             {
                 throw new ArgumentNullException(nameof(toAdd), "param should not be null or empty");
 
             }
             if (diceGroups.Contains(toAdd))
             {
-                throw new ArgumentException("this username is already taken", nameof(toAdd));
+                throw new ArgumentException("this dice group already exists", nameof(toAdd));
             }
-            diceGroups.Add(toAdd.Key.Trim(), toAdd.Value);
-            return toAdd;
+            diceGroups.Add(new(toAdd.Name.Trim(), toAdd.Dice));
+            return Task.FromResult(toAdd);
         }
 
-        public IEnumerable<KeyValuePair<string, IEnumerable<Die>>> GetAll()
+        public Task<ReadOnlyCollection<DiceGroup>> GetAll()
         {
-            return diceGroups.AsEnumerable();
+            return Task.FromResult(new ReadOnlyCollection<DiceGroup>(diceGroups));
         }
 
-        public KeyValuePair<string, IEnumerable<Die>> GetOneByID(Guid ID)
+        public Task<DiceGroup> GetOneByID(Guid ID)
         {
             throw new NotImplementedException();
         }
 
-        public KeyValuePair<string, IEnumerable<Die>> GetOneByName(string name)
+        public Task<DiceGroup> GetOneByName(string name)
         {
             // les groupes de dés nommés :
             // ils sont case-sensistive, mais "mon jeu" == "mon jeu " == "  mon jeu"
@@ -41,46 +43,43 @@ namespace Model.Dice
             {
                 throw new ArgumentNullException(nameof(name), "param should not be null or empty");
             }
-            else
-            {
-                return new KeyValuePair<string, IEnumerable<Die>>(name, diceGroups[name]);
-            }
+            return Task.FromResult(diceGroups.First(diceGroup => diceGroup.Name.Equals(name.Trim())));
         }
 
-        public void Remove(KeyValuePair<string, IEnumerable<Die>> toRemove)
+        public void Remove(DiceGroup toRemove)
         {
-            if (toRemove.Key is null)
+            if (toRemove.Name is null)
             {
                 throw new ArgumentNullException(nameof(toRemove), "param should not be null");
             }
             else
             {
-                diceGroups.Remove(toRemove.Key);
+                diceGroups.Remove(toRemove);
             }
         }
 
         /// <summary>
-        /// updates a (string, IEnumerable-of-Die) couple. only the name can be updated
+        /// updates a (string, ReadOnlyCollection-of-Die) couple. only the name can be updated
         /// </summary>
         /// <param name="before">original couple</param>
         /// <param name="after">new couple</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public KeyValuePair<string, IEnumerable<Die>> Update(KeyValuePair<string, IEnumerable<Die>> before, KeyValuePair<string, IEnumerable<Die>> after)
+        public Task<DiceGroup> Update(DiceGroup before, DiceGroup after)
         {
-
-            if (!before.Value.ToList().Equals(after.Value.ToList()))
+            // pas autorisé de changer les dés, juste le nom
+            if (!before.Dice.SequenceEqual(after.Dice))
             {
                 throw new ArgumentException("the group of dice cannot be updated, only the name", nameof(before));
             }
-            if (string.IsNullOrWhiteSpace(before.Key) || string.IsNullOrWhiteSpace(after.Key))
+            if (string.IsNullOrWhiteSpace(before.Name) || string.IsNullOrWhiteSpace(after.Name))
             {
                 throw new ArgumentNullException(nameof(before), "dice group name should not be null or empty");
             }
-            diceGroups.Remove(before.Key);
-            diceGroups.Add(after.Key, after.Value);
-            return after;
+            Remove(before);
+            Add(after);
+            return Task.FromResult(after);
 
         }
     }

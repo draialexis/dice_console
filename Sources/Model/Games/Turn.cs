@@ -3,17 +3,14 @@ using Model.Dice.Faces;
 using Model.Players;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace Model.Games
 {
     /// <summary>
     /// a Turn consists of a Player, a DateTime, and a IEnumerable of AbstractDieFace
     /// Like a turn in some game.
-    /// <br/>
-    /// Two turns are equal if they are litterally the same instance in RAM
-    /// (default behaviors Equals() and GetHashCode())
     /// </summary>
     public sealed class Turn : IEquatable<Turn>
     {
@@ -31,7 +28,7 @@ namespace Model.Games
         /// <summary>
         /// the collection of Face that were rolled
         /// </summary>
-        public IEnumerable<KeyValuePair<Die, Face>> DiceNFaces => diceNFaces.AsEnumerable();
+        public ReadOnlyDictionary<Die, Face> DiceNFaces => new(diceNFaces);
         private readonly Dictionary<Die, Face> diceNFaces;
 
         /// <summary>
@@ -40,11 +37,28 @@ namespace Model.Games
         /// <param name="when">date and time of the turn</param>
         /// <param name="player">player who played the turn</param>
         /// <param name="faces">faces that were rolled</param>
-        private Turn(DateTime when, Player player, Dictionary<Die, Face> diceNFaces)
+        private Turn(DateTime when, Player player, IEnumerable<KeyValuePair<Die, Face>> diceNFaces)
         {
+            if (player is null)
+            {
+                throw new ArgumentNullException(nameof(player), "param should not be null");
+            }
+            if (diceNFaces is null)
+            {
+                throw new ArgumentNullException(nameof(diceNFaces), "param should not be null");
+            }
+            if (!diceNFaces.Any())
+            {
+                throw new ArgumentException("param should not be null", nameof(diceNFaces));
+            }
+            if (when.Kind != DateTimeKind.Utc)
+            {
+                when = when.ToUniversalTime();
+            }
+
             When = when;
             Player = player;
-            this.diceNFaces = diceNFaces;
+            this.diceNFaces = diceNFaces.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
         /// <summary>
@@ -57,25 +71,8 @@ namespace Model.Games
         /// <param name="player">player who played the turn</param>
         /// <param name="faces">faces that were rolled</param>
         /// <returns>a new Turn object</returns>
-        public static Turn CreateWithSpecifiedTime(DateTime when, Player player, Dictionary<Die, Face> diceNFaces)
+        public static Turn CreateWithSpecifiedTime(DateTime when, Player player, IEnumerable<KeyValuePair<Die, Face>> diceNFaces)
         {
-            if (player is null)
-            {
-                throw new ArgumentNullException(nameof(player), "param should not be null");
-            }
-            if (diceNFaces is null)
-            {
-                throw new ArgumentNullException(nameof(diceNFaces), "param should not be null");
-            }
-            if (diceNFaces.Count == 0)
-            {
-                throw new ArgumentException("param should not be null", nameof(diceNFaces));
-            }
-            if (when.Kind != DateTimeKind.Utc)
-            {
-                when = when.ToUniversalTime();
-            }
-
             return new Turn(when, player, diceNFaces);
         }
 
@@ -85,41 +82,47 @@ namespace Model.Games
         /// <param name="player">player who played the turn</param>
         /// <param name="faces">faces that were rolled</param>
         /// <returns>a new Turn object</returns>
-        public static Turn CreateWithDefaultTime(Player player, Dictionary<Die, Face> diceNFaces)
+        public static Turn CreateWithDefaultTime(Player player, IEnumerable<KeyValuePair<Die, Face>> diceNFaces)
         {
             return CreateWithSpecifiedTime(DateTime.UtcNow, player, diceNFaces);
         }
 
-        /// <summary>
-        /// represents a turn in string format
-        /// </summary>
-        /// <returns>a turn in string format</returns>
-        public override string ToString()
-        {
-            string[] datetime = When.ToString("s", System.Globalization.CultureInfo.InvariantCulture).Split("T");
-            string date = datetime[0];
-            string time = datetime[1];
-
-            StringBuilder sb = new();
-
-            sb.AppendFormat("{0} {1} -- {2} rolled:",
-                date,
-                time,
-                Player.ToString());
-            foreach (Face face in this.diceNFaces.Values)
-            {
-                sb.Append(" " + face.ToString());
-            }
-
-            return sb.ToString();
-        }
-
         public bool Equals(Turn other)
         {
-            return Player.Equals(other.Player)
+            if (other is null
+                ||
+                !(Player.Equals(other.Player)
                 && When.Equals(other.When)
-                && DiceNFaces.SequenceEqual(other.DiceNFaces);
+                && DiceNFaces.Count == other.DiceNFaces.Count))
+            {
+                return false;
+            }
 
+            // 🤮
+            for (int i = 0; i < DiceNFaces.Count; i++)
+            {
+                if (DiceNFaces.ElementAt(i).Key.Faces.Count
+                    != other.DiceNFaces.ElementAt(i).Key.Faces.Count)
+                {
+                    return false;
+                }
+
+                if (!other.DiceNFaces.ElementAt(i).Value.StringValue
+                    .Equals(DiceNFaces.ElementAt(i).Value.StringValue))
+                {
+                    return false;
+                }
+
+                for (int j = 0; j < DiceNFaces.ElementAt(i).Key.Faces.Count; j++)
+                {
+                    if (!other.DiceNFaces.ElementAt(i).Key.Faces.ElementAt(j).StringValue
+                        .Equals(DiceNFaces.ElementAt(i).Key.Faces.ElementAt(j).StringValue))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         public override bool Equals(object obj)
@@ -133,7 +136,7 @@ namespace Model.Games
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Player, When, DiceNFaces);
+            return When.GetHashCode();
         }
     }
 }

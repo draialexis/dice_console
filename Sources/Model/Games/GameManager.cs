@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Model.Games
 {
@@ -9,18 +11,14 @@ namespace Model.Games
         /// <summary>
         /// the games managed by this instance
         /// </summary>
-        private readonly List<Game> games;
+        private readonly List<Game> games = new();
 
-        public GameManager()
-        {
-            games = new();
-        }
 
         /// <summary>
         /// gets an unmodifiable collection of the games
         /// </summary>
         /// <returns>unmodifiable collection of the games</returns>
-        public IEnumerable<Game> GetAll() => games.AsEnumerable();
+        public Task<ReadOnlyCollection<Game>> GetAll() => Task.FromResult(new ReadOnlyCollection<Game>(games));
 
         /// <summary>
         /// finds the game with that name and returns it
@@ -29,12 +27,11 @@ namespace Model.Games
         /// </summary>
         /// <param name="name">a games's name</param>
         /// <returns>game with said name, <em>or null</em> if no such game was found</returns>
-        public Game GetOneByName(string name)
+        public Task<Game> GetOneByName(string name)
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                Game result = games.FirstOrDefault(g => g.Name == name);
-                return result; // may return null
+                return Task.FromResult(games.FirstOrDefault(g => g.Name == name)); // may return null
             }
             throw new ArgumentException("param should not be null or blank", nameof(name));
         }
@@ -45,7 +42,7 @@ namespace Model.Games
         /// <param name="ID"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Game GetOneByID(Guid ID)
+        public Task<Game> GetOneByID(Guid ID)
         {
             throw new NotImplementedException();
         }
@@ -54,7 +51,7 @@ namespace Model.Games
         /// saves a given game -- does not allow copies yet: if a game with the same name exists, it is overwritten
         /// </summary>
         /// <param name="toAdd">a game to save</param>
-        public Game Add(Game toAdd)
+        public Task<Game> Add(Game toAdd)
         {
             if (toAdd is null)
             {
@@ -64,7 +61,7 @@ namespace Model.Games
             games.Remove(games.FirstOrDefault(g => g.Name == toAdd.Name));
             // will often be an update: if game with that name exists, it is removed, else, nothing happens above
             games.Add(toAdd);
-            return toAdd;
+            return Task.FromResult(toAdd);
         }
 
         /// <summary>
@@ -88,7 +85,7 @@ namespace Model.Games
         /// <param name="after">new game</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public Game Update(Game before, Game after)
+        public Task<Game> Update(Game before, Game after)
         {
 
             Game[] args = { before, after };
@@ -103,7 +100,7 @@ namespace Model.Games
                 }
             }
             Remove(before);
-            return Add(after);
+            return (Add(after));
         }
     }
 }

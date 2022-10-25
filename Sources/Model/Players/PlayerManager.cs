@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Model.Players
 {
@@ -9,18 +11,14 @@ namespace Model.Players
         /// <summary>
         /// a collection of the players that this manager is in charge of
         /// </summary>
-        private readonly List<Player> players;
+        private readonly List<Player> players = new();
 
-        public PlayerManager()
-        {
-            players = new();
-        }
         /// <summary>
         /// add a new player
         /// </summary>
         /// <param name="toAdd">player to be added</param>
         /// <returns>added player</returns>
-        public Player Add(Player toAdd)
+        public Task<Player> Add(Player toAdd)
         {
             if (toAdd is null)
             {
@@ -31,25 +29,27 @@ namespace Model.Players
                 throw new ArgumentException("this username is already taken", nameof(toAdd));
             }
             players.Add(toAdd);
-            return toAdd;
+            return Task.FromResult(toAdd);
         }
 
         /// <summary>
-        /// finds the player with that name and returns A COPY OF IT
-        /// <br/>
-        /// that copy does not belong to this manager's players, so it should not be modified 
+        /// finds the player with that name and returns it
         /// </summary>
         /// <param name="name">a player's unique name</param>
         /// <returns>player with said name, <em>or null</em> if no such player was found</returns>
-        public Player GetOneByName(string name)
+        public Task<Player> GetOneByName(string name)
         {
-            if (!string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
-                Player wanted = new(name);
-                Player result = players.FirstOrDefault(p => p.Equals(wanted));
-                return result is null ? null : new Player(result); // THIS IS A COPY (using a copy constructor)
+                throw new ArgumentException("param should not be null or blank", nameof(name));
             }
-            throw new ArgumentException("param should not be null or blank", nameof(name));
+
+            Player result = players.FirstOrDefault(p => p.Name.ToUpper().Equals(name.ToUpper().Trim()));
+            if (result == null)
+            {
+                return Task.FromResult<Player>(null);
+            }
+            return Task.FromResult(result);
         }
 
         /// </summary>
@@ -57,7 +57,7 @@ namespace Model.Players
         /// so that the only way to modify the collection of players is to use this class's methods
         /// </summary>
         /// <returns>a readonly enumerable of all this manager's players</returns>
-        public IEnumerable<Player> GetAll() => players.AsEnumerable();
+        public Task<ReadOnlyCollection<Player>> GetAll() => Task.FromResult(new ReadOnlyCollection<Player>(players));
 
         /// <summary>
         /// update a player from <paramref name="before"/> to <paramref name="after"/>
@@ -65,7 +65,7 @@ namespace Model.Players
         /// <param name="before">player to be updated</param>
         /// <param name="after">player in the state that it needs to be in after the update</param>
         /// <returns>updated player</returns>
-        public Player Update(Player before, Player after)
+        public Task<Player> Update(Player before, Player after)
         {
             Player[] args = { before, after };
 
@@ -96,7 +96,7 @@ namespace Model.Players
             players.Remove(toRemove);
         }
 
-        public Player GetOneByID(Guid ID)
+        public Task<Player> GetOneByID(Guid ID)
         {
             throw new NotImplementedException();
         }

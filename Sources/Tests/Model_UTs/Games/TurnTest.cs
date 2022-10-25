@@ -5,6 +5,7 @@ using Model.Games;
 using Model.Players;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Xunit;
 
@@ -13,14 +14,15 @@ namespace Tests.Model_UTs.Games
     public class TurnTest
 
     {
-        private readonly MasterOfCeremonies stubMasterOfCeremonies = new Stub().LoadApp();
-
-        Dictionary<Die, Face> DICE_N_FACES_1, DICE_N_FACES_2;
+        private readonly MasterOfCeremonies stubMasterOfCeremonies = new Stub().LoadApp()?.Result;
+        private readonly ReadOnlyDictionary<Die, Face> DICE_N_FACES_1;
+        private readonly ReadOnlyDictionary<Die, Face> DICE_N_FACES_2;
 
         public TurnTest()
         {
-            DICE_N_FACES_1 = (Dictionary<Die, Face>)stubMasterOfCeremonies.GameManager.GetAll().First().GetHistory().First().DiceNFaces;
-            DICE_N_FACES_2 = (Dictionary<Die, Face>)stubMasterOfCeremonies.GameManager.GetAll().Last().GetHistory().Last().DiceNFaces;
+
+            DICE_N_FACES_1 = stubMasterOfCeremonies.GameManager.GetAll()?.Result.First().GetHistory().First().DiceNFaces;
+            DICE_N_FACES_2 = stubMasterOfCeremonies.GameManager.GetAll()?.Result.Last().GetHistory().Last().DiceNFaces;
         }
 
         [Fact]
@@ -92,10 +94,9 @@ namespace Tests.Model_UTs.Games
             // Arrange
             DateTime dateTime = new(year: 2018, month: 06, day: 15, hour: 16, minute: 30, second: 0, kind: DateTimeKind.Utc);
             Player player = new("Chucky");
-            DICE_N_FACES_1.Clear();
 
             // Act
-            void action() => Turn.CreateWithSpecifiedTime(dateTime, player, DICE_N_FACES_1);
+            void action() => Turn.CreateWithSpecifiedTime(dateTime, player, new Dictionary<Die, Face>());
 
             // Assert
             Assert.Throws<ArgumentException>(action);

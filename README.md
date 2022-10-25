@@ -34,11 +34,13 @@ However, you do need to create the migrations and DB (and you probably should de
 
 First, in Visual Studio's terminal ("Developer PowerShell"), go to *DiceApp/Sources/Data*, and make sure Entity Framework is installed and / or updated.
 ```
+cd Data
 dotnet tool install --global dotnet-ef
 dotnet tool update --global dotnet-ef
 ```
-Now the migrations and DB. Since we have a `DiceAppDbContext` *and* and `DiceAppDbContextWithStub`, you will need to specify which one to use. Make sure you are in *DiceApp/Sources/Data*.
+Now the migrations and DB. Since we have a `DiceAppDbContext` *and* and `DiceAppDbContextWithStub`, you will need to specify which one to use.
 ```
+cd Data
 dotnet ef migrations add dice_app_db --context DiceAppDbContextWithStub
 dotnet ef database update --context DiceAppDbContextWithStub --startup-project ../App
 ```
@@ -49,6 +51,10 @@ You can now run the *App* program, and check out your local DB.
 You may not want to read tables in the debug window -- in which case, just download [DB Brower for SQLite](https://sqlitebrowser.org/dl/) and open the *.db* file in it.
 
 Ta-da.
+
+#### Troubleshooting (VS vs .NET EF)
+
+**If Visual Studio's embedded terminal refuses to recognize `dotnet ef`, try to fully close and reopen Visual Studio**
 
 ## To contribute (workflow)
 
