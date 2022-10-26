@@ -25,6 +25,21 @@ namespace Model.Dice
             return Task.FromResult(toAdd);
         }
 
+        public Task<DiceGroup> AddCheckName(DiceGroup toAdd)
+        {
+            if (string.IsNullOrWhiteSpace(toAdd.Name))
+            {
+                throw new ArgumentNullException(nameof(toAdd), "param should not be null or empty");
+
+            }
+            if (diceGroups.Where(d => d.Name.Equals(toAdd.Name)).Any())
+            {
+                throw new ArgumentException("this dice group already exists", nameof(toAdd));
+            }
+            diceGroups.Add(new(toAdd.Name.Trim(), toAdd.Dice));
+            return Task.FromResult(toAdd);
+        }
+
         public Task<ReadOnlyCollection<DiceGroup>> GetAll()
         {
             return Task.FromResult(new ReadOnlyCollection<DiceGroup>(diceGroups));
