@@ -87,56 +87,97 @@ namespace Tests.Data_UTs.Dice
 
         }
 
+        [Fact]
+        public async Task TestGetOneByIdThrowsException()
+        {
+            // Arrange
+            DiceGroupManager dgm = new();
+
+            // Act
+
+            async Task action() => dgm.GetOneByID(new("9657b6f0-9431-458e-a2bd-4bb0c7d4a6ed"));
+
+            // Assert
+           await Xunit.Assert.ThrowsAsync<NotImplementedException>(action);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData(" ")]
+        public async Task TestGetOneByNameIfInvalidThrowsException(string name)
+        {
+            // Arrange
+            DiceGroupManager dgm = new();
+            DiceGroup toAdd = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+            
+            await dgm.Add(toAdd);
+            async Task action() => dgm.GetOneByName(name);
+
+            // Assert
+           await Xunit.Assert.ThrowsAsync<ArgumentNullException>(action);
+        }
+
+        [Fact]
+        public async Task TestRemoveWorksIfExists()
+        {
+            // Arrange
+            DiceGroupManager dgm = new();
+            // KeyValuePair<string, IEnumerable<Die>> toAdd = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+            DiceGroup diceGroup = new ("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+
+            await dgm.Add(diceGroup);
+            dgm.Remove(diceGroup);
+
+            Xunit.Assert.DoesNotContain(diceGroup, await dgm.GetAll());
+        }
+
+        [Fact]
+        public async void TestRemoveFailsSilentlyIfGivenNonExistent()
+        {
+            DiceGroupManager dgm = new();
+            DiceGroup toAdd = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+            await dgm.Add(toAdd);
+
+            DiceGroup toAdd2 = new("Scrabble", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+
+            // Act
+            dgm.Remove(toAdd2);
+           
+            // Assert
+            Xunit.Assert.DoesNotContain(toAdd2, await dgm.GetAll());
+        }
+
+        [Fact]//To check sequence equal does not work properly
+        public async Task TestUpdateWorksIfValid()
+        {
+            // Arrange
+            DiceGroupManager dgm = new();
+            DiceGroup toAdd = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+            await dgm.Add(toAdd);
+            DiceGroup toAdd2 = new("Scrabble", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+            await dgm.Update(toAdd, toAdd2);
+
+            Xunit.Assert.DoesNotContain(toAdd, await dgm.GetAll());
+            Xunit.Assert.Contains(toAdd2, await dgm.GetAll());
+        }
+
+        /*        [Fact]
+                public void TestUpdateWorksIfValid()
+                {
+                    // Arrange
+                    DiceGroupManager dgm = new();
+                    KeyValuePair<string, IEnumerable<Die>> toAdd = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+                    dgm.Add(toAdd);
+                    KeyValuePair<string, IEnumerable<Die>> toAdd2 = new("Scrabble", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
+                    dgm.Update(toAdd, toAdd2);
+
+                    Xunit.Assert.DoesNotContain(toAdd, dgm.GetAll());
+                    Xunit.Assert.Contains(toAdd2, dgm.GetAll());
+                    Xunit.Assert.True(dgm.GetAll().Count() == 1);
+                }*/
         /* 
 
-  [Fact]
-  public void TestAddIfAlreadyExistsThrowsException()
-  {
-      DiceGroupManager dgm = new();
-
-      // Act
-      KeyValuePair<string, IEnumerable<Die>> toAdd = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
-      DiceGroup diceGroup = new DiceGroup("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
-
-      dgm.Add(diceGroup);
-
-      void action() => dgm.Add(diceGroup);
-
-      // Assert
-      Xunit.Assert.Throws<ArgumentException>(action);
-
-  }
-  [Fact]
-  public void TestGetOneByIdThrowsException()
-  {
-      // Arrange
-      DiceGroupManager dgm = new();
-
-      // Act
-
-      void action() => dgm.GetOneByID(new("9657b6f0-9431-458e-a2bd-4bb0c7d4a6ed"));
-
-      // Assert
-      Xunit.Assert.Throws<NotImplementedException>(action);
-  }
-
-  [Theory]
-  [InlineData("")]
-  [InlineData(null)]
-  [InlineData(" ")]
-  public void TestGetOneByNameIfInvalidThrowsException(string name)
-  {
-      // Arrange
-      DiceGroupManager dgm = new();
-      KeyValuePair<string, IEnumerable<Die>> toAdd = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
-      DiceGroup diceGroup = new DiceGroup("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
-
-      dgm.Add(diceGroup);
-      void action() => dgm.GetOneByName(name);
-
-      // Assert
-      Xunit.Assert.Throws<ArgumentNullException>(action);
-  }
 
   [Fact]
   public void TestRemoveWorksIfExists()
