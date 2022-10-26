@@ -148,7 +148,8 @@ namespace Tests.Data_UTs.Dice
             Xunit.Assert.DoesNotContain(toAdd2, await dgm.GetAll());
         }
 
-        [Fact]//To check sequence equal does not work properly
+        //To check sequence equal does not work properly
+        [Fact]
         public async Task TestUpdateWorksIfValid()
         {
             // Arrange

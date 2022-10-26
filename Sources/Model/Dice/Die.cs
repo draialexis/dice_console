@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Model.Dice
 {
-    public abstract class Die
+    public abstract class Die:IEquatable<Die>
     {
         public ReadOnlyCollection<Face> Faces => new(faces);
 
@@ -24,5 +24,20 @@ namespace Model.Dice
             int faceIndex = rnd.Next(0, Faces.Count);
             return Faces.ElementAt(faceIndex);
         }
+
+        public bool Equals(Die other)
+        {
+            return Faces == other.Faces && Faces.SequenceEqual(other.Faces);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null) return false; // is null
+            if (ReferenceEquals(obj, this)) return true; // is me
+            if (!obj.GetType().Equals(GetType())) return false; // is different type
+            return Equals(obj as Die); // is not me, is not null, is same type : send up
+        }
+
+
     }
 }

@@ -68,6 +68,15 @@ namespace Model.Dice
         /// <exception cref="ArgumentNullException"></exception>
         public Task<DiceGroup> Update(DiceGroup before, DiceGroup after)
         {
+
+            var results= after.Dice.Where(dice => before.Dice.Contains(after.Dice[0]));
+            /*            foreach(Die die in before.Dice)
+                          {
+                               if (after.Dice.Contains((die)))
+                                  {
+                                throw new ArgumentException("the group of dice cannot be updated, only the name", nameof(before));
+                                  }
+                          }*/
             // pas autorisé de changer les dés, juste le nom
             if (!before.Dice.SequenceEqual(after.Dice))
             {
