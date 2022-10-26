@@ -77,13 +77,13 @@ namespace Tests.Data_UTs.Dice
         {
             DiceGroupManager dgm = new();
 
-            await dgm.Add(new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) }));
+            await dgm.AddCheckName(new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) }));
             DiceGroup group1 = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
 
-            async Task actionAsync() => await dgm.Add(group1);
+            async Task actionAsync() => await dgm.AddCheckName(group1);
 
             // Assert
-            await Xunit.Assert.ThrowsAsync<Exception>(actionAsync);
+            await Xunit.Assert.ThrowsAsync<ArgumentException>(actionAsync);
 
         }
 
@@ -112,7 +112,7 @@ namespace Tests.Data_UTs.Dice
             DiceGroup toAdd = new("Monopoly", new List<NumberDie> { new NumberDie(new NumberFace(5), new NumberFace(7)), new NumberDie(new NumberFace(5), new NumberFace(7)) });
             
             await dgm.Add(toAdd);
-            async Task action() => dgm.GetOneByName(name);
+            async Task action() => await dgm.GetOneByName(name);
 
             // Assert
            await Xunit.Assert.ThrowsAsync<ArgumentNullException>(action);
