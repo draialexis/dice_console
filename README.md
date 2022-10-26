@@ -1,4 +1,4 @@
-[![Build Status](https://codefirst.iut.uca.fr/api/badges/alexis.drai/dice_app/status.svg)](https://codefirst.iut.uca.fr/alexis.drai/dice_app)  
+﻿[![Build Status](https://codefirst.iut.uca.fr/api/badges/alexis.drai/dice_app/status.svg)](https://codefirst.iut.uca.fr/alexis.drai/dice_app)  
 [![Quality Gate Status](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=alert_status&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
 [![Bugs](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=bugs&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
 [![Code Smells](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=code_smells&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
@@ -13,6 +13,67 @@
 # dice_app: the die throwing app
 
 ## To use the app
+## About
+
+DiceApp is a scalable project to throw Dices among friends. It's allows you to create difrrent type of Dices and attribute them  to a group, also truck players result and store it in thre database.
+
+In DiceApp we can create homogenouce dice with Color,Number or Image faces. The number of faces is choosen by user.
+![Dice shapes](https://codefirst.iut.uca.fr/git/alexis.drai/dice_app/raw/branch/main/Documentation/doc-images/dice-shapes.jpg)
+
+Have a deeper idea on the project architechtur by reading the [the wiki](https://codefirst.iut.uca.fr/git/alexis.drai/dice_app/wiki)
+
+## Directory & File Structure
+
+```
+
+DiceApp
+│
+└────── Documentation
+│	│
+│	└─── doc-images
+│	│
+│	└─── doxygen
+│
+└────── Sources
+│	│
+│	└───── App
+│	│	│
+│	│	└─── Program.cs
+│	│
+│	└───── Data
+│	│	│
+│	│	└─── EF ==> Entity framework (SQLite implemented)
+│	│	│	│
+│	│	│	└─── (...)
+│	│	│
+│	│	└─── Stub.cs
+│	│
+│	└─── Model
+│	│	│
+│	│	└─── (...)
+│	│
+│	└─── Tests
+│	│	│
+│	│	└─── (...)
+│	│
+│	└─── Utiles
+│		│
+│		└─── (...)
+│	
+└────── .drone.yml
+│	
+└────── .gitignor
+│	
+└────── .README.md
+
+
+
+```
+
+
+The DiceApp architecture gave the possiblity to add heterogeneous Dice but not implemnted yet.
+
+
 
 ### Console prototype
 
