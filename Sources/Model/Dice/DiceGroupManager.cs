@@ -12,6 +12,11 @@ namespace Model.Dice
 
         public Task<DiceGroup> Add(DiceGroup toAdd)
         {
+            if(toAdd is null)
+            {
+                throw new ArgumentNullException(nameof(toAdd)); 
+            }
+
             if (string.IsNullOrWhiteSpace(toAdd.Name))
             {
                 throw new ArgumentNullException(nameof(toAdd), "param should not be null or empty");
