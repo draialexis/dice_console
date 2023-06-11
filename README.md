@@ -1,15 +1,3 @@
-[![Build Status](https://codefirst.iut.uca.fr/api/badges/alexis.drai/dice_app/status.svg)](https://codefirst.iut.uca.fr/alexis.drai/dice_app)  
-[![Quality Gate Status](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=alert_status&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
-[![Bugs](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=bugs&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
-[![Code Smells](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=code_smells&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
-[![Coverage](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=coverage&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
-[![Duplicated Lines (%)](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=duplicated_lines_density&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
-[![Lines of Code](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=ncloc&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
-[![Maintainability Rating](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=sqale_rating&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
-[![Reliability Rating](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=reliability_rating&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
-[![Security Rating](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=security_rating&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
-[![Technical Debt](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=sqale_index&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
-[![Vulnerabilities](https://codefirst.iut.uca.fr/sonar/api/project_badges/measure?project=dice-app&metric=vulnerabilities&token=bf024850973b7556eef0b981a1b838867848005c)](https://codefirst.iut.uca.fr/sonar/dashboard?id=dice-app)
 # dice_app: the die throwing app
 
 ## To use the app
