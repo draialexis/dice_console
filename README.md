@@ -1,5 +1,12 @@
 # dice_app: the die throwing app
 
++ [To use the app](#to-use-the-app)
+  - [Console prototype](#console-prototype)
+  - [DiceApp DB context with stub](#diceapp-db-context-with-stub)
+    * [Troubleshooting (VS vs .NET EF)](#troubleshooting-vs-vs-net-ef)
++ [Known issues and limitations](#known-issues-and-limitations)
+  - [copies of games](#copies-of-games)
+
 ## To use the app
 
 ### Console prototype
